@@ -28,14 +28,25 @@ jobs:
       - name: Check formatting
         run: make fmt
 
-      - name: Run clean-core Solidity suite
-        run: make test-core
+      - name: Run clean-core equivalence benchmark
+        run: cd contracts && forge test --offline --match-contract ArbFoldCleanCoreBenchmarkTest
+
+      - name: Run clean-core unit and fuzz tests
+        if: ${{ !cancelled() }}
+        run: cd contracts && forge test --offline --match-contract ArbFoldTest
+
+      - name: Run clean-core invariant tests
+        if: ${{ !cancelled() }}
+        run: cd contracts && forge test --offline --match-contract ArbFoldInvariantTest
 
       - name: Run frozen benchmark suite
+        if: ${{ !cancelled() }}
         run: make test-benchmark
 
       - name: Run research-integrity suite
+        if: ${{ !cancelled() }}
         run: make test-research
 
       - name: Run high-severity lints
+        if: ${{ !cancelled() }}
         run: make lint
