@@ -19,6 +19,8 @@ jobs:
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.5.1
 
       - name: Prime pinned Solidity compiler
         run: cd contracts && forge build
@@ -26,8 +28,14 @@ jobs:
       - name: Check formatting
         run: make fmt
 
-      - name: Run Solidity and research-integrity tests
-        run: make test
+      - name: Run clean-core Solidity suite
+        run: make test-core
+
+      - name: Run frozen benchmark suite
+        run: make test-benchmark
+
+      - name: Run research-integrity suite
+        run: make test-research
 
       - name: Run high-severity lints
         run: make lint
