@@ -72,7 +72,7 @@ abstract contract ArbFoldTestBase is Test {
         tokenCContract.approve(address(router), type(uint256).max);
     }
 
-    function _mineAndDeploy(ArbFoldHookDeployer deployer) private returns (ArbFoldHook hook) {
+    function _mineAndDeploy(ArbFoldHookDeployer deployer) internal returns (ArbFoldHook hook) {
         uint160 flags = uint160(
             Hooks.BEFORE_INITIALIZE_FLAG | Hooks.BEFORE_ADD_LIQUIDITY_FLAG | Hooks.BEFORE_REMOVE_LIQUIDITY_FLAG
                 | Hooks.BEFORE_SWAP_FLAG | Hooks.BEFORE_SWAP_RETURNS_DELTA_FLAG

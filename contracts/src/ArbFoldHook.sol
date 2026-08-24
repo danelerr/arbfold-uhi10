@@ -3,6 +3,7 @@ pragma solidity 0.8.26;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
+import {SafeCast} from "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import {BaseCustomCurve} from "@openzeppelin/uniswap-hooks/base/BaseCustomCurve.sol";
 import {BaseCustomAccounting} from "@openzeppelin/uniswap-hooks/base/BaseCustomAccounting.sol";
 import {BaseHook} from "@openzeppelin/uniswap-hooks/base/BaseHook.sol";
@@ -28,11 +29,13 @@ contract ArbFoldHook is BaseCustomCurve, ERC20 {
     error NotCoordinator();
     error InvalidReserves();
     error InvalidHookData();
+    error UnsupportedAmount();
 
     address public immutable coordinator;
     uint256 private _reserve0;
     uint256 private _reserve1;
     bool private _coordinatorAuthorized;
+    bool private _everFunded;
 
     event CoordinatorAuthorized(address indexed coordinator);
     event ReservesUpdated(uint256 reserve0, uint256 reserve1);
@@ -57,7 +60,10 @@ contract ArbFoldHook is BaseCustomCurve, ERC20 {
 
     function setReservesFromCoordinator(uint256 reserve0, uint256 reserve1) external {
         if (msg.sender != coordinator) revert NotCoordinator();
-        if (reserve0 == 0 || reserve1 == 0) revert InvalidReserves();
+        if (
+            reserve0 < CycleMath.MIN_NETWORK_RESERVE || reserve1 < CycleMath.MIN_NETWORK_RESERVE
+                || reserve0 > CycleMath.MAX_NETWORK_RESERVE || reserve1 > CycleMath.MAX_NETWORK_RESERVE
+        ) revert InvalidReserves();
         _reserve0 = reserve0;
         _reserve1 = reserve1;
         emit ReservesUpdated(reserve0, reserve1);
@@ -80,12 +86,17 @@ contract ArbFoldHook is BaseCustomCurve, ERC20 {
     function _getUnspecifiedAmount(SwapParams calldata params) internal override returns (uint256 amountOut) {
         if (params.amountSpecified >= 0) revert ExactInputOnly();
         uint256 amountIn = uint256(-params.amountSpecified);
+        if (amountIn > CycleMath.MAX_SWAP_INPUT) revert UnsupportedAmount();
         if (params.zeroForOne) {
+            if (_reserve0 > CycleMath.MAX_NETWORK_RESERVE - amountIn) revert UnsupportedAmount();
             amountOut = CycleMath.swapOut(amountIn, _reserve0, _reserve1);
+            if (_reserve1 - amountOut < CycleMath.MIN_NETWORK_RESERVE) revert UnsupportedAmount();
             _reserve0 += amountIn;
             _reserve1 -= amountOut;
         } else {
+            if (_reserve1 > CycleMath.MAX_NETWORK_RESERVE - amountIn) revert UnsupportedAmount();
             amountOut = CycleMath.swapOut(amountIn, _reserve1, _reserve0);
+            if (_reserve0 - amountOut < CycleMath.MIN_NETWORK_RESERVE) revert UnsupportedAmount();
             _reserve1 += amountIn;
             _reserve0 -= amountOut;
         }
@@ -101,12 +112,16 @@ contract ArbFoldHook is BaseCustomCurve, ERC20 {
         override
         returns (uint256 amount0, uint256 amount1, uint256 shares)
     {
-        if (totalSupply() != 0) revert AlreadyFunded();
+        if (_everFunded) revert AlreadyFunded();
         amount0 = params.amount0Desired;
         amount1 = params.amount1Desired;
-        if (amount0 == 0 || amount1 == 0) revert InvalidReserves();
+        if (
+            amount0 < CycleMath.MIN_NETWORK_RESERVE || amount1 < CycleMath.MIN_NETWORK_RESERVE
+                || amount0 > CycleMath.MAX_INITIAL_RESERVE || amount1 > CycleMath.MAX_INITIAL_RESERVE
+        ) revert InvalidReserves();
         _reserve0 = amount0;
         _reserve1 = amount1;
+        _everFunded = true;
         shares = Math.sqrt(amount0 * amount1);
         emit ReservesUpdated(amount0, amount1);
     }
@@ -139,10 +154,17 @@ contract ArbFoldHook is BaseCustomCurve, ERC20 {
         int128 delta0 = callerDelta.amount0();
         int128 delta1 = callerDelta.amount1();
         if (delta0 < 0 || delta1 < 0) revert InvalidReserves();
-        uint256 amount0 = uint256(uint128(delta0));
-        uint256 amount1 = uint256(uint128(delta1));
-        _reserve0 -= amount0;
-        _reserve1 -= amount1;
+        uint256 amount0 = SafeCast.toUint256(delta0);
+        uint256 amount1 = SafeCast.toUint256(delta1);
+        uint256 reserve0After = _reserve0 - amount0;
+        uint256 reserve1After = _reserve1 - amount1;
+        bool fullWithdrawal = reserve0After == 0 && reserve1After == 0;
+        if (
+            !fullWithdrawal
+                && (reserve0After < CycleMath.MIN_NETWORK_RESERVE || reserve1After < CycleMath.MIN_NETWORK_RESERVE)
+        ) revert InvalidReserves();
+        _reserve0 = reserve0After;
+        _reserve1 = reserve1After;
         _burn(msg.sender, shares);
         emit ReservesUpdated(_reserve0, _reserve1);
     }

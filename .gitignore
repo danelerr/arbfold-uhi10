@@ -13,3 +13,6 @@ contracts/cache/
 contracts/out/
 contracts/broadcast/
 broadcast/
+deployments/local-*.json
+contracts/lcov.info
+contracts/slither-report.json

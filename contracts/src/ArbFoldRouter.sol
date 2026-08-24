@@ -8,6 +8,7 @@ import {Currency} from "@uniswap/v4-core/src/types/Currency.sol";
 import {BalanceDelta, BalanceDeltaLibrary} from "@uniswap/v4-core/src/types/BalanceDelta.sol";
 import {SwapParams} from "@uniswap/v4-core/src/types/PoolOperation.sol";
 import {TickMath} from "@uniswap/v4-core/src/libraries/TickMath.sol";
+import {SafeCast} from "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import {TransientStateLibrary} from "@uniswap/v4-core/src/libraries/TransientStateLibrary.sol";
 import {CurrencySettler} from "@openzeppelin/uniswap-hooks/utils/CurrencySettler.sol";
 import {ArbFoldHook} from "./ArbFoldHook.sol";
@@ -68,12 +69,23 @@ contract ArbFoldRouter is IUnlockCallback {
         if (!coordinator.isHook(address(hook))) revert UnregisteredHook();
 
         BalanceDelta delta = abi.decode(
-            manager.unlock(abi.encode(Request(msg.sender, hook, zeroForOne, amountIn, minAmountOut, solver))),
+            manager.unlock(
+                abi.encode(
+                    Request({
+                        payer: msg.sender,
+                        hook: hook,
+                        zeroForOne: zeroForOne,
+                        amountIn: amountIn,
+                        minAmountOut: minAmountOut,
+                        solver: solver
+                    })
+                )
+            ),
             (BalanceDelta)
         );
         int128 outputDelta = zeroForOne ? delta.amount1() : delta.amount0();
         if (outputDelta <= 0) revert InvalidAmount();
-        amountOut = uint128(outputDelta);
+        amountOut = SafeCast.toUint256(outputDelta);
         if (amountOut < minAmountOut) revert TooLittleReceived(minAmountOut, amountOut);
         emit SwapAndFold(msg.sender, address(hook), solver, zeroForOne, amountIn, amountOut);
     }
@@ -99,7 +111,7 @@ contract ArbFoldRouter is IUnlockCallback {
 
     function _settle(Currency currency, address payer) private {
         int256 delta = manager.currencyDelta(address(this), currency);
-        if (delta < 0) currency.settle(manager, payer, uint256(-delta), false);
-        else if (delta > 0) currency.take(manager, payer, uint256(delta), false);
+        if (delta < 0) currency.settle(manager, payer, SafeCast.toUint256(-delta), false);
+        else if (delta > 0) currency.take(manager, payer, SafeCast.toUint256(delta), false);
     }
 }

@@ -22,6 +22,15 @@ jobs:
         with:
           version: v1.5.1
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install pinned static analyzer
+        run: python -m pip install --requirement requirements-ci.txt
+
       - name: Prime pinned Solidity compiler
         run: cd contracts && forge build
 
@@ -42,11 +51,19 @@ jobs:
 
       - name: Run clean-core unit and fuzz tests
         if: ${{ !cancelled() }}
-        run: cd contracts && forge test --offline --match-contract ArbFoldTest
+        run: make test-core
 
       - name: Run clean-core invariant tests
         if: ${{ !cancelled() }}
-        run: cd contracts && forge test --offline --match-contract ArbFoldInvariantTest
+        run: make test-release-fuzz
+
+      - name: Verify the arithmetic domain
+        if: ${{ !cancelled() }}
+        run: make arithmetic
+
+      - name: Run deployment and post-deployment smoke test
+        if: ${{ !cancelled() }}
+        run: make test-deployment
 
       - name: Run frozen benchmark suite
         if: ${{ !cancelled() }}
@@ -59,3 +76,26 @@ jobs:
       - name: Run high-severity lints
         if: ${{ !cancelled() }}
         run: make lint
+
+      - name: Run Slither with reviewed-finding gate
+        if: ${{ !cancelled() }}
+        run: make slither
+
+      - name: Generate and enforce project coverage
+        if: ${{ !cancelled() }}
+        run: make coverage
+
+      - name: Verify release source manifest
+        if: ${{ !cancelled() }}
+        run: make source-manifest-check
+
+      - name: Upload release evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: arbfold-release-evidence
+          if-no-files-found: error
+          path: |
+            contracts/lcov.info
+            contracts/slither-report.json
+            benchmark/release-candidate-results/source-manifest.sha256

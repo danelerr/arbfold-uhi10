@@ -5,11 +5,11 @@ import {IPoolManager} from "@uniswap/v4-core/src/interfaces/IPoolManager.sol";
 import {Currency, CurrencyLibrary} from "@uniswap/v4-core/src/types/Currency.sol";
 import {PoolKey} from "@uniswap/v4-core/src/types/PoolKey.sol";
 import {CycleMath} from "./CycleMath.sol";
-import {IArbFoldHook} from "./IArbFold.sol";
+import {IArbFoldHook, IArbFoldCoordinator} from "./IArbFold.sol";
 
 /// @notice Coordinates a specialized direct reserve transition across A/B, B/C and A/C CPMMs.
 /// @dev Research-grade: fixed network, fixed fee math and no upgrade path.
-contract ArbFoldCoordinator {
+contract ArbFoldCoordinator is IArbFoldCoordinator {
     using CurrencyLibrary for Currency;
 
     uint256 public constant SOLVER_SHARE_BPS = 1_000;
@@ -86,7 +86,7 @@ contract ArbFoldCoordinator {
         emit HooksConfigured(address(hookAB_), address(hookBC_), address(hookAC_));
     }
 
-    function isHook(address candidate) public view returns (bool) {
+    function isHook(address candidate) public view override returns (bool) {
         return
             configured && (candidate == address(hookAB) || candidate == address(hookBC) || candidate == address(hookAC));
     }
@@ -103,7 +103,7 @@ contract ArbFoldCoordinator {
     }
 
     /// @notice Folds the post-swap cycle by moving backed ERC-6909 claims directly among hooks.
-    function fold(address solver) external {
+    function fold(address solver) external override {
         if (!isHook(msg.sender)) revert NotHook();
         if (solver == address(0)) revert InvalidSolver();
 
@@ -174,14 +174,7 @@ contract ArbFoldCoordinator {
             afterState.abA -= q.amountAIn + reward;
         }
 
-        uint256 beforeAB = n.abA * n.abB;
-        uint256 beforeBC = n.bcB * n.bcC;
-        uint256 beforeAC = n.acA * n.acC;
-        uint256 afterAB = afterState.abA * afterState.abB;
-        uint256 afterBC = afterState.bcB * afterState.bcC;
-        uint256 afterAC = afterState.acA * afterState.acC;
-
-        if (afterAB < beforeAB || afterBC < beforeBC || afterAC < beforeAC) revert InvariantDecreased();
+        _assertNonDecreasing(n, afterState);
         _assertConservation(n, afterState, reward);
 
         hookAB.setReservesFromCoordinator(afterState.abA, afterState.abB);
@@ -190,7 +183,7 @@ contract ArbFoldCoordinator {
     }
 
     function _anyInvariantIncreased(CycleMath.Network memory beforeState, CycleMath.Network memory afterState)
-        private
+        internal
         pure
         returns (bool)
     {
@@ -199,11 +192,22 @@ contract ArbFoldCoordinator {
             || afterState.acA * afterState.acC > beforeState.acA * beforeState.acC;
     }
 
+    function _assertNonDecreasing(CycleMath.Network memory beforeState, CycleMath.Network memory afterState)
+        internal
+        pure
+    {
+        if (
+            afterState.abA * afterState.abB < beforeState.abA * beforeState.abB
+                || afterState.bcB * afterState.bcC < beforeState.bcB * beforeState.bcC
+                || afterState.acA * afterState.acC < beforeState.acA * beforeState.acC
+        ) revert InvariantDecreased();
+    }
+
     function _assertConservation(
         CycleMath.Network memory beforeState,
         CycleMath.Network memory afterState,
         uint256 reward
-    ) private pure {
+    ) internal pure {
         uint256 beforeTotal = beforeState.abA + beforeState.acA;
         uint256 afterTotal = afterState.abA + afterState.acA + reward;
         if (afterTotal != beforeTotal) revert ConservationFailed(0, beforeTotal, afterTotal);

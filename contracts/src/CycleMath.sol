@@ -8,7 +8,13 @@ import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 library CycleMath {
     uint256 internal constant DENOMINATOR = 1_000_000;
     uint256 internal constant GAMMA = 997_000;
+    uint256 internal constant MIN_NETWORK_RESERVE = 1 ether;
+    uint256 internal constant MAX_INITIAL_RESERVE = 1_000_000 ether;
+    uint256 internal constant MAX_SWAP_INPUT = 200_000 ether;
+    uint256 internal constant MAX_NETWORK_RESERVE = 3_000_000 ether;
     uint256 private constant NORMALIZED_MAX = 1e36;
+
+    error ArithmeticDomain();
 
     struct Network {
         uint256 abA;
@@ -35,11 +41,16 @@ library CycleMath {
 
     function swapOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) internal pure returns (uint256) {
         if (amountIn == 0) return 0;
+        if (
+            amountIn > MAX_NETWORK_RESERVE || reserveIn < MIN_NETWORK_RESERVE || reserveOut < MIN_NETWORK_RESERVE
+                || reserveIn > MAX_NETWORK_RESERVE || reserveOut > MAX_NETWORK_RESERVE
+        ) revert ArithmeticDomain();
         uint256 effectiveIn = amountIn * GAMMA;
         return Math.mulDiv(effectiveIn, reserveOut, reserveIn * DENOMINATOR + effectiveIn);
     }
 
     function best(Network memory n) internal pure returns (Quote memory quote) {
+        _validateNetwork(n);
         Quote memory forward = _quoteForward(n);
         Quote memory reverse = _quoteReverse(n);
         quote = forward.profitA >= reverse.profitA ? forward : reverse;
@@ -87,5 +98,13 @@ library CycleMath {
         uint256 scale = Math.ceilDiv(maximum, NORMALIZED_MAX);
         return (a / scale, b / scale, c / scale);
     }
-}
 
+    function _validateNetwork(Network memory n) private pure {
+        if (
+            n.abA < MIN_NETWORK_RESERVE || n.abB < MIN_NETWORK_RESERVE || n.bcB < MIN_NETWORK_RESERVE
+                || n.bcC < MIN_NETWORK_RESERVE || n.acA < MIN_NETWORK_RESERVE || n.acC < MIN_NETWORK_RESERVE
+                || n.abA > MAX_NETWORK_RESERVE || n.abB > MAX_NETWORK_RESERVE || n.bcB > MAX_NETWORK_RESERVE
+                || n.bcC > MAX_NETWORK_RESERVE || n.acA > MAX_NETWORK_RESERVE || n.acC > MAX_NETWORK_RESERVE
+        ) revert ArithmeticDomain();
+    }
+}

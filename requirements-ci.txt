@@ -1,0 +1,2 @@
+# Pinned release analyzer. Foundry itself is pinned by the CI workflow.
+slither-analyzer==0.11.3

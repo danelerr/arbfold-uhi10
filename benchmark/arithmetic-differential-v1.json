@@ -1,0 +1,51 @@
+{
+  "direction_mismatches": 0,
+  "domain": {
+    "fee_denominator": 1000000,
+    "fee_gamma": 997000,
+    "max_rounds": 8,
+    "normalization_ceiling": 1000000000000000000000000000000000000,
+    "reserve_max": 3000000000000000000000000,
+    "reserve_min": 1000000000000000000,
+    "residual_threshold": 1000000000000
+  },
+  "final_reserve_error": {
+    "max_absolute": 261301970890,
+    "max_relative": 1.6724536008004878e-13
+  },
+  "quote_error": {
+    "amount_a_in": {
+      "max_absolute": 1144401276046,
+      "max_relative": 2.894118287610333e-12
+    },
+    "amount_a_out": {
+      "max_absolute": 1144401472670,
+      "max_relative": 1.6273136403924662e-12
+    },
+    "intermediate_first": {
+      "max_absolute": 1512662060817,
+      "max_relative": 2.8547645492600187e-12
+    },
+    "intermediate_second": {
+      "max_absolute": 1399716355141,
+      "max_relative": 2.70279243405646e-12
+    },
+    "profit_a": {
+      "max_absolute": 1436981,
+      "max_relative": 8.163592768170244e-13
+    }
+  },
+  "rejected_fold_domain": 7662,
+  "residual_profit_error": {
+    "max_absolute": 736086,
+    "max_relative": 0.5841584158415841
+  },
+  "samples": 50000,
+  "schema": "arbfold-arithmetic-differential-v1",
+  "seed": 1057,
+  "solver_reward_error": {
+    "max_absolute": 344886215349,
+    "max_relative": 1.1662275383104429e-12
+  },
+  "valid_fold_pairs": 42338
+}
