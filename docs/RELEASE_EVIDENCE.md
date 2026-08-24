@@ -56,9 +56,10 @@ external artifact is marked pending rather than inferred or fabricated.
 | Deployment path | Local deploy, canonical swap and read-only verifier pass | `make test-deployment` |
 | Complete gate | Fail-closed verification command | `make verify-release` |
 
-The CI artifact stores the generated `lcov.info` and complete Slither JSON.
-The public CI URL will be pinned after this branch is pushed and the workflow
-finishes successfully.
+The public release workflow passed all 23 steps for head `563e7a4`, including
+the generated `lcov.info` and complete Slither JSON artifact:
+
+- [Successful ARBFOLD verification run 32694495752](https://github.com/danelerr/arbfold-uhi10/actions/runs/32694495752)
 
 ## Public evidence
 

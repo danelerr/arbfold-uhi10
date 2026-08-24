@@ -12,8 +12,9 @@
 > release source commit `9cbc16e`. The delivered benchmark is now **19.12%
 > less gas at 100k**, with a **0.98% regression at 25k**. The local deployment,
 > canonical demo, enriched manifest and verifier pass; the current official
-> Unichain Sepolia manager path also simulates successfully. Public broadcast,
-> explorer links, video and manual submission remain pending.
+> Unichain Sepolia manager path also simulates successfully. The 23-step public
+> CI run `32694495752` passed. Public broadcast, explorer links, video and
+> manual submission remain pending.
 
 ## Executive decision
 
