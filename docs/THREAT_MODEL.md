@@ -84,7 +84,7 @@ flowchart LR
 | User input/output delta | Must settle atomically at accepted slippage | I, A |
 | Solver reward claims | Must be bounded and paid once | I |
 | Hook/coordinator configuration | Defines which contracts may move claims | I |
-| Benchmark artifacts | Separately support the clean-core 18.86% and frozen-harness 39.58% claims | I |
+| Benchmark artifacts | Separately support release 19.12%, earlier clean-core 18.86%, and frozen-harness 39.58% claims | I |
 | Deployment key | Controls only research deployment operations | C, I |
 
 ## Attacker model

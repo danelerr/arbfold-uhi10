@@ -16,11 +16,11 @@ UHI10 requires a functional, original v4 hook, public code, a demo, tests or fro
 
 ## Authorized claims
 
-> In the publication validation, the safety-hardened direct transition reaches the same final reserve state as an atomic three-leg backrun plus profit reinjection, with identical user output, identical solver reward, non-decreasing invariants, exact PoolManager backing and 18.86% less canonical total gas.
+> In the delivered release validation, the direct transition reaches the same final reserve state as an atomic three-leg backrun plus profit reinjection, with identical user output, identical solver reward, non-decreasing invariants, exact PoolManager backing and 19.12% less canonical total gas.
 
 > The immutable minimal v0 harness measured 39.58% less canonical gas. That historical number must always be labelled as the frozen harness result, not the delivered clean-core result.
 
-The published grid also discloses that the clean direct path used 1.13% more gas at 25k; gas superiority is workload-dependent.
+The release grid also discloses that the direct path used 0.98% more gas at 25k; gas superiority is workload-dependent. The earlier clean-core result remains immutable at 18.86% canonical and 1.13% more at 25k.
 
 ## Prohibited claims
 

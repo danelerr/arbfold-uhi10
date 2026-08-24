@@ -12,8 +12,8 @@ ARBFOLD v0 is the specialized research direction selected for UHI10. Its
 preregistered minimal harness confirmed
 mechanical equivalence and a 39.58% canonical gas reduction, but only a 0.000287%
 LP net-value improvement against the required 10%. A separate publication check
-against the safety-hardened delivered core measured 18.86% less canonical gas
-and one 25k case with 1.13% more gas. It remains unauthorized for production.
+against the delivered release candidate measured 19.12% less canonical gas
+and one 25k case with 0.98% more gas. It remains unauthorized for production.
 See the [frozen v0 report](../benchmark/arbfold-results/REPORT.md) and the
 [clean-core report](../benchmark/clean-core-results/REPORT.md).
 
@@ -151,7 +151,8 @@ Observed decision:
 ```text
 Mechanical equivalence       PASS
 Frozen harness gas reduction PASS (39.58%)
-Clean-core canonical result  18.86% less (25k: 1.13% more)
+Release canonical result     19.12% less (25k: 0.98% more)
+Earlier clean-core result    18.86% less (25k: 1.13% more)
 10% LP net-value uplift      FAIL (0.000287%)
 Production authorization     NO
 UHI10 research build         YES, around the gas result only

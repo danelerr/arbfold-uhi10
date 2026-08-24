@@ -9,8 +9,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
-    def test_dashboard_grid_matches_clean_core_results(self) -> None:
-        raw = json.loads((ROOT / "benchmark/clean-core-results/raw_v1.json").read_text())
+    def test_dashboard_grid_matches_release_candidate_results(self) -> None:
+        raw = json.loads((ROOT / "benchmark/release-candidate-results/raw.json").read_text())
         source = (ROOT / "app/app.js").read_text()
         rows = re.findall(
             r"size:\s*(\d+),\s*backrun:\s*(\d+),\s*direct:\s*(\d+),\s*ratioBps:\s*(\d+)",
@@ -67,6 +67,47 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
         for relative_path, digest in evidence_hashes.items():
             actual = hashlib.sha256((ROOT / relative_path).read_bytes()).hexdigest()
             self.assertEqual(actual, digest, relative_path)
+
+    def test_release_candidate_is_bound_to_delivered_sources(self) -> None:
+        raw = json.loads((ROOT / "benchmark/release-candidate-results/raw.json").read_text())
+        self.assertEqual(
+            raw["tested_commit"],
+            "9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b",
+        )
+        manifest = (ROOT / "benchmark/release-candidate-results/source-manifest.sha256").read_text()
+        self.assertEqual(
+            manifest.splitlines()[0],
+            f'TREE_SHA256  {raw["tested_source_tree_sha256"]}',
+        )
+
+        entries = []
+        for path in sorted((ROOT / "contracts/src").glob("*.sol")):
+            relative = path.relative_to(ROOT).as_posix()
+            entries.append(f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {relative}")
+        tree = hashlib.sha256(("\n".join(entries) + "\n").encode()).hexdigest()
+        self.assertEqual(tree, raw["tested_source_tree_sha256"])
+
+        evidence_hashes = {
+            "benchmark/release-candidate-results/REPORT.md": "db51a507806315bdb03c7bb2b4c0d362d71bef6d47dd842d42031abae6b42dde",
+            "benchmark/release-candidate-results/raw.json": "222a5adaeefa510b489708883488bc232c7f5d3b40d328e05fa39b4a1e9c420d",
+            "benchmark/release-candidate-results/forge-test.txt": "023e6d1a8823cb85be3d12efcb930b5c46d046688544da777b7bec80f63a343b",
+            "benchmark/release-candidate-results/gas-snapshot.txt": "ca8f4e148ed2d967fe37a8c1a51e1eb4898f72971e81f11fe726ccbf90b2ef72",
+            "benchmark/release-candidate-results/environment.json": "c8694171463816815fc61b0ef26b5cf0f7414881e02be1722c336150732c62e8",
+            "benchmark/release-candidate-results/source-manifest.sha256": "20afdcea444547df5a115983cbe82674452ab8d532fa4259153379a2466af969",
+        }
+        for relative_path, digest in evidence_hashes.items():
+            actual = hashlib.sha256((ROOT / relative_path).read_bytes()).hexdigest()
+            self.assertEqual(actual, digest, relative_path)
+
+    def test_dashboard_discloses_release_workload_regression(self) -> None:
+        page = (ROOT / "app/index.html").read_text()
+        self.assertIn("19.12% less gas", page)
+        self.assertIn("+0.98% at 25k", page)
+        source = (ROOT / "app/app.js").read_text()
+        self.assertIn("Public deployment pending", source)
+        self.assertIn('../deployments/unichain-sepolia-1301.json', source)
+        self.assertIn("manifest.researchOnly !== true", source)
+        self.assertIn("manifest.chainId !== 1301", source)
 
 
 if __name__ == "__main__":

@@ -8,6 +8,7 @@ anvil_port=${ARBFOLD_SMOKE_PORT:-8545}
 anvil_key=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 anvil_account=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 manifest="$repository_root/deployments/local-ci.json"
+demo_evidence="$repository_root/deployments/local-ci-demo.json"
 temporary_directory=$(mktemp -d)
 anvil_pid=""
 
@@ -17,6 +18,7 @@ cleanup() {
     wait "$anvil_pid" 2>/dev/null || true
   fi
   rm -f "$manifest"
+  rm -f "$demo_evidence"
   rm -rf "$temporary_directory"
 }
 trap cleanup EXIT
@@ -82,6 +84,8 @@ verify_deployment
   SOLVER="$anvil_account" \
   ZERO_FOR_ONE=false \
   AMOUNT_IN=100000000000000000000000 \
+  WRITE_DEMO_EVIDENCE=true \
+  DEMO_EVIDENCE_PATH=../deployments/local-ci-demo.json \
     forge script script/RunArbFoldDemo.s.sol:RunArbFoldDemo --rpc-url "$rpc_url" --broadcast -q
 )
 
@@ -89,7 +93,12 @@ verify_deployment "$anvil_account"
 
 deploy_broadcast="$contracts_root/broadcast/DeployArbFold.s.sol/31337/run-latest.json"
 demo_broadcast="$contracts_root/broadcast/RunArbFoldDemo.s.sol/31337/run-latest.json"
-"$repository_root/scripts/finalize-manifest.sh" "$manifest" "$deploy_broadcast" "$demo_broadcast" not-available
+"$repository_root/scripts/finalize-manifest.sh" \
+  "$manifest" \
+  "$deploy_broadcast" \
+  "$demo_broadcast" \
+  not-available \
+  "$demo_evidence"
 
 jq -e '
   .chainId == 31337
@@ -98,6 +107,11 @@ jq -e '
   and .usesExistingManager == false
   and (.deploymentTransactions | length >= 20)
   and (.canonicalDemoTransaction | startswith("0x"))
+  and (.demo.amountIn | tonumber) == 100000000000000000000000
+  and (.demo.amountOut | tonumber) > 0
+  and (.demo.solverReward | tonumber) > 0
+  and .demo.foldRounds > 0
+  and (.demo.residualProfit | tonumber) <= 1000000000000
 ' "$manifest" >/dev/null
 
 echo "ARBFOLD deployment smoke test PASS"

@@ -1,0 +1,73 @@
+{
+  "schema": "arbfold-release-candidate-v1",
+  "tested_commit": "9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b",
+  "tested_source_tree_sha256": "53db6012988f770c06f784b6f0ad152ac844ae1a0dc8058e1f1dfd002b85c3f3",
+  "forge_test_sha256": "4367f08cc3b865eb060465ec65a5146eb513fb81f1bf79da34c1e34aafc27264",
+  "foundry": "1.5.1-stable",
+  "solidity": "0.8.26",
+  "mechanical_tests": {
+    "frozen_sizes": 5,
+    "user_output_equal": true,
+    "solver_reward_equal": true,
+    "final_reserves_equal_within_wei": true,
+    "claims_equal_reserves": true,
+    "token_backing_exact": true,
+    "invariants_non_decreasing": true,
+    "residual_below_threshold": true,
+    "all_unlock_deltas_settled": true
+  },
+  "rows": [
+    {
+      "origin_input_wei": "10000000000000000000000",
+      "backrun_total_gas": 407272,
+      "direct_total_gas": 389292,
+      "gas_ratio_bps": 9558,
+      "exact_gas_reduction_percent": 4.414740026321476
+    },
+    {
+      "origin_input_wei": "25000000000000000000000",
+      "backrun_total_gas": 409381,
+      "direct_total_gas": 413409,
+      "gas_ratio_bps": 10098,
+      "exact_gas_reduction_percent": -0.9839245104193892
+    },
+    {
+      "origin_input_wei": "50000000000000000000000",
+      "backrun_total_gas": 544186,
+      "direct_total_gas": 440127,
+      "gas_ratio_bps": 8087,
+      "exact_gas_reduction_percent": 19.121954625808087
+    },
+    {
+      "origin_input_wei": "100000000000000000000000",
+      "backrun_total_gas": 544187,
+      "direct_total_gas": 440128,
+      "gas_ratio_bps": 8087,
+      "exact_gas_reduction_percent": 19.121919487235086
+    },
+    {
+      "origin_input_wei": "200000000000000000000000",
+      "backrun_total_gas": 544177,
+      "direct_total_gas": 440117,
+      "gas_ratio_bps": 8087,
+      "exact_gas_reduction_percent": 19.122454642515212
+    }
+  ],
+  "canonical": {
+    "origin_input_wei": "100000000000000000000000",
+    "user_output_a": "30220363129338304386",
+    "solver_reward_a": "85849039116169484",
+    "final_reserves": {
+      "ab_a": "312268112026399995277",
+      "ab_b": "1067843924494458942956337",
+      "bc_b": "1032156075505541057043663",
+      "bc_c": "968936315883453894833065",
+      "ac_a": "324092342471812197519",
+      "ac_c": "1031063684116546105166935"
+    },
+    "residual_a": "0",
+    "backrun_total_gas": 544187,
+    "direct_total_gas": 440128,
+    "exact_gas_reduction_percent": 19.121919487235086
+  }
+}

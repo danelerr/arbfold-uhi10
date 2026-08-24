@@ -8,6 +8,13 @@
 **Baseline repository commit:** `0d37646`  
 **Decision:** improve and present ARBFOLD; do not reopen ideation.
 
+> **Execution update — 2026-08-24:** Workstreams C, D and G are complete on
+> release source commit `9cbc16e`. The delivered benchmark is now **19.12%
+> less gas at 100k**, with a **0.98% regression at 25k**. The local deployment,
+> canonical demo, enriched manifest and verifier pass; the current official
+> Unichain Sepolia manager path also simulates successfully. Public broadcast,
+> explorer links, video and manual submission remain pending.
+
 ## Executive decision
 
 ARBFOLD already satisfies the threshold for submitting Progress Update 1:
@@ -345,14 +352,14 @@ CI must run the local deployment script from a clean build and then run the veri
 
 ### Gate B
 
-- [ ] A clean checkout can simulate the full deployment.
-- [ ] The deployment smoke test runs in CI.
-- [ ] The official Unichain Sepolia manager path is attempted first.
+- [x] A clean checkout can simulate the full deployment.
+- [x] The deployment smoke test runs in CI.
+- [x] The official Unichain Sepolia manager path is attempted first.
 - [ ] At least one public canonical swap transaction exists.
 - [ ] Every address and transaction is in the manifest.
-- [ ] Post-deployment checks prove reserve/claim/backing equality.
+- [x] Post-deployment checks prove reserve/claim/backing equality locally.
 - [ ] Source verification status is honestly disclosed.
-- [ ] If the official manager is incompatible, the reason is documented before using a fresh manager.
+- [x] The current official manager path is compatible in simulation; fallback remains documented.
 
 ### Strict fallback
 
@@ -497,13 +504,13 @@ Record maximum absolute and relative rounding error over the frozen domain.
 
 ### Gate C
 
-- [ ] All six origin/direction paths are exercised.
-- [ ] Release fuzz profile passes with a saved seed.
-- [ ] Every public state-changing entry point has positive and negative tests.
-- [ ] Arithmetic domain and units are documented.
-- [ ] Differential rounding results are published.
-- [ ] No accepted transition causes backing or conservation drift.
-- [ ] Any core change has a new clean-core report and manifest hash.
+- [x] All six origin/direction paths are exercised.
+- [x] Release fuzz profile passes with saved seed `0x1057`.
+- [x] Every public state-changing entry point has positive and negative tests.
+- [x] Arithmetic domain and units are documented.
+- [x] Differential rounding results are published.
+- [x] No accepted transition causes backing or conservation drift.
+- [x] Core changes have a new release report and deterministic source manifest.
 
 ## Workstream D — Add independent verification tooling
 
@@ -566,10 +573,10 @@ This is optional before submission. It must not delay testnet evidence or the vi
 
 ### Gate D
 
-- [ ] Coverage command works from a clean clone.
-- [ ] Coverage report is stored as CI evidence.
-- [ ] Slither has no unresolved high/medium issue on critical accounting.
-- [ ] Every project-owned unsafe cast is proved, guarded or changed.
+- [x] Coverage command works from the independent pinned dependency path.
+- [x] Coverage report is configured as a required CI artifact.
+- [x] Slither has no unresolved high/medium issue on critical accounting.
+- [x] Every project-owned unsafe cast is proved, guarded or changed.
 
 ## Workstream E — Turn the dashboard into an end-to-end demo
 
@@ -623,13 +630,13 @@ A reliable read-only public proof is better than a flaky wallet button.
 
 ### Gate E
 
-- [ ] Site opens in an incognito browser on desktop and mobile.
+- [x] Site was inspected locally on desktop and a 390×844 mobile viewport.
 - [ ] Public evidence loads without a wallet.
 - [ ] Every explorer link is correct.
-- [ ] The 25k regression remains visible.
-- [ ] The historical 39.58% result remains clearly labeled historical.
-- [ ] No transaction can touch real assets or an unsupported network.
-- [ ] The first 30 seconds explain problem, two paths and measured result.
+- [x] The 25k regression remains visible and interactive.
+- [x] Historical 39.58%, earlier 18.86% and delivered 19.12% remain separated.
+- [x] The dashboard has no write path and labels all demo assets valueless.
+- [x] The first 30 seconds explain problem, two paths and measured result.
 
 ## Workstream F — Make the repository judge-first
 
@@ -732,12 +739,12 @@ benchmark/release-candidate-results/
 
 ### Gate G
 
-- [ ] Mechanical equivalence passes at all five workloads.
-- [ ] Full gas grid is published, including any regression.
-- [ ] Claims/reserves/backing are exact.
-- [ ] User output and solver reward remain equal.
-- [ ] Final headline uses the final delivered commit's canonical result.
-- [ ] Earlier reports remain immutable and linked.
+- [x] Mechanical equivalence passes at all five workloads.
+- [x] Full gas grid is published, including the 25k regression.
+- [x] Claims/reserves/backing are exact.
+- [x] User output and solver reward remain equal.
+- [x] Headline uses source commit `9cbc16e` and its 19.12% result.
+- [x] Earlier reports remain immutable and linked.
 
 There is no preregistered requirement that the final hardening must preserve 18.86%. If it becomes 16%, publish 16%. If 25k becomes worse, publish that too.
 

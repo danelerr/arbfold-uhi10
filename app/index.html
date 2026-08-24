@@ -18,6 +18,7 @@
       <div class="nav-links">
         <a href="#experiment">Experiment</a>
         <a href="#mechanics">Mechanics</a>
+        <a href="#onchain">Onchain proof</a>
         <a href="#evidence">Evidence</a>
       </div>
       <span class="status"><i></i> UHI10 research build</span>
@@ -26,21 +27,21 @@
     <main id="top">
       <section class="hero shell">
         <div class="eyebrow">Gas-efficient defensive rebalancing · Uniswap v4</div>
-        <h1>Same outcome.<br /><em>18.86% less gas.</em></h1>
+        <h1>Same outcome.<br /><em>19.12% less gas.</em></h1>
         <p class="hero-copy">
           At the canonical 100k benchmark, three cooperating CPMM pools fold a cyclic arbitrage opportunity directly into backed reserves—without changing the user’s output or the solver’s reward.
         </p>
-        <p class="workload-note"><strong>Workload-dependent:</strong> −4.21% at 10k · +1.13% at 25k · −18.86% at 50k–200k.</p>
+        <p class="workload-note"><strong>Workload-dependent:</strong> −4.41% at 10k · +0.98% at 25k · −19.12% at 50k–200k.</p>
         <div class="hero-actions">
           <a class="button primary" href="#experiment">Explore the benchmark</a>
-          <a class="button secondary" href="https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/clean-core-results/REPORT.md">Read clean-core report</a>
+          <a class="button secondary" href="https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md">Read release report</a>
         </div>
 
         <div class="headline-proof">
           <div>
             <span class="metric-label">Canonical total gas</span>
-            <strong>−18.86%</strong>
-            <small>436,430 vs 537,896</small>
+            <strong>−19.12%</strong>
+            <small>440,128 vs 544,187</small>
           </div>
           <div>
             <span class="metric-label">User output</span>
@@ -63,7 +64,7 @@
       <section id="experiment" class="experiment shell">
         <div class="section-heading">
           <div>
-            <span class="eyebrow">Published clean-core validation</span>
+            <span class="eyebrow">Delivered release validation</span>
             <h2>Two paths. One destination.</h2>
           </div>
           <p>Select the originating USDC18 trade size. These measurements come from the safety-hardened code under <code>contracts/src</code>.</p>
@@ -93,7 +94,7 @@
             </ol>
             <div class="gas-block">
               <span>Total execution gas</span>
-              <strong id="backrun-gas">537,896</strong>
+              <strong id="backrun-gas">544,187</strong>
               <div class="gas-track"><i id="backrun-bar"></i></div>
             </div>
           </article>
@@ -115,7 +116,7 @@
             </ol>
             <div class="gas-block">
               <span>Total execution gas</span>
-              <strong id="direct-gas">436,430</strong>
+              <strong id="direct-gas">440,128</strong>
               <div class="gas-track"><i id="direct-bar"></i></div>
             </div>
           </article>
@@ -123,8 +124,8 @@
 
         <div class="saving-strip">
           <span>Measured reduction at <b id="selected-size">100k</b></span>
-          <strong id="gas-saving">18.86% less</strong>
-          <span id="gas-saved">101,466 gas avoided</span>
+          <strong id="gas-saving">19.12% less</strong>
+          <span id="gas-saved">104,059 gas avoided</span>
         </div>
       </section>
 
@@ -183,6 +184,56 @@
         </div>
       </section>
 
+      <section id="onchain" class="onchain shell">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Public onchain proof</span>
+            <h2>Evidence that fails closed.</h2>
+          </div>
+          <p>No wallet is required. This panel only switches to “verified” when a committed Unichain Sepolia manifest passes its schema gate.</p>
+        </div>
+
+        <div class="research-notice">Research deployment · valueless demo assets · not audited · not for production deposits</div>
+        <div class="proof-status-row">
+          <span id="proof-status" class="proof-status">Loading public manifest…</span>
+          <strong id="proof-network">Checking deployment evidence</strong>
+          <span id="proof-manager-kind">—</span>
+        </div>
+
+        <div class="onchain-grid">
+          <article class="onchain-card">
+            <span class="metric-label">Canonical transaction</span>
+            <a id="proof-transaction" rel="noreferrer">Not published</a>
+            <dl>
+              <div><dt>Block</dt><dd id="proof-block">—</dd></div>
+              <div><dt>Source verification</dt><dd id="proof-source">—</dd></div>
+              <div><dt>Source commit</dt><dd><a id="proof-commit" rel="noreferrer">—</a></dd></div>
+            </dl>
+          </article>
+          <article class="onchain-card contracts-card">
+            <span class="metric-label">Deployed contracts</span>
+            <dl>
+              <div><dt>PoolManager</dt><dd><a id="proof-manager" rel="noreferrer">—</a></dd></div>
+              <div><dt>Coordinator</dt><dd><a id="proof-coordinator" rel="noreferrer">—</a></dd></div>
+              <div><dt>Router</dt><dd><a id="proof-router" rel="noreferrer">—</a></dd></div>
+              <div><dt>Hooks AB / BC / AC</dt><dd><a id="proof-hook-ab" rel="noreferrer">—</a> · <a id="proof-hook-bc" rel="noreferrer">—</a> · <a id="proof-hook-ac" rel="noreferrer">—</a></dd></div>
+            </dl>
+          </article>
+        </div>
+
+        <div class="event-grid">
+          <div><span>SwapAndFold</span><strong id="proof-swap">—</strong></div>
+          <div><span>FoldRound</span><strong id="proof-rounds">—</strong></div>
+          <div><span>Solver reward</span><strong id="proof-reward">—</strong></div>
+          <div><span>FoldCompleted residual</span><strong id="proof-residual">—</strong></div>
+        </div>
+        <div class="reserve-proof">
+          <div><span>Before</span><pre id="proof-pre-reserves">Waiting for public evidence.</pre></div>
+          <div><span>After</span><pre id="proof-post-reserves">Waiting for public evidence.</pre></div>
+        </div>
+        <p id="proof-pending-detail" class="pending-detail">Loading a committed, versioned manifest…</p>
+      </section>
+
       <section id="evidence" class="evidence shell">
         <div class="section-heading">
           <div>
@@ -194,8 +245,8 @@
           <article class="evidence-card passed">
             <span class="verdict">VALIDATED RESULT</span>
             <h3>Same state; workload-dependent gas advantage</h3>
-            <p>The published core passed mechanical equivalence at five sizes. It used 18.86% less gas canonically, but 1.13% more at 25k. The minimal frozen v0 harness remains separately reported at 39.58% less.</p>
-            <code>clean freeze: 294c5c5a…443d2153</code>
+            <p>The release candidate passed mechanical equivalence at five sizes. It used 19.12% less gas canonically, but 0.98% more at 25k. The earlier 18.86% clean-core and historical 39.58% harness remain separately reported.</p>
+            <code>source tree: 53db6012…b85c3f3</code>
           </article>
           <article class="evidence-card rejected">
             <span class="verdict">REJECTED CLAIM</span>

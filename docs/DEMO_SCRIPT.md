@@ -12,9 +12,9 @@ Show the hero and the four proof metrics.
 
 Scroll to the benchmark comparison.
 
-> Path A performs the user swap, three arbitrage swaps and profit reinjection. Path B performs the same user swap, computes the same cycle, and moves backed ERC-6909 reserves directly between three hook-owned pools. Against the safety-hardened published core, the 100k result is 537,896 gas versus 436,430—18.86% less.
+> Path A performs the user swap, three arbitrage swaps and profit reinjection. Path B performs the same user swap, computes the same cycle, and moves backed ERC-6909 reserves directly between three hook-owned pools. Against the delivered release candidate, the 100k result is 544,187 gas versus 440,128—19.12% less.
 
-Click 10k, 25k, 50k, 100k and 200k. Explicitly show that the direct path costs 1.13% more at 25k: the advantage is workload-dependent, not universal.
+Click 10k, 25k, 50k, 100k and 200k. Explicitly show that the direct path costs 0.98% more at 25k: the advantage is workload-dependent, not universal.
 
 ## 1:05–1:45 — Same result
 
@@ -48,8 +48,8 @@ Mention fuzzing, stateful invariants, unauthorized calls, exact backing, slippag
 
 Show the evidence cards.
 
-> We preregistered a harder claim: 10% more LP net value. It failed. Gas savings produced only 0.000287% LP-value improvement in that environment. The minimal frozen harness measured 39.58% lower gas, but after running the safety-hardened code we publish, the canonical reduction is 18.86%, including a 25k case where direct execution is 1.13% more expensive. We preserved every result instead of selecting the flattering one.
+> We preregistered a harder claim: 10% more LP net value. It failed. Gas savings produced only 0.000287% LP-value improvement in that environment. The minimal frozen harness measured 39.58% lower gas, the earlier clean core measured 18.86%, and the delivered release candidate measures 19.12%, including a 25k case where direct execution is 0.98% more expensive. We preserved every result instead of selecting the flattering one.
 
 ## 3:40–4:00 — Close
 
-> Same outcome. Same user output. Same solver reward. At the canonical 100k benchmark, 18.86% less gas in the delivered core. The advantage is workload-dependent, and ARBFOLD folds the cycle instead of replaying it.
+> Same outcome. Same user output. Same solver reward. At the canonical 100k benchmark, 19.12% less gas in the delivered core. The advantage is workload-dependent, and ARBFOLD folds the cycle instead of replaying it.

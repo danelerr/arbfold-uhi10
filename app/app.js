@@ -1,9 +1,9 @@
 const results = [
-  { size: 10000, backrun: 403614, direct: 386610, ratioBps: 9578 },
-  { size: 25000, backrun: 405309, direct: 409899, ratioBps: 10113 },
-  { size: 50000, backrun: 537895, direct: 436429, ratioBps: 8113 },
-  { size: 100000, backrun: 537896, direct: 436430, ratioBps: 8113 },
-  { size: 200000, backrun: 537886, direct: 436419, ratioBps: 8113 },
+  { size: 10000, backrun: 407272, direct: 389292, ratioBps: 9558 },
+  { size: 25000, backrun: 409381, direct: 413409, ratioBps: 10098 },
+  { size: 50000, backrun: 544186, direct: 440127, ratioBps: 8087 },
+  { size: 100000, backrun: 544187, direct: 440128, ratioBps: 8087 },
+  { size: 200000, backrun: 544177, direct: 440117, ratioBps: 8087 },
 ];
 
 const format = new Intl.NumberFormat("en-US");
@@ -35,3 +35,84 @@ function render(size) {
 
 buttons.forEach((button) => button.addEventListener("click", () => render(Number(button.dataset.size))));
 render(100000);
+
+const zeroAddress = "0x0000000000000000000000000000000000000000";
+const proofStatus = document.querySelector("#proof-status");
+
+function abbreviated(value) {
+  return value && value.startsWith("0x") ? `${value.slice(0, 8)}…${value.slice(-6)}` : value;
+}
+
+function tokenAmount(value) {
+  if (value === undefined || value === null) return "—";
+  const amount = BigInt(value);
+  const whole = amount / 10n ** 18n;
+  const fraction = (amount % 10n ** 18n).toString().padStart(18, "0").slice(0, 6).replace(/0+$/, "");
+  return fraction ? `${format.format(whole)}.${fraction}` : format.format(whole);
+}
+
+function setText(id, value) {
+  document.querySelector(`#${id}`).textContent = value;
+}
+
+function setExplorerLink(id, base, kind, value) {
+  const link = document.querySelector(`#${id}`);
+  link.textContent = abbreviated(value);
+  link.href = `${base}/${kind}/${value}`;
+}
+
+function reserveLine(reserves) {
+  return [
+    `AB  ${tokenAmount(reserves.abA)} A / ${tokenAmount(reserves.abB)} B`,
+    `BC  ${tokenAmount(reserves.bcB)} B / ${tokenAmount(reserves.bcC)} C`,
+    `AC  ${tokenAmount(reserves.acA)} A / ${tokenAmount(reserves.acC)} C`,
+  ].join("\n");
+}
+
+async function loadOnchainProof() {
+  try {
+    const response = await fetch("../deployments/unichain-sepolia-1301.json", { cache: "no-store" });
+    if (!response.ok) throw new Error(`manifest unavailable (${response.status})`);
+    const manifest = await response.json();
+    if (manifest.researchOnly !== true || manifest.chainId !== 1301 || !manifest.demo) {
+      throw new Error("manifest failed the research-deployment schema gate");
+    }
+
+    const explorer = manifest.explorerBaseUrl.replace(/\/$/, "");
+    const official = manifest.officialPoolManager !== zeroAddress
+      && manifest.officialPoolManager.toLowerCase() === manifest.poolManager.toLowerCase();
+    proofStatus.classList.add("ready");
+    proofStatus.textContent = "Verified public evidence";
+    setText("proof-network", `${manifest.network} · chain ${manifest.chainId}`);
+    setText("proof-manager-kind", official ? "Official Uniswap v4 PoolManager" : "Isolated research PoolManager");
+    setText("proof-block", format.format(manifest.blockNumber));
+    setText("proof-source", manifest.sourceVerification);
+    setExplorerLink("proof-transaction", explorer, "tx", manifest.canonicalDemoTransaction);
+    setExplorerLink("proof-manager", explorer, "address", manifest.poolManager);
+    setExplorerLink("proof-coordinator", explorer, "address", manifest.coordinator);
+    setExplorerLink("proof-router", explorer, "address", manifest.router);
+    setExplorerLink("proof-hook-ab", explorer, "address", manifest.hooks.ab);
+    setExplorerLink("proof-hook-bc", explorer, "address", manifest.hooks.bc);
+    setExplorerLink("proof-hook-ac", explorer, "address", manifest.hooks.ac);
+
+    setText("proof-swap", `${tokenAmount(manifest.demo.amountIn)} in → ${tokenAmount(manifest.demo.amountOut)} out`);
+    setText("proof-rounds", `${manifest.demo.foldRounds} verified fold round${manifest.demo.foldRounds === 1 ? "" : "s"}`);
+    setText("proof-reward", `${tokenAmount(manifest.demo.solverReward)} A`);
+    setText("proof-residual", `${manifest.demo.residualProfit} wei A`);
+    setText("proof-pre-reserves", reserveLine(manifest.demo.preReserves));
+    setText("proof-post-reserves", reserveLine(manifest.demo.postReserves));
+
+    const commitLink = document.querySelector("#proof-commit");
+    commitLink.textContent = manifest.gitCommit.slice(0, 12);
+    commitLink.href = `https://github.com/danelerr/arbfold-uhi10/commit/${manifest.gitCommit}`;
+  } catch (error) {
+    proofStatus.classList.add("pending");
+    proofStatus.textContent = "Public deployment pending";
+    setText("proof-network", "Local end-to-end path verified in CI");
+    setText("proof-manager-kind", "Unichain Sepolia manifest not published yet");
+    document.querySelector("#proof-pending-detail").textContent =
+      `The dashboard is fail-closed: it will not invent onchain evidence. ${error.message}.`;
+  }
+}
+
+loadOnchainProof();

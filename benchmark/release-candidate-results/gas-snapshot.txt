@@ -1,0 +1,23 @@
+ARBFOLD release-candidate validation v1
+Source-tree SHA-256: 53db6012988f770c06f784b6f0ad152ac844ae1a0dc8058e1f1dfd002b85c3f3
+Tested Git commit: 9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b
+Foundry: 1.5.1-stable
+Solidity: 0.8.26
+
+origin   atomic backrun   ARBFOLD direct   direct/backrun   exact change
+10k              407272            389292          95.58%      4.41% less
+25k              409381            413409         100.98%      0.98% more
+50k              544186            440127          80.87%     19.12% less
+100k             544187            440128          80.87%     19.12% less
+200k             544177            440117          80.87%     19.12% less
+
+Canonical user output A: 30220363129338304386
+Canonical solver reward A: 85849039116169484
+Canonical final reserves:
+  AB A 312268112026399995277
+  AB B 1067843924494458942956337
+  BC B 1032156075505541057043663
+  BC C 968936315883453894833065
+  AC A 324092342471812197519
+  AC C 1031063684116546105166935
+Canonical residual A: 0

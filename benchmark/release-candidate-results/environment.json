@@ -1,0 +1,20 @@
+{
+  "schema": "arbfold-release-environment-v1",
+  "platform_used_for_publication": "Darwin 25.6.0 arm64",
+  "foundry_version": "1.5.1-stable",
+  "foundry_commit": "b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2",
+  "solidity_version": "0.8.26",
+  "evm_version": "cancun",
+  "optimizer_enabled": true,
+  "optimizer_runs": 200,
+  "openzeppelin_uniswap_hooks_commit": "12048bb17b93ad9ed683aff9c34b89596280c77d",
+  "tested_git_commit": "9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b",
+  "source_tree_sha256": "53db6012988f770c06f784b6f0ad152ac844ae1a0dc8058e1f1dfd002b85c3f3",
+  "workloads_token_units": [10000, 25000, 50000, 100000, 200000],
+  "state_tolerance_wei": 1,
+  "residual_threshold_wei_a": "1000000000000",
+  "gas_accounting": "intrinsic + calldata + measured EVM execution",
+  "warm_state_policy": "manager, coordinator, three hooks, route, three tokens, payer and solver explicitly cooled before each path",
+  "setup_gas_included": false,
+  "hook_mining_gas_included": false
+}

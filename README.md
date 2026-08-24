@@ -9,17 +9,21 @@
 
 ARBFOLD is a research-grade Uniswap v4 custom-accounting experiment. Three hook-owned CPMMs—A/B, B/C and A/C—can fold a cyclic arbitrage opportunity directly into their PoolManager-backed ERC-6909 reserves inside the transaction that created it.
 
-> **Same outcome. Same user output. Same solver reward. 18.86% less gas at the canonical 100k benchmark.**
+> **Same outcome. Same user output. Same solver reward. 19.12% less gas at the canonical 100k benchmark.**
 
-The safety-hardened code published under `contracts/src` measured **436,430 gas for ARBFOLD versus 537,896 gas for a three-leg atomic backrun plus profit reinjection** at 100k. Every participating invariant must remain non-decreasing.
+The release-candidate code under `contracts/src` measured **440,128 gas for ARBFOLD versus 544,187 gas for a three-leg atomic backrun plus profit reinjection** at 100k. Every participating invariant must remain non-decreasing.
 
-**The advantage is workload-dependent:** 4.21% less gas at 10k, **1.13% more at 25k**, and 18.86% less from 50k through 200k in the fixed publication grid.
+**The advantage is workload-dependent:** 4.41% less gas at 10k, **0.98% more at 25k**, and 19.12% less from 50k through 200k in the fixed publication grid.
 
 ## See it in 30 seconds
 
 [Open the live benchmark dashboard](https://danelerr.github.io/arbfold-uhi10/).
 
-For a local copy, run `python3 -m http.server 8080` and open [http://localhost:8080/app/](http://localhost:8080/app/). The dashboard is dependency-free and uses the five publication measurements from [`raw_v1.json`](benchmark/clean-core-results/raw_v1.json).
+For a local copy, run `python3 -m http.server 8080` and open [http://localhost:8080/app/](http://localhost:8080/app/). The dashboard is dependency-free and uses the five measurements from [`raw.json`](benchmark/release-candidate-results/raw.json). Its read-only onchain panel fails closed until a committed Unichain Sepolia manifest exists; judges never need a wallet.
+
+**Judge proof:** [hook](contracts/src/ArbFoldHook.sol) · [coordinator](contracts/src/ArbFoldCoordinator.sol) · [router](contracts/src/ArbFoldRouter.sol) · [six-path invariants](contracts/test/ArbFoldInvariant.t.sol) · [release evidence](docs/RELEASE_EVIDENCE.md). Run the complete fail-closed gate with `make verify-release`.
+
+**Public-chain status:** deployment is pending. The complete deploy → canonical swap → post-deployment verifier path already runs against a fresh local `PoolManager` in CI; this line and the dashboard will only show an explorer transaction after a real Unichain Sepolia manifest is committed.
 
 ## What happens in one transaction
 
@@ -78,9 +82,13 @@ The suite covers:
 - bounded residual arbitrage;
 - unauthorized coordinator calls;
 - atomic slippage reverts;
-- 512-case fuzzing and 4,096 calls per stateful invariant property.
+- all six origin/direction paths;
+- 10,000-case release fuzzing and 20,480 calls per stateful invariant property;
+- 50,000-case arithmetic differential/fuzz verification;
+- 98.50% project line coverage and 90.38% branch coverage;
+- a pinned Slither gate with zero unreviewed High/Medium findings.
 
-### Published clean-core comparison
+### Delivered release-candidate comparison
 
 ```bash
 cd contracts
@@ -89,17 +97,19 @@ forge test --offline --match-contract ArbFoldCleanCoreBenchmarkTest -vv
 
 Both paths start from the same deployed state snapshot. The direct path uses the published hook, coordinator and router; the reference executes three real `PoolManager.swap` calls and reinjects the same retained profit.
 
-The delivered core was fixed at commit [`6dd7946`](https://github.com/danelerr/arbfold-uhi10/commit/6dd7946c9eb2c29a75698e4f9ca06c4432e6ccd0) and the comparison was rerun from that clean commit before publication. Its `contracts/src` manifest hash is `097c5b5bb745c322bb7941d56b8f7dcf540a7e0291b2babbe38044d21a7df857`.
+The delivered source was fixed at commit [`9cbc16e`](https://github.com/danelerr/arbfold-uhi10/commit/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b) and the comparison was rerun from that clean commit. Its deterministic `contracts/src` tree hash is `53db6012988f770c06f784b6f0ad152ac844ae1a0dc8058e1f1dfd002b85c3f3`.
 
 | Origin input | Atomic backrun | Published ARBFOLD | Exact change |
 |---:|---:|---:|---:|
-| 10k | 403,614 | 386,610 | 4.21% less |
-| 25k | 405,309 | 409,899 | **1.13% more** |
-| 50k | 537,895 | 436,429 | 18.86% less |
-| **100k** | **537,896** | **436,430** | **18.86% less** |
-| 200k | 537,886 | 436,419 | 18.86% less |
+| 10k | 407,272 | 389,292 | 4.41% less |
+| 25k | 409,381 | 413,409 | **0.98% more** |
+| 50k | 544,186 | 440,127 | 19.12% less |
+| **100k** | **544,187** | **440,128** | **19.12% less** |
+| 200k | 544,177 | 440,117 | 19.12% less |
 
-The advantage is workload-dependent. It is material for the two-round opportunities in this fixed grid, small at 10k and negative at 25k. See the [clean-core report](benchmark/clean-core-results/REPORT.md).
+The advantage is workload-dependent. It is material for the two-round opportunities in this fixed grid, small at 10k and negative at 25k. See the [release-candidate report](benchmark/release-candidate-results/REPORT.md), [raw data](benchmark/release-candidate-results/raw.json) and [environment freeze](benchmark/release-candidate-results/environment.json).
+
+The earlier safety-hardened clean-core validation remains immutable at **18.86% less gas** canonically. It is historical evidence, not the delivered headline.
 
 ### Historical frozen v0 benchmark
 
@@ -134,7 +144,7 @@ The 39.58% result belongs to the smaller frozen harness—not to the safety-hard
 
 ARBFOLD was originally subjected to a harder economic authorization gate. The mechanics and gas gates passed, but the preregistered requirement of **10% greater LP net value** failed: the measured improvement was only **0.000287%** under the frozen gas-price assumption.
 
-That decision remains preserved in the [frozen v0 report](benchmark/arbfold-results/REPORT.md), while the separate [clean-core report](benchmark/clean-core-results/REPORT.md) records the delivered code's lower 18.86% canonical reduction and its 25k regression:
+That decision remains preserved in the [frozen v0 report](benchmark/arbfold-results/REPORT.md). The [earlier clean-core report](benchmark/clean-core-results/REPORT.md) records 18.86%; the [release report](benchmark/release-candidate-results/REPORT.md) records the delivered source's 19.12% canonical reduction and 25k regression:
 
 ```text
 Economic-superiority thesis   KILLED
@@ -148,10 +158,10 @@ The project therefore claims an **execution primitive**, not universal economic 
 
 | Integration | Exact location | What it does |
 |---|---|---|
-| Uniswap v4 `PoolManager` | [`ArbFoldRouter.unlockCallback`](contracts/src/ArbFoldRouter.sol#L81) | Executes and atomically settles the originating swap. |
+| Uniswap v4 `PoolManager` | [`ArbFoldRouter.unlockCallback`](contracts/src/ArbFoldRouter.sol#L93) | Executes and atomically settles the originating swap. |
 | Uniswap v4 ERC-6909 claims | [`ArbFoldCoordinator._applyDirect`](contracts/src/ArbFoldCoordinator.sol#L144) | Transfers backed reserves directly among participating hooks. |
-| OpenZeppelin `BaseCustomCurve` | [`ArbFoldHook._beforeSwap`](contracts/src/ArbFoldHook.sol#L66) | Implements hook-owned constant-product liquidity and return-delta swaps. |
-| v4 `HookMiner` | [`ArbFoldTestBase._mineAndDeploy`](contracts/test/ArbFoldTestBase.sol#L75) and [`DeployArbFold._mineAndDeploy`](contracts/script/DeployArbFold.s.sol#L110) | Mines and deploys addresses with the exact hook permission bits. |
+| OpenZeppelin `BaseCustomCurve` | [`ArbFoldHook._beforeSwap`](contracts/src/ArbFoldHook.sol#L72) | Implements hook-owned constant-product liquidity and return-delta swaps. |
+| v4 `HookMiner` | [`ArbFoldTestBase._mineAndDeploy`](contracts/test/ArbFoldTestBase.sol#L75) and [`DeployArbFold._mineAndDeploy`](contracts/script/DeployArbFold.s.sol#L185) | Mines and deploys addresses with the exact hook permission bits. |
 
 No Chainlink, Reactive Network or other sponsor integration is claimed.
 
@@ -165,22 +175,22 @@ No Chainlink, Reactive Network or other sponsor integration is claimed.
 | [`app/`](app/) | One-screen benchmark dashboard. |
 | [`benchmark/arbfold-foundry/`](benchmark/arbfold-foundry/) | Frozen end-to-end comparison harness. |
 | [`benchmark/arbfold-results/`](benchmark/arbfold-results/) | Immutable raw results and the failed economic gate. |
-| [`benchmark/clean-core-results/`](benchmark/clean-core-results/) | Publication validation against the safety-hardened delivered code. |
+| [`benchmark/clean-core-results/`](benchmark/clean-core-results/) | Immutable earlier clean-core validation. |
+| [`benchmark/release-candidate-results/`](benchmark/release-candidate-results/) | Delivered-source report, raw grid, environment and source manifest. |
 | [`docs/`](docs/) | Architecture, limits, judge guide and demo script. |
+| [`docs/DEPLOYMENT_RUNBOOK.md`](docs/DEPLOYMENT_RUNBOOK.md) | Official-manager resolution, deployment, demo, verification and manifest finalization. |
 | [`docs/NEXT_ITERATION_PLAN.md`](docs/NEXT_ITERATION_PLAN.md) | Submission release plan: testnet proof, all-path testing, release gates and calendar. |
 | [`Makefile`](Makefile) | One-command test, formatting, lint, snapshot and dashboard entry points. |
 
 ## Deploy the demo network
 
-The script deploys a fresh PoolManager, three demo ERC-20s, three mined hooks, the coordinator, seeded liquidity and the router. It is for a local chain or testnet demonstration—not mainnet.
+The tested local path deploys a fresh PoolManager, three demo ERC-20s, three mined hooks, the coordinator, seeded liquidity and the router; then it executes a canonical swap, finalizes a machine-readable manifest and runs the read-only verifier:
 
 ```bash
-cd contracts
-export PRIVATE_KEY=<testnet-key>
-forge script script/DeployArbFold.s.sol:DeployArbFold \
-  --rpc-url <rpc-url> \
-  --broadcast
+make test-deployment
 ```
+
+For the research-only Unichain Sepolia path, follow the fail-closed [deployment runbook](docs/DEPLOYMENT_RUNBOOK.md). It resolves the current official v4 PoolManager from Uniswap's deployment feed instead of embedding a potentially stale address. Never place a testnet key or RPC credential in the repository.
 
 ## Explicit limitations
 
@@ -202,4 +212,4 @@ The core uses [Uniswap v4](https://github.com/Uniswap/v4-core) and [OpenZeppelin
 
 ## Judge path
 
-If you have five minutes, follow [`docs/JUDGE_GUIDE.md`](docs/JUDGE_GUIDE.md). It starts with the delivered core's 18.86% canonical result, points to the exact v4 code and shows both the 25k regression and rejected economic claim.
+If you have five minutes, follow [`docs/JUDGE_GUIDE.md`](docs/JUDGE_GUIDE.md). It starts with the delivered core's 19.12% canonical result, points to the exact v4 code and shows both the 25k regression and rejected economic claim.

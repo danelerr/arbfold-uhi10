@@ -36,6 +36,7 @@ contract DeployArbFold is Script {
     error ExternalManagerHasNoCode(address manager);
     error HookPermissionMismatch(address hook);
     error ManifestPathRequired();
+    error UnexpectedChain(uint256 expected, uint256 actual);
 
     struct Deployment {
         IPoolManager manager;
@@ -57,7 +58,9 @@ contract DeployArbFold is Script {
         address deployer = vm.addr(privateKey);
         bool useExistingManager = vm.envOr("USE_EXISTING_MANAGER", false);
         address suppliedManager = vm.envOr("POOL_MANAGER", address(0));
+        uint256 expectedChainId = vm.envOr("EXPECTED_CHAIN_ID", block.chainid);
 
+        if (block.chainid != expectedChainId) revert UnexpectedChain(expectedChainId, block.chainid);
         if (useExistingManager) _requireExternalManager(suppliedManager);
 
         vm.startBroadcast(privateKey);
@@ -145,6 +148,7 @@ contract DeployArbFold is Script {
         string memory network = vm.envOr("NETWORK_NAME", string("local-research"));
         string memory gitCommit = vm.envOr("GIT_COMMIT", string("working-tree"));
         string memory explorer = vm.envOr("EXPLORER_BASE_URL", string(""));
+        address officialManager = vm.envOr("OFFICIAL_POOL_MANAGER", address(0));
 
         string[] memory noTransactions = new string[](0);
         string memory root = "arbfold-deployment";
@@ -152,9 +156,7 @@ contract DeployArbFold is Script {
         vm.serializeString(root, "network", network);
         vm.serializeString(root, "gitCommit", gitCommit);
         vm.serializeString(root, "dependencyCommit", DEPENDENCY_COMMIT);
-        vm.serializeAddress(
-            root, "officialPoolManager", deployment.usesExistingManager ? address(deployment.manager) : address(0)
-        );
+        vm.serializeAddress(root, "officialPoolManager", officialManager);
         vm.serializeAddress(root, "poolManager", address(deployment.manager));
         vm.serializeBool(root, "usesExistingManager", deployment.usesExistingManager);
         vm.serializeAddress(root, "deployer", deployer);
