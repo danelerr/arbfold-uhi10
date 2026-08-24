@@ -11,8 +11,20 @@ external artifact is marked pending rather than inferred or fabricated.
 | Registered name | MATURE |
 | Submitted project | ARBFOLD |
 | Delivered source commit | [`9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b`](https://github.com/danelerr/arbfold-uhi10/commit/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b) |
-| Release evidence commit | Pending final evidence commit |
+| Release evidence commit | [`67ca1283b236e03775005b0ba3bf7451fec1ad34`](https://github.com/danelerr/arbfold-uhi10/commit/67ca1283b236e03775005b0ba3bf7451fec1ad34) |
 | Final release tag | Pending final review |
+
+## Commit-pinned judge links
+
+- [Hook callback](https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldHook.sol#L72)
+- [Coordinator direct transition](https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldCoordinator.sol#L144)
+- [Router unlock settlement](https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldRouter.sol#L93)
+- [Six-path invariant handler](https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/test/ArbFoldInvariant.t.sol#L17)
+- [Deployment script](https://github.com/danelerr/arbfold-uhi10/blob/67ca1283b236e03775005b0ba3bf7451fec1ad34/contracts/script/DeployArbFold.s.sol)
+- [Post-deployment verifier](https://github.com/danelerr/arbfold-uhi10/blob/67ca1283b236e03775005b0ba3bf7451fec1ad34/contracts/script/VerifyArbFoldDeployment.s.sol)
+- [Clean-core comparison](https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/test/ArbFoldCleanCoreBenchmark.t.sol)
+- [Threat model](https://github.com/danelerr/arbfold-uhi10/blob/67ca1283b236e03775005b0ba3bf7451fec1ad34/docs/THREAT_MODEL.md)
+- Public deployment manifest: pending broadcast.
 
 ## Result
 
