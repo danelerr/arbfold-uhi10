@@ -167,6 +167,7 @@ No Chainlink, Reactive Network or other sponsor integration is claimed.
 | [`benchmark/arbfold-results/`](benchmark/arbfold-results/) | Immutable raw results and the failed economic gate. |
 | [`benchmark/clean-core-results/`](benchmark/clean-core-results/) | Publication validation against the safety-hardened delivered code. |
 | [`docs/`](docs/) | Architecture, limits, judge guide and demo script. |
+| [`docs/NEXT_ITERATION_PLAN.md`](docs/NEXT_ITERATION_PLAN.md) | Submission release plan: testnet proof, all-path testing, release gates and calendar. |
 | [`Makefile`](Makefile) | One-command test, formatting, lint, snapshot and dashboard entry points. |
 
 ## Deploy the demo network
