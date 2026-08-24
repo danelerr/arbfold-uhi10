@@ -198,8 +198,12 @@ contract ArbFoldCleanCoreBenchmarkTest is Test {
                 | Hooks.BEFORE_SWAP_FLAG | Hooks.BEFORE_SWAP_RETURNS_DELTA_FLAG
         );
         bytes memory constructorArgs = abi.encode(manager, address(coordinator));
+        // Hook-address mining is performed offchain and excluded from both
+        // benchmark paths. Keep its variable CREATE2 search cost out of setup.
+        vm.pauseGasMetering();
         (address expected, bytes32 salt) =
             HookMiner.find(address(deployer), flags, type(ArbFoldHook).creationCode, constructorArgs);
+        vm.resumeGasMetering();
         hook = deployer.deploy(manager, address(coordinator), salt);
         assertEq(address(hook), expected, "mined hook address mismatch");
         Hooks.validateHookPermissions(hook, hook.getHookPermissions());

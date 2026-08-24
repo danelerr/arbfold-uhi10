@@ -78,8 +78,13 @@ abstract contract ArbFoldTestBase is Test {
                 | Hooks.BEFORE_SWAP_FLAG | Hooks.BEFORE_SWAP_RETURNS_DELTA_FLAG
         );
         bytes memory constructorArgs = abi.encode(manager, address(coordinator));
+        // Address mining is an offchain deployment preparation step, not part of
+        // swap execution gas. Pausing metering also prevents platform-specific
+        // CREATE2 search lengths from exhausting the test setup gas limit.
+        vm.pauseGasMetering();
         (address expected, bytes32 salt) =
             HookMiner.find(address(deployer), flags, type(ArbFoldHook).creationCode, constructorArgs);
+        vm.resumeGasMetering();
         hook = deployer.deploy(manager, address(coordinator), salt);
         assertEq(address(hook), expected, "mined hook address mismatch");
         Hooks.validateHookPermissions(hook, hook.getHookPermissions());
