@@ -8,7 +8,7 @@ This matrix separates completed repository work from manual publication tasks. I
 | New Hookathon code | Complete and public | Clean core under [`contracts/`](contracts/) with reproducible history and CI. |
 | Tests or frontend | Both complete | [`contracts/test/`](contracts/test/) and [`app/`](app/) |
 | Public GitHub repository | Complete | [github.com/danelerr/arbfold-uhi10](https://github.com/danelerr/arbfold-uhi10) |
-| Public dashboard | Deployment configured | [danelerr.github.io/arbfold-uhi10](https://danelerr.github.io/arbfold-uhi10/); verify after the Pages workflow completes. |
+| Public dashboard | Complete and verified | [danelerr.github.io/arbfold-uhi10](https://danelerr.github.io/arbfold-uhi10/) returns publicly and the 25k regression is interactive. |
 | Demo/explainer video ≤5 minutes | Pending recording | Use [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md); human voice only. |
 | Problem/background | Drafted | Root [`README.md`](README.md) and [`docs/JUDGE_GUIDE.md`](docs/JUDGE_GUIDE.md) |
 | Impact and uniqueness | Drafted | Same-state execution comparison in README and dashboard; clean-core 18.86% result is separated from frozen v0's 39.58%. |
