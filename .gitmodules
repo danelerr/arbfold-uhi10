@@ -1,0 +1,4 @@
+[submodule "benchmark/arbfold-foundry/lib/openzeppelin-uniswap-hooks"]
+	path = benchmark/arbfold-foundry/lib/openzeppelin-uniswap-hooks
+	url = https://github.com/OpenZeppelin/uniswap-hooks.git
+

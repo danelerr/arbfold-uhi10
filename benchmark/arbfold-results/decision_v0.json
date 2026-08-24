@@ -1,0 +1,21 @@
+{
+  "freeze_sha256": "8f6dc062d3897693eed8fa5af9cf5d6b6ce62f7c32af07719cf5d588e203aaf0",
+  "raw_results_sha256": "81e9ee474809b9a9e2852e4573383dea9ccc8d40092ceab81cb91d3f550cb00e",
+  "mechanical_pass": true,
+  "gas_pass": true,
+  "canonical_total_gas": {
+    "atomic_backrun": 519042,
+    "arbfold_direct": 313610,
+    "origin_only": 144044
+  },
+  "canonical_gas_ratio": "0.604209293274918022048312082644564409045896093187063859957383",
+  "canonical_gas_reduction_percent": "39.5790706725081977951687917355435590954103906812936140042617",
+  "lp_net_pass": false,
+  "canonical_lp_net_ratio_at_0_01_gwei": "1.00000287154864781204448175187100375980792733767133589855136",
+  "required_gas_price_for_1_10_lp_ratio_gwei": "294.489506644009707319777265334001833710805529233581880456435",
+  "historical_gate_reached": false,
+  "hard_kill_triggered": "canonical_lp_net_ratio_below_1_10",
+  "decision": "KILL_ARBFOLD",
+  "next_project": "DEPTHMARKET"
+}
+

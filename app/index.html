@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="ARBFOLD — gas-efficient defensive rebalancing for Uniswap v4." />
+    <title>ARBFOLD — Fold the cycle</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%238dff88'/%3E%3Cpath d='M18 47 29 17h7l11 30h-8l-2-7H27l-2 7Zm11-14h6l-3-10Z' fill='%23060b0b'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <header class="nav shell">
+      <a class="brand" href="#top" aria-label="ARBFOLD home">
+        <span class="brand-mark">A</span>
+        <span>ARBFOLD</span>
+      </a>
+      <div class="nav-links">
+        <a href="#experiment">Experiment</a>
+        <a href="#mechanics">Mechanics</a>
+        <a href="#evidence">Evidence</a>
+      </div>
+      <span class="status"><i></i> UHI10 research build</span>
+    </header>
+
+    <main id="top">
+      <section class="hero shell">
+        <div class="eyebrow">Gas-efficient defensive rebalancing · Uniswap v4</div>
+        <h1>Same state.<br /><em>Fewer operations.</em></h1>
+        <p class="hero-copy">
+          Three cooperating CPMM pools fold a cyclic arbitrage opportunity directly into backed reserves—without changing the user’s output or the solver’s reward.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#experiment">Explore the benchmark</a>
+          <a class="button secondary" href="../benchmark/clean-core-results/REPORT.md">Read clean-core report</a>
+        </div>
+
+        <div class="headline-proof">
+          <div>
+            <span class="metric-label">Canonical total gas</span>
+            <strong>−18.86%</strong>
+            <small>436,430 vs 537,896</small>
+          </div>
+          <div>
+            <span class="metric-label">User output</span>
+            <strong>Identical</strong>
+            <small>exact to the wei</small>
+          </div>
+          <div>
+            <span class="metric-label">Final reserves</span>
+            <strong>Identical</strong>
+            <small>six ledgers, ±1 wei gate</small>
+          </div>
+          <div>
+            <span class="metric-label">Residual cycle</span>
+            <strong>0</strong>
+            <small>canonical scenario</small>
+          </div>
+        </div>
+      </section>
+
+      <section id="experiment" class="experiment shell">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Published clean-core validation</span>
+            <h2>Two paths. One destination.</h2>
+          </div>
+          <p>Select the originating USDC18 trade size. These measurements come from the safety-hardened code under <code>contracts/src</code>.</p>
+        </div>
+
+        <div class="size-picker" role="group" aria-label="Origin trade size">
+          <button data-size="10000">10k</button>
+          <button data-size="25000">25k</button>
+          <button data-size="50000">50k</button>
+          <button class="active" data-size="100000">100k</button>
+          <button data-size="200000">200k</button>
+        </div>
+
+        <div class="comparison-grid">
+          <article class="path-card backrun">
+            <div class="path-topline">
+              <span class="path-index">PATH A</span>
+              <span class="path-tag">Reference</span>
+            </div>
+            <h3>Atomic backrun + reinjection</h3>
+            <ol class="steps">
+              <li><span>1</span>User swap</li>
+              <li><span>2</span>A → B swap</li>
+              <li><span>3</span>B → C swap</li>
+              <li><span>4</span>C → A swap</li>
+              <li><span>5</span>Profit reinjection</li>
+            </ol>
+            <div class="gas-block">
+              <span>Total execution gas</span>
+              <strong id="backrun-gas">537,896</strong>
+              <div class="gas-track"><i id="backrun-bar"></i></div>
+            </div>
+          </article>
+
+          <div class="versus" aria-hidden="true"><span>VS</span></div>
+
+          <article class="path-card direct">
+            <div class="path-topline">
+              <span class="path-index">PATH B</span>
+              <span class="path-tag">ARBFOLD</span>
+            </div>
+            <h3>Verified direct transition</h3>
+            <ol class="steps">
+              <li><span>1</span>User swap</li>
+              <li><span>2</span>Closed-form cycle quote</li>
+              <li><span>3</span>ERC-6909 claim transfers</li>
+              <li><span>4</span>Pareto safety checks</li>
+              <li class="muted"><span>·</span>No follow-up transaction</li>
+            </ol>
+            <div class="gas-block">
+              <span>Total execution gas</span>
+              <strong id="direct-gas">436,430</strong>
+              <div class="gas-track"><i id="direct-bar"></i></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="saving-strip">
+          <span>Measured reduction at <b id="selected-size">100k</b></span>
+          <strong id="gas-saving">18.86% less</strong>
+          <span id="gas-saved">101,466 gas avoided</span>
+        </div>
+      </section>
+
+      <section id="mechanics" class="mechanics shell">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Canonical 100k state trace</span>
+            <h2>The fold is not an in-memory shortcut.</h2>
+          </div>
+          <p>Virtual reserves and real PoolManager ERC-6909 claims move together inside the originating unlock.</p>
+        </div>
+
+        <div class="state-flow">
+          <div class="state-column">
+            <div class="state-title"><span>01</span> After user swap</div>
+            <div class="pool-card">
+              <b>A / B</b><span>303.112970 A</span><span>1,100,000 B</span>
+            </div>
+            <div class="pool-card">
+              <b>B / C</b><span>1,000,000 B</span><span>1,000,000 C</span>
+            </div>
+            <div class="pool-card">
+              <b>A / C</b><span>333.333333 A</span><span>1,000,000 C</span>
+            </div>
+          </div>
+
+          <div class="fold-core">
+            <span class="cycle token-a">A</span>
+            <span class="cycle token-b">B</span>
+            <span class="cycle token-c">C</span>
+            <div class="orbit one"></div>
+            <div class="orbit two"></div>
+            <strong>FOLD</strong>
+            <small>2 deterministic rounds</small>
+          </div>
+
+          <div class="state-column">
+            <div class="state-title"><span>02</span> Verified final state</div>
+            <div class="pool-card good">
+              <b>A / B</b><span>312.268112 A</span><span>1,067,843.924 B</span>
+            </div>
+            <div class="pool-card good">
+              <b>B / C</b><span>1,032,156.076 B</span><span>968,936.316 C</span>
+            </div>
+            <div class="pool-card good">
+              <b>A / C</b><span>324.092342 A</span><span>1,031,063.684 C</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="proof-grid">
+          <div><span>✓</span><b>Token conservation</b><small>Solver reward is the only A leaving pool claims</small></div>
+          <div><span>✓</span><b>Invariant monotonicity</b><small>No participating CPMM invariant decreases</small></div>
+          <div><span>✓</span><b>Exact backing</b><small>Each reserve equals its PoolManager claim balance</small></div>
+          <div><span>✓</span><b>Atomic settlement</b><small>No currency delta survives the originating transaction</small></div>
+        </div>
+      </section>
+
+      <section id="evidence" class="evidence shell">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Evidence before narrative</span>
+            <h2>What passed—and what did not.</h2>
+          </div>
+        </div>
+        <div class="evidence-grid">
+          <article class="evidence-card passed">
+            <span class="verdict">VALIDATED RESULT</span>
+            <h3>Same state; workload-dependent gas advantage</h3>
+            <p>The published core passed mechanical equivalence at five sizes. It used 18.86% less gas canonically, but 1.13% more at 25k. The minimal frozen v0 harness remains separately reported at 39.58% less.</p>
+            <code>clean freeze: 294c5c5a…443d2153</code>
+          </article>
+          <article class="evidence-card rejected">
+            <span class="verdict">REJECTED CLAIM</span>
+            <h3>Not 10% more LP net value</h3>
+            <p>At the frozen 0.01 gwei assumption, the LP net-value improvement was only 0.000287%. The economic gate remains killed.</p>
+            <code>decision: KILL_ARBFOLD economic thesis</code>
+          </article>
+        </div>
+        <div class="run-panel">
+          <div>
+            <span>Reproduce contracts</span>
+            <code>cd contracts && forge test --offline</code>
+          </div>
+          <div>
+            <span>Reproduce frozen benchmark</span>
+            <code>cd benchmark/arbfold-foundry && forge test --offline</code>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="shell">
+      <div class="brand"><span class="brand-mark">A</span><span>ARBFOLD</span></div>
+      <p>A specialized research primitive—not a production deployment or a global MEV solution.</p>
+      <span>Built for UHI10 · 2026</span>
+    </footer>
+    <script src="./app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "purpose": "publication_integrity_validation",
+  "reopens_v0_economic_gate": false,
+  "state_comparison": "same_deployment_reverted_to_identical_snapshot",
+  "foundry": "1.5.1-stable",
+  "foundry_commit": "b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2",
+  "solidity": "0.8.26",
+  "evm": "cancun",
+  "optimizer": {
+    "enabled": true,
+    "runs": 200,
+    "via_ir": false
+  },
+  "dependencies": {
+    "openzeppelin_uniswap_hooks": "12048bb17b93ad9ed683aff9c34b89596280c77d",
+    "uniswap_v4_core": "d153b048868a60c2403a3ef5b2301bb247884d46",
+    "uniswap_v4_periphery": "7ebd04b161745b75ed0c24ba2df3bc7c25f65606",
+    "forge_std": "a6d71da563bbb8d6eef8fbec3a16c61c603d2764",
+    "openzeppelin_contracts": "fcbae5394ae8ad52d8e580a3477db99814b9d565"
+  },
+  "reserves": {
+    "ab_a": "333333333333333333333",
+    "ab_b": "1000000000000000000000000",
+    "bc_b": "1000000000000000000000000",
+    "bc_c": "1000000000000000000000000",
+    "ac_a": "333333333333333333333",
+    "ac_c": "1000000000000000000000000"
+  },
+  "origin_inputs": [
+    "10000000000000000000000",
+    "25000000000000000000000",
+    "50000000000000000000000",
+    "100000000000000000000000",
+    "200000000000000000000000"
+  ],
+  "canonical_input": "100000000000000000000000",
+  "fee_gamma": 997000,
+  "fee_denominator": 1000000,
+  "solver_share_bps": 1000,
+  "max_rounds": 8,
+  "residual_threshold": "1000000000000",
+  "gas": {
+    "intrinsic": 21000,
+    "include_calldata_byte_cost": true,
+    "include_external_execution": true,
+    "exclude_deployment": true,
+    "exclude_liquidity_initialization": true
+  },
+  "required_checks": [
+    "identical_user_output",
+    "identical_solver_reward",
+    "six_reserves_equal_within_one_wei",
+    "claims_equal_reserves",
+    "underlying_backing_exact",
+    "invariants_non_decreasing",
+    "residual_below_threshold",
+    "all_unlock_deltas_settled"
+  ]
+}

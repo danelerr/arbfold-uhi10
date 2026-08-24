@@ -1,0 +1,24 @@
+ARBFOLD clean-core publication validation v1
+Freeze SHA-256: 294c5c5afeaea39134e62f36e922b537cc0d7974f3b206e4133472bf443d2153
+Source-tree SHA-256: 097c5b5bb745c322bb7941d56b8f7dcf540a7e0291b2babbe38044d21a7df857
+Foundry: 1.5.1-stable
+Solidity: 0.8.26
+
+origin   atomic backrun   direct clean core   direct/backrun   reduction
+10k             403614              386610          95.78%        4.22%
+25k             405309              409899         101.13%       -1.13%
+50k             537895              436429          81.13%       18.87%
+100k            537896              436430          81.13%       18.86%
+200k            537886              436419          81.13%       18.86%
+
+Canonical user output A: 30220363129338304386
+Canonical solver reward A: 85849039116169484
+Canonical final reserves:
+  AB A 312268112026399995277
+  AB B 1067843924494458942956337
+  BC B 1032156075505541057043663
+  BC C 968936315883453894833065
+  AC A 324092342471812197519
+  AC C 1031063684116546105166935
+Canonical residual A: 0
+

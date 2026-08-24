@@ -1,0 +1,84 @@
+{
+  "freeze_sha256": "8f6dc062d3897693eed8fa5af9cf5d6b6ce62f7c32af07719cf5d588e203aaf0",
+  "foundry": "1.5.1-stable",
+  "solidity": "0.8.26",
+  "mechanical_tests": {
+    "frozen_sizes": 5,
+    "user_output_equal": true,
+    "solver_reward_equal": true,
+    "final_reserves_equal_within_wei": true,
+    "claims_equal_reserves": true,
+    "token_backing_exact": true,
+    "invariants_non_decreasing": true,
+    "residual_below_threshold": true,
+    "unauthorized_transition_reverts": true
+  },
+  "rows": [
+    {
+      "origin_input_wei": "10000000000000000000000",
+      "backrun_total_gas": 387527,
+      "direct_total_gas": 273244,
+      "origin_total_gas": 144043,
+      "backrun_incremental_gas": 243484,
+      "direct_incremental_gas": 129201,
+      "gas_ratio_bps": 7050,
+      "gross_surplus_wei_weth": "3257833909054450",
+      "fixed_reward_wei_weth": "325783390905445",
+      "rounds": 1,
+      "residual_wei_weth": "0"
+    },
+    {
+      "origin_input_wei": "25000000000000000000000",
+      "backrun_total_gas": 389233,
+      "direct_total_gas": 274950,
+      "origin_total_gas": 144042,
+      "backrun_incremental_gas": 245191,
+      "direct_incremental_gas": 130908,
+      "gas_ratio_bps": 7063,
+      "gross_surplus_wei_weth": "44441591895230403",
+      "fixed_reward_wei_weth": "4444159189523040",
+      "rounds": 1,
+      "residual_wei_weth": "99728437921"
+    },
+    {
+      "origin_input_wei": "50000000000000000000000",
+      "backrun_total_gas": 519042,
+      "direct_total_gas": 313610,
+      "origin_total_gas": 144043,
+      "backrun_incremental_gas": 374999,
+      "direct_incremental_gas": 169567,
+      "gas_ratio_bps": 6042,
+      "gross_surplus_wei_weth": "210562800145472471",
+      "fixed_reward_wei_weth": "21056280014547246",
+      "rounds": 2,
+      "residual_wei_weth": "0"
+    },
+    {
+      "origin_input_wei": "100000000000000000000000",
+      "backrun_total_gas": 519042,
+      "direct_total_gas": 313610,
+      "origin_total_gas": 144044,
+      "backrun_incremental_gas": 374998,
+      "direct_incremental_gas": 169566,
+      "gas_ratio_bps": 6042,
+      "gross_surplus_wei_weth": "858490391161694849",
+      "fixed_reward_wei_weth": "85849039116169484",
+      "rounds": 2,
+      "residual_wei_weth": "0"
+    },
+    {
+      "origin_input_wei": "200000000000000000000000",
+      "backrun_total_gas": 519031,
+      "direct_total_gas": 313599,
+      "origin_total_gas": 144032,
+      "backrun_incremental_gas": 374999,
+      "direct_incremental_gas": 169567,
+      "gas_ratio_bps": 6042,
+      "gross_surplus_wei_weth": "3106920722345480484",
+      "fixed_reward_wei_weth": "310692072234548048",
+      "rounds": 2,
+      "residual_wei_weth": "0"
+    }
+  ]
+}
+

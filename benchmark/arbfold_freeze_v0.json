@@ -1,0 +1,87 @@
+{
+  "experiment": "ARBFOLD_FOUNDRY_GATE",
+  "version": 0,
+  "measurements_observed_at_freeze": false,
+  "toolchain": {
+    "foundry": "1.5.1-stable",
+    "solidity": "0.8.26",
+    "evm": "cancun",
+    "optimizer": true,
+    "optimizer_runs": 200,
+    "via_ir": false
+  },
+  "dependencies": {
+    "openzeppelin_uniswap_hooks": "12048bb17b93ad9ed683aff9c34b89596280c77d",
+    "uniswap_v4_core": "d153b048868a60c2403a3ef5b2301bb247884d46",
+    "uniswap_v4_periphery": "7ebd04b161745b75ed0c24ba2df3bc7c25f65606",
+    "forge_std": "a6d71da563bbb8d6eef8fbec3a16c61c603d2764",
+    "openzeppelin_contracts": "fcbae5394ae8ad52d8e580a3477db99814b9d565"
+  },
+  "market": {
+    "tokens": ["WETH18", "USDC18", "DAI18"],
+    "reserves": {
+      "ab": ["333333333333333333333", "1000000000000000000000000"],
+      "bc": ["1000000000000000000000000", "1000000000000000000000000"],
+      "ac": ["333333333333333333333", "1000000000000000000000000"]
+    },
+    "fee_denominator": 1000000,
+    "gamma": 997000,
+    "origin_swap": "USDC18_TO_WETH18_EXACT_INPUT",
+    "origin_input_sizes": [
+      "10000000000000000000000",
+      "25000000000000000000000",
+      "50000000000000000000000",
+      "100000000000000000000000",
+      "200000000000000000000000"
+    ],
+    "canonical_input": "100000000000000000000000"
+  },
+  "mechanism": {
+    "solver_share_bps": 1000,
+    "max_rounds": 8,
+    "residual_profit_wei": "1000000000000",
+    "residual_first_round_bps": 1,
+    "integer_rounding": "floor",
+    "evaluate_both_directions": true
+  },
+  "gas": {
+    "include_execute_call": true,
+    "include_origin_swap": true,
+    "include_callbacks": true,
+    "include_custom_accounting": true,
+    "include_settlement": true,
+    "include_reinjection_or_claim_transfers": true,
+    "include_storage": true,
+    "exclude_deployment": true,
+    "exclude_initial_liquidity": true,
+    "add_transaction_intrinsic": 21000,
+    "calldata_zero_byte_gas": 4,
+    "calldata_nonzero_byte_gas": 16,
+    "canonical_max_ratio_bps": 8000,
+    "must_beat_backrun_all_sizes": true
+  },
+  "solver_economics": {
+    "operating_margin_bps": 2000,
+    "gas_prices_gwei": ["0.001", "0.01", "0.1", "1", "10"],
+    "canonical_gas_price_gwei": "0.01",
+    "canonical_lp_net_min_ratio_bps": 11000
+  },
+  "hard_kills": [
+    "user_output_mismatch",
+    "solver_reward_mismatch",
+    "final_reserve_mismatch_gt_1_wei",
+    "claim_reserve_mismatch",
+    "token_conservation_failure",
+    "pool_invariant_decrease",
+    "unsettled_poolmanager_delta",
+    "non_atomic_execution",
+    "unauthorized_transition",
+    "material_residual_arbitrage",
+    "canonical_gas_ratio_above_0_80",
+    "arbfold_not_cheaper_at_any_frozen_size",
+    "canonical_lp_net_ratio_below_1_10",
+    "historical_opportunity_gate_failure_if_reached"
+  ],
+  "failure_decision": "KILL_ARBFOLD",
+  "failure_next_project": "DEPTHMARKET"
+}

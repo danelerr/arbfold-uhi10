@@ -1,0 +1,35 @@
+.DS_Store
+**/.DS_Store
+__pycache__/
+*.py[cod]
+.coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+benchmark/arbfold-foundry/cache/
+benchmark/arbfold-foundry/out/
+contracts/cache/
+contracts/out/
+contracts/broadcast/
+broadcast/
+
+# Preserved local research archive; intentionally excluded from the focused
+# ARBFOLD Hookathon repository. No local files are deleted by these rules.
+/UHI10_MATURE_CONTEXT_BUNDLE.zip
+/UHI10_MATURE_CONTEXT_BUNDLE/
+/UHI10_WINNING_IDEA_RESEARCH.md
+/SKILLS_INSTALADAS.md
+/FLOWBOND_*.md
+/DEPTHMARKET_*.md
+/COVENANT_*.md
+/RECOIL_*.md
+/flowbond_sim/
+/depthmarket_sim/
+/covenant_sim/
+/recoil_sim/
+/simulation/
+/pyproject.toml
+/tests/*
+!/tests/test_arbfold.py
+!/tests/test_arbfold_submission.py
