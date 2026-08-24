@@ -65,6 +65,20 @@ The v1 freeze hash is
 `294c5c5afeaea39134e62f36e922b537cc0d7974f3b206e4133472bf443d2153`.
 The tested source-tree hash is
 `097c5b5bb745c322bb7941d56b8f7dcf540a7e0291b2babbe38044d21a7df857`.
-A Git commit will be recorded after these publication artifacts are added, then
-the benchmark will be rerun from that clean commit before push.
+The clean core was committed as
+`6dd7946c9eb2c29a75698e4f9ca06c4432e6ccd0` and then rerun from that clean
+commit with:
 
+```bash
+cd contracts
+forge test --offline --match-contract ArbFoldCleanCoreBenchmarkTest -vv
+```
+
+All three benchmark tests passed and reproduced the complete grid and canonical
+reserve vector above. The later evidence commit changes no file under
+`contracts/src/`.
+
+The concise captured test output is preserved in
+[`forge-test.txt`](forge-test.txt); the gas grid and reserve vector are also
+available in [`gas-snapshot.txt`](gas-snapshot.txt) and
+[`raw_v1.json`](raw_v1.json).

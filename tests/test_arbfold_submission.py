@@ -44,6 +44,30 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
             actual = hashlib.sha256((ROOT / relative_path).read_bytes()).hexdigest()
             self.assertEqual(actual, digest, relative_path)
 
+    def test_clean_core_freeze_and_commit_are_bound(self) -> None:
+        freeze = ROOT / "benchmark/clean_core_validation_freeze_v1.json"
+        expected_freeze = "294c5c5afeaea39134e62f36e922b537cc0d7974f3b206e4133472bf443d2153"
+        self.assertEqual(hashlib.sha256(freeze.read_bytes()).hexdigest(), expected_freeze)
+
+        raw = json.loads((ROOT / "benchmark/clean-core-results/raw_v1.json").read_text())
+        self.assertEqual(
+            raw["tested_commit"],
+            "6dd7946c9eb2c29a75698e4f9ca06c4432e6ccd0",
+        )
+        self.assertEqual(
+            raw["tested_source_tree_sha256"],
+            "097c5b5bb745c322bb7941d56b8f7dcf540a7e0291b2babbe38044d21a7df857",
+        )
+
+        evidence_hashes = {
+            "benchmark/clean-core-results/raw_v1.json": "88a7918831ce8d79b7a22428c3bef205eeeccacdabde662dbafe2dfb8761a373",
+            "benchmark/clean-core-results/gas-snapshot.txt": "574f6aaf006eb6e3eb991cf512afb3e658fd481cdf93d61346d64116199f577b",
+            "benchmark/clean-core-results/forge-test.txt": "41ea59d24f7ace508ca9ac048a1626241a77ffd56aa64cd68fdf7c4fc5acb97b",
+        }
+        for relative_path, digest in evidence_hashes.items():
+            actual = hashlib.sha256((ROOT / relative_path).read_bytes()).hexdigest()
+            self.assertEqual(actual, digest, relative_path)
+
 
 if __name__ == "__main__":
     unittest.main()

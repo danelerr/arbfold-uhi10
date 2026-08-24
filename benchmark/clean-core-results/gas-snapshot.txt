@@ -1,6 +1,7 @@
 ARBFOLD clean-core publication validation v1
 Freeze SHA-256: 294c5c5afeaea39134e62f36e922b537cc0d7974f3b206e4133472bf443d2153
 Source-tree SHA-256: 097c5b5bb745c322bb7941d56b8f7dcf540a7e0291b2babbe38044d21a7df857
+Tested Git commit: 6dd7946c9eb2c29a75698e4f9ca06c4432e6ccd0
 Foundry: 1.5.1-stable
 Solidity: 0.8.26
 
@@ -21,4 +22,3 @@ Canonical final reserves:
   AC A 324092342471812197519
   AC C 1031063684116546105166935
 Canonical residual A: 0
-

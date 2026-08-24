@@ -86,6 +86,8 @@ forge test --offline --match-contract ArbFoldCleanCoreBenchmarkTest -vv
 
 Both paths start from the same deployed state snapshot. The direct path uses the published hook, coordinator and router; the reference executes three real `PoolManager.swap` calls and reinjects the same retained profit.
 
+The delivered core was fixed at commit [`6dd7946`](https://github.com/danelerr/mature-uhi10/commit/6dd7946c9eb2c29a75698e4f9ca06c4432e6ccd0) and the comparison was rerun from that clean commit before publication. Its `contracts/src` manifest hash is `097c5b5bb745c322bb7941d56b8f7dcf540a7e0291b2babbe38044d21a7df857`.
+
 | Origin input | Atomic backrun | Published ARBFOLD | Exact change |
 |---:|---:|---:|---:|
 | 10k | 403,614 | 386,610 | 4.21% less |

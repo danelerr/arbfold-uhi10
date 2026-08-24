@@ -1,0 +1,33 @@
+ARBFOLD clean-core publication validation v1
+Tested Git commit: 6dd7946c9eb2c29a75698e4f9ca06c4432e6ccd0
+Command: cd contracts && forge test --offline --match-contract ArbFoldCleanCoreBenchmarkTest -vv
+
+Ran 3 tests for test/ArbFoldCleanCoreBenchmark.t.sol:ArbFoldCleanCoreBenchmarkTest
+[PASS] test_CleanCoreGridMechanicalEquivalence()
+[PASS] test_ReportCleanCoreCanonicalState()
+[PASS] test_ReportCleanCoreGasGrid()
+
+Suite result: ok. 3 passed; 0 failed; 0 skipped.
+
+Canonical state logs:
+  CLEAN_CORE_CANONICAL_USER_OUTPUT_A 30220363129338304386
+  CLEAN_CORE_CANONICAL_SOLVER_REWARD_A 85849039116169484
+  CLEAN_CORE_CANONICAL_AB_A 312268112026399995277
+  CLEAN_CORE_CANONICAL_AB_B 1067843924494458942956337
+  CLEAN_CORE_CANONICAL_BC_B 1032156075505541057043663
+  CLEAN_CORE_CANONICAL_BC_C 968936315883453894833065
+  CLEAN_CORE_CANONICAL_AC_A 324092342471812197519
+  CLEAN_CORE_CANONICAL_AC_C 1031063684116546105166935
+  CLEAN_CORE_CANONICAL_RESIDUAL_A 0
+
+Gas-grid logs:
+  origin=10k  backrun=403614  direct=386610  ratio_bps=9578
+  origin=25k  backrun=405309  direct=409899  ratio_bps=10113
+  origin=50k  backrun=537895  direct=436429  ratio_bps=8113
+  origin=100k backrun=537896  direct=436430  ratio_bps=8113
+  origin=200k backrun=537886  direct=436419  ratio_bps=8113
+
+Foundry: 1.5.1-stable
+Solidity compiler: 0.8.26 (configured by contracts/foundry.toml)
+Freeze SHA-256: 294c5c5afeaea39134e62f36e922b537cc0d7974f3b206e4133472bf443d2153
+Source-tree SHA-256: 097c5b5bb745c322bb7941d56b8f7dcf540a7e0291b2babbe38044d21a7df857
