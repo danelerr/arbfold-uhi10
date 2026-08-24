@@ -188,11 +188,9 @@ Checked arithmetic prevents silent corruption, but a revert boundary is not yet 
 
 The current site is useful and visually strong, but it cannot show a public transaction or live state. The final site needs a minimal “Onchain proof” layer without becoming a full trading application.
 
-### P1-01 — The repository surface contains abandoned projects
+### Resolved — Focused repository surface
 
-The README is clear, but the root still contains MATURE, FLOWBOND, COVENANT, RECOIL and DEPTHMARKET artifacts. They are valuable research history, yet they can make the submission look unfocused.
-
-Do not delete the research. Put it behind a single archive index or GitHub release path only if this can be done without breaking immutable hashes, tests or published links.
+On 2026-08-24, abandoned local project artifacts were removed and the useful ARBFOLD documents were consolidated under `docs/`. The root now contains only the project entry files and active ARBFOLD directories. Frozen ARBFOLD reports and benchmark evidence remain unchanged.
 
 ## Change-control rules
 
@@ -666,16 +664,12 @@ Final submission links must point to the final tag or commit, not mutable `main`
 - threat model;
 - deployment manifest.
 
-### F3. Archive without erasing
+### F3. Keep the repository ARBFOLD-only
 
-If safe, create one `research/README.md` that indexes MATURE, FLOWBOND, DEPTHMARKET and other killed hypotheses. Avoid moving immutable result files if doing so breaks hashes or published links.
-
-At minimum:
-
-- remove dead projects from the primary repository map;
-- label their code as archived research;
-- mark archived Python packages as such in GitHub language statistics if appropriate;
-- keep every falsification available through a single link.
+- keep the root limited to `README.md`, `LICENSE`, `Makefile` and active project directories;
+- do not reintroduce abandoned simulations or unrelated research bundles;
+- preserve the immutable ARBFOLD freeze reports and benchmark evidence;
+- keep generated build outputs ignored and regenerate them through documented commands.
 
 ### F4. Add a release evidence index
 

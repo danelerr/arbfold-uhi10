@@ -192,7 +192,7 @@ forge script script/DeployArbFold.s.sol:DeployArbFold \
 - Return-delta hooks require special routing support and careful reserve/claim accounting.
 - Contracts are not audited and are not authorized for production deposits.
 
-See [Limitations](docs/LIMITATIONS.md) and the [threat model](ARBFOLD_THREAT_MODEL.md).
+See [Limitations](docs/LIMITATIONS.md) and the [threat model](docs/THREAT_MODEL.md).
 
 ## Credits
 

@@ -16,7 +16,6 @@ In scope:
 
 Out of scope:
 
-- archived MATURE, FLOWBOND, RECOIL, COVENANT and DEPTHMARKET simulations;
 - production key management, multisig operations and monitoring;
 - the general convex optimizer from the Defensive Rebalancing paper;
 - integrations with existing pools, external routers or block builders.

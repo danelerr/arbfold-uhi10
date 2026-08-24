@@ -11,7 +11,7 @@ Decision              PENDING
 
 This document preregisters the only implementation gate granted to ARBFOLD v0.
 The accompanying machine-readable freeze is
-[`benchmark/arbfold_freeze_v0.json`](benchmark/arbfold_freeze_v0.json). Its
+[`benchmark/arbfold_freeze_v0.json`](../benchmark/arbfold_freeze_v0.json). Its
 SHA-256 digest is stored separately and must not change after any gas result is
 observed. A changed specification is a different experiment and may not be
 reported as v0.
@@ -210,4 +210,3 @@ NEXT_PROJECT = DEPTHMARKET
 
 There is no ARBFOLD v1/v2 parameter rescue after failure. DEPTHMARKET then moves
 directly to its own preregistered simulation freeze before product Solidity.
-

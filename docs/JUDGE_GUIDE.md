@@ -60,4 +60,4 @@ ARBFOLD is submitted as a gas-efficient execution primitive, not as a production
 - Requires three new hook-owned pools.
 - Not audited or mainnet-ready.
 
-Read [`ARCHITECTURE.md`](ARCHITECTURE.md), [`LIMITATIONS.md`](LIMITATIONS.md) and the [threat model](../ARBFOLD_THREAT_MODEL.md) for the full boundaries.
+Read [`ARCHITECTURE.md`](ARCHITECTURE.md), [`LIMITATIONS.md`](LIMITATIONS.md) and the [threat model](THREAT_MODEL.md) for the full boundaries.

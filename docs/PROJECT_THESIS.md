@@ -8,14 +8,14 @@ Production deployment         NOT AUTHORIZED
 Research-grade UHI10 build    AUTHORIZED
 ```
 
-ARBFOLD v0 was the strongest surviving research direction after FLOWBOND,
-RECOIL, and COVENANT were falsified. Its preregistered minimal harness confirmed
+ARBFOLD v0 is the specialized research direction selected for UHI10. Its
+preregistered minimal harness confirmed
 mechanical equivalence and a 39.58% canonical gas reduction, but only a 0.000287%
 LP net-value improvement against the required 10%. A separate publication check
 against the safety-hardened delivered core measured 18.86% less canonical gas
 and one 25k case with 1.13% more gas. It remains unauthorized for production.
-See the [frozen v0 report](benchmark/arbfold-results/REPORT.md) and the
-[clean-core report](benchmark/clean-core-results/REPORT.md).
+See the [frozen v0 report](../benchmark/arbfold-results/REPORT.md) and the
+[clean-core report](../benchmark/clean-core-results/REPORT.md).
 
 ## Canonical question
 
@@ -94,7 +94,7 @@ No generic convex solver is required for the MVP. The first two reserve transiti
 
 ## Exploratory mechanical evidence
 
-The derivation is implemented in [`arbfold_sim/mechanism.py`](arbfold_sim/mechanism.py). This is an exploratory property screen, not a pre-registered economic simulation.
+The derivation is implemented in [`arbfold_sim/mechanism.py`](../arbfold_sim/mechanism.py). This is an exploratory property screen, not a pre-registered economic simulation.
 
 The current tests establish:
 
