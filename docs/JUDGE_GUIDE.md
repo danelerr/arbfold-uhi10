@@ -2,7 +2,7 @@
 
 ## 0:00–0:45 — Understand the result
 
-Open [`app/index.html`](../app/index.html), or serve the repository with:
+Open the [live dashboard](https://danelerr.github.io/arbfold-uhi10/), or serve the repository locally with:
 
 ```bash
 python3 -m http.server 8080
@@ -10,7 +10,7 @@ python3 -m http.server 8080
 
 The one-sentence claim is:
 
-> ARBFOLD's safety-hardened published core reaches the same state as a three-leg atomic backrun plus reinjection while using 18.86% less canonical total gas.
+> Same outcome. Same user output. Same solver reward. ARBFOLD uses 18.86% less gas at the canonical 100k benchmark.
 
 Change the five trade-size buttons. The result is workload-dependent: ARBFOLD is 18.86% cheaper at 50k–200k, 4.21% cheaper at 10k and 1.13% more expensive at 25k.
 
@@ -60,4 +60,4 @@ ARBFOLD is submitted as a gas-efficient execution primitive, not as a production
 - Requires three new hook-owned pools.
 - Not audited or mainnet-ready.
 
-Read [`ARCHITECTURE.md`](ARCHITECTURE.md), [`LIMITATIONS.md`](LIMITATIONS.md) and the [threat model](../mature-uhi10-threat-model.md) for the full boundaries.
+Read [`ARCHITECTURE.md`](ARCHITECTURE.md), [`LIMITATIONS.md`](LIMITATIONS.md) and the [threat model](../ARBFOLD_THREAT_MODEL.md) for the full boundaries.

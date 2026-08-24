@@ -57,6 +57,8 @@ body::before {
 h1 { max-width: 900px; margin: 24px 0; font-size: clamp(64px, 9.6vw, 132px); line-height: .88; letter-spacing: -.07em; }
 h1 em { color: var(--violet); font-style: normal; }
 .hero-copy { max-width: 700px; color: #c3c6cd; font-size: clamp(18px, 2vw, 23px); }
+.workload-note { max-width: 760px; margin: 20px 0 0; color: var(--muted); font: 600 13px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.workload-note strong { color: var(--text); }
 .hero-actions { display: flex; gap: 12px; margin-top: 36px; }
 .button { padding: 13px 18px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 14px; }
 .button.primary { background: var(--lime); color: #11150a; }
@@ -168,4 +170,3 @@ footer p { text-align: center; }
   .path-card { padding: 23px; }
   footer { flex-direction: column; text-align: center; }
 }
-

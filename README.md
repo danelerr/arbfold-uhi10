@@ -1,6 +1,7 @@
 # ARBFOLD
 
-[![ARBFOLD verification](https://github.com/danelerr/mature-uhi10/actions/workflows/ci.yml/badge.svg)](https://github.com/danelerr/mature-uhi10/actions/workflows/ci.yml)
+[![ARBFOLD verification](https://github.com/danelerr/arbfold-uhi10/actions/workflows/ci.yml/badge.svg)](https://github.com/danelerr/arbfold-uhi10/actions/workflows/ci.yml)
+[![Live dashboard](https://img.shields.io/badge/live-dashboard-c9ff5b?style=flat&labelColor=111319)](https://danelerr.github.io/arbfold-uhi10/)
 
 ### Gas-efficient defensive rebalancing for Uniswap v4
 
@@ -8,15 +9,17 @@
 
 ARBFOLD is a research-grade Uniswap v4 custom-accounting experiment. Three hook-owned CPMMs—A/B, B/C and A/C—can fold a cyclic arbitrage opportunity directly into their PoolManager-backed ERC-6909 reserves inside the transaction that created it.
 
-The user receives the same output. The solver receives the same capped reward. Every participating invariant must remain non-decreasing. The difference is execution: the safety-hardened code published under `contracts/src` measured **436,430 gas for ARBFOLD versus 537,896 gas for a three-leg atomic backrun plus profit reinjection**, an **18.86% reduction** at the canonical size.
+> **Same outcome. Same user output. Same solver reward. 18.86% less gas at the canonical 100k benchmark.**
+
+The safety-hardened code published under `contracts/src` measured **436,430 gas for ARBFOLD versus 537,896 gas for a three-leg atomic backrun plus profit reinjection** at 100k. Every participating invariant must remain non-decreasing.
+
+**The advantage is workload-dependent:** 4.21% less gas at 10k, **1.13% more at 25k**, and 18.86% less from 50k through 200k in the fixed publication grid.
 
 ## See it in 30 seconds
 
-```bash
-python3 -m http.server 8080
-```
+[Open the live benchmark dashboard](https://danelerr.github.io/arbfold-uhi10/).
 
-Open [http://localhost:8080/app/](http://localhost:8080/app/). The dashboard is dependency-free and uses the five publication measurements from [`raw_v1.json`](benchmark/clean-core-results/raw_v1.json).
+For a local copy, run `python3 -m http.server 8080` and open [http://localhost:8080/app/](http://localhost:8080/app/). The dashboard is dependency-free and uses the five publication measurements from [`raw_v1.json`](benchmark/clean-core-results/raw_v1.json).
 
 ## What happens in one transaction
 
@@ -43,8 +46,8 @@ The clean core is under [`contracts/`](contracts/). The immutable preregistered 
 Clone the pinned OpenZeppelin dependency and its Uniswap/Foundry submodules:
 
 ```bash
-git clone --recurse-submodules https://github.com/danelerr/mature-uhi10.git
-cd mature-uhi10
+git clone --recurse-submodules https://github.com/danelerr/arbfold-uhi10.git
+cd arbfold-uhi10
 ```
 
 If the repository was already cloned, run `git submodule update --init --recursive` once. The root submodule is pinned to OpenZeppelin Uniswap Hooks commit `12048bb17b93ad9ed683aff9c34b89596280c77d`.
@@ -86,7 +89,7 @@ forge test --offline --match-contract ArbFoldCleanCoreBenchmarkTest -vv
 
 Both paths start from the same deployed state snapshot. The direct path uses the published hook, coordinator and router; the reference executes three real `PoolManager.swap` calls and reinjects the same retained profit.
 
-The delivered core was fixed at commit [`6dd7946`](https://github.com/danelerr/mature-uhi10/commit/6dd7946c9eb2c29a75698e4f9ca06c4432e6ccd0) and the comparison was rerun from that clean commit before publication. Its `contracts/src` manifest hash is `097c5b5bb745c322bb7941d56b8f7dcf540a7e0291b2babbe38044d21a7df857`.
+The delivered core was fixed at commit [`6dd7946`](https://github.com/danelerr/arbfold-uhi10/commit/6dd7946c9eb2c29a75698e4f9ca06c4432e6ccd0) and the comparison was rerun from that clean commit before publication. Its `contracts/src` manifest hash is `097c5b5bb745c322bb7941d56b8f7dcf540a7e0291b2babbe38044d21a7df857`.
 
 | Origin input | Atomic backrun | Published ARBFOLD | Exact change |
 |---:|---:|---:|---:|
@@ -188,7 +191,7 @@ forge script script/DeployArbFold.s.sol:DeployArbFold \
 - Return-delta hooks require special routing support and careful reserve/claim accounting.
 - Contracts are not audited and are not authorized for production deposits.
 
-See [Limitations](docs/LIMITATIONS.md) and the [threat model](mature-uhi10-threat-model.md).
+See [Limitations](docs/LIMITATIONS.md) and the [threat model](ARBFOLD_THREAT_MODEL.md).
 
 ## Credits
 

@@ -5,13 +5,14 @@ This matrix separates completed repository work from manual publication tasks. I
 | Requirement | Status | Evidence / next action |
 |---|---|---|
 | Functional Uniswap v4 hook | Complete | [`contracts/src/ArbFoldHook.sol`](contracts/src/ArbFoldHook.sol) |
-| New Hookathon code | Complete locally | Clean core under [`contracts/`](contracts/); commit history still needs publication. |
+| New Hookathon code | Complete and public | Clean core under [`contracts/`](contracts/) with reproducible history and CI. |
 | Tests or frontend | Both complete | [`contracts/test/`](contracts/test/) and [`app/`](app/) |
-| Public GitHub repository | Public shell verified; source push pending | `https://github.com/danelerr/mature-uhi10` returns publicly; commit and push the local source, then verify it in incognito. |
+| Public GitHub repository | Complete | [github.com/danelerr/arbfold-uhi10](https://github.com/danelerr/arbfold-uhi10) |
+| Public dashboard | Deployment configured | [danelerr.github.io/arbfold-uhi10](https://danelerr.github.io/arbfold-uhi10/); verify after the Pages workflow completes. |
 | Demo/explainer video ≤5 minutes | Pending recording | Use [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md); human voice only. |
 | Problem/background | Drafted | Root [`README.md`](README.md) and [`docs/JUDGE_GUIDE.md`](docs/JUDGE_GUIDE.md) |
 | Impact and uniqueness | Drafted | Same-state execution comparison in README and dashboard; clean-core 18.86% result is separated from frozen v0's 39.58%. |
-| Challenges | Drafted | [`docs/LIMITATIONS.md`](docs/LIMITATIONS.md) and [`mature-uhi10-threat-model.md`](mature-uhi10-threat-model.md) |
+| Challenges | Drafted | [`docs/LIMITATIONS.md`](docs/LIMITATIONS.md) and [`ARBFOLD_THREAT_MODEL.md`](ARBFOLD_THREAT_MODEL.md) |
 | Future plans | Drafted | [`docs/LIMITATIONS.md`](docs/LIMITATIONS.md) |
 | Partner integrations with exact locations | Complete | Integration table in [`README.md`](README.md); no unsupported sponsor claims. |
 | Originality and credits | Complete | Paper, Uniswap, OpenZeppelin and Homelander credited in README. |

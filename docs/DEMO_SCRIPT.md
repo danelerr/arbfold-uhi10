@@ -52,4 +52,4 @@ Show the evidence cards.
 
 ## 3:40–4:00 — Close
 
-> Same user output. Same solver reward. Same final reserves. Non-decreasing pool invariants. 18.86% less canonical gas in the delivered core. ARBFOLD folds the cycle instead of replaying it.
+> Same outcome. Same user output. Same solver reward. At the canonical 100k benchmark, 18.86% less gas in the delivered core. The advantage is workload-dependent, and ARBFOLD folds the cycle instead of replaying it.
