@@ -13,12 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out pinned dependencies
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Prime pinned Solidity compiler
+        run: cd contracts && forge build
 
       - name: Check formatting
         run: make fmt
@@ -28,4 +31,3 @@ jobs:
 
       - name: Run high-severity lints
         run: make lint
-
