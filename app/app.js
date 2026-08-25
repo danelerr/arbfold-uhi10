@@ -116,6 +116,10 @@ async function loadOnchainProof() {
     const commitLink = document.querySelector("#proof-commit");
     commitLink.textContent = manifest.gitCommit.slice(0, 12);
     commitLink.href = `https://github.com/danelerr/arbfold-uhi10/commit/${manifest.gitCommit}`;
+    setText(
+      "proof-pending-detail",
+      "Committed manifest loaded; transaction, contracts and canonical state are linked to public evidence.",
+    );
   } catch (error) {
     proofStatus.classList.add("pending");
     proofStatus.textContent = "Public deployment pending";
