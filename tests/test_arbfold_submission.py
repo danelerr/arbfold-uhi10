@@ -109,6 +109,30 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
         self.assertIn("manifest.researchOnly !== true", source)
         self.assertIn("manifest.chainId !== 1301", source)
 
+    def test_public_deployment_executor_fails_closed(self) -> None:
+        path = ROOT / "scripts/deploy-unichain-sepolia.sh"
+        source = path.read_text()
+        self.assertNotEqual(path.stat().st_mode & 0o111, 0)
+        for required_guard in (
+            "permission_tail",
+            'git branch --show-current)\" == \"main\"',
+            "working tree must be clean",
+            "local main must equal origin/main",
+            "EXPECTED_CHAIN_ID=1301",
+            "resolve-unichain-pool-manager.sh",
+            "official PoolManager has no bytecode",
+            "has no Unichain Sepolia ETH",
+            "VerifyArbFoldDeployment",
+            "RunArbFoldDemo",
+            "finalize-manifest.sh",
+            "never paste it into chat",
+        ):
+            self.assertIn(required_guard, source)
+
+        ignore = (ROOT / ".gitignore").read_text().splitlines()
+        self.assertIn(".env", ignore)
+        self.assertIn(".env.*", ignore)
+
 
 if __name__ == "__main__":
     unittest.main()

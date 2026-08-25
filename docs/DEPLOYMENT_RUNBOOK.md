@@ -36,6 +36,37 @@ older protocol-specific pages may retain an earlier deployment.
 The commands below use placeholders. Enter secrets in a private local shell;
 the dashboard and repository never request a private key.
 
+### Recommended protected credential handoff
+
+The repository includes a fail-closed executor that performs the complete
+deploy → verify → demo → verify → finalize sequence without committing or
+pushing anything. Keep the dedicated testnet key outside the repository:
+
+```bash
+mkdir -p ~/.config/arbfold
+chmod 700 ~/.config/arbfold
+${EDITOR:-nano} ~/.config/arbfold/unichain-sepolia.env
+chmod 600 ~/.config/arbfold/unichain-sepolia.env
+```
+
+The file contains exactly:
+
+```text
+ARBFOLD_TESTNET_PRIVATE_KEY=0x...
+```
+
+Never paste that value into chat. Once its derived address has Unichain
+Sepolia ETH, run:
+
+```bash
+scripts/deploy-unichain-sepolia.sh
+```
+
+The executor refuses a group/world-readable credential file, a dirty or stale
+`main`, a wrong chain, an empty official PoolManager, a zero balance or an
+existing public manifest. It leaves the finalized manifest for human review;
+publication remains a separate explicit action.
+
 ## 1. Resolve and validate the official manager
 
 ```bash
