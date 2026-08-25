@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "app/**"
+      - "deployments/unichain-sepolia-1301.json"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -30,10 +31,18 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
+      - name: Stage dashboard and optional public deployment evidence
+        run: |
+          mkdir -p _site/deployments
+          cp -R app/. _site/
+          if [[ -f deployments/unichain-sepolia-1301.json ]]; then
+            cp deployments/unichain-sepolia-1301.json _site/deployments/
+          fi
+
       - name: Upload dashboard artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: app
+          path: _site
 
       - name: Deploy dashboard
         id: deployment

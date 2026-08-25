@@ -71,8 +71,19 @@ function reserveLine(reserves) {
 
 async function loadOnchainProof() {
   try {
-    const response = await fetch("../deployments/unichain-sepolia-1301.json", { cache: "no-store" });
-    if (!response.ok) throw new Error(`manifest unavailable (${response.status})`);
+    const manifestPaths = [
+      "./deployments/unichain-sepolia-1301.json",
+      "../deployments/unichain-sepolia-1301.json",
+    ];
+    let response;
+    for (const path of manifestPaths) {
+      const candidate = await fetch(path, { cache: "no-store" });
+      if (candidate.ok) {
+        response = candidate;
+        break;
+      }
+    }
+    if (!response) throw new Error("manifest unavailable");
     const manifest = await response.json();
     if (manifest.researchOnly !== true || manifest.chainId !== 1301 || !manifest.demo) {
       throw new Error("manifest failed the research-deployment schema gate");
