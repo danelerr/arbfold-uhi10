@@ -85,6 +85,11 @@ It also exposes a wallet-free end-to-end `eth_call` and an optional signed
 testnet execution path. `npm run check:live` verifies the same public dry-run
 prerequisites from the command line.
 
+`make submission-preflight` additionally binds the public dashboard, manifest,
+repository copy, Project ID, five-point benchmark and final-form claims into one
+fail-closed release check. Manual identity and video fields remain deliberately
+outside automation.
+
 On 2026-08-25, the resolver returned
 `0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95`; bytecode and chain ID 1301 were
 confirmed immediately before broadcast. Twenty-eight deployment transactions

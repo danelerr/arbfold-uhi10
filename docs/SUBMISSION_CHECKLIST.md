@@ -8,7 +8,7 @@ This matrix separates completed repository work from manual publication tasks. I
 | New Hookathon code | Complete and public | Clean core under [`contracts/`](../contracts/) with reproducible history and CI. |
 | Tests or frontend | Both complete | [`contracts/test/`](../contracts/test/) and [`app/`](../app/) |
 | Public GitHub repository | Complete | [github.com/danelerr/arbfold-uhi10](https://github.com/danelerr/arbfold-uhi10) |
-| Public dashboard | Complete locally; publish updated build | Live RPC reads, no-wallet deployed-contract dry-run, signed testnet flow and interactive benchmark under [`app/`](../app/). |
+| Public dashboard | Complete and public | Live RPC reads, no-wallet deployed-contract dry-run, signed testnet flow and interactive benchmark at [danelerr.github.io/arbfold-uhi10](https://danelerr.github.io/arbfold-uhi10/). |
 | Project thumbnail | Complete | [`assets/arbfold-uhi10-thumbnail.png`](../assets/arbfold-uhi10-thumbnail.png) |
 | Demo/explainer video ≤5 minutes | Pending recording | Use [`VIDEO_RECORDING_RUNBOOK.md`](VIDEO_RECORDING_RUNBOOK.md) and [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md); human voice only. |
 | Problem/background | Drafted | Root [`README.md`](../README.md) and [`JUDGE_GUIDE.md`](JUDGE_GUIDE.md) |
@@ -22,6 +22,18 @@ This matrix separates completed repository work from manual publication tasks. I
 | Submission deadline | Manual form step | Submit before **2026-09-03 23:59 PDT**. |
 
 ## Final manual gate
+
+Run the automated preflight first:
+
+```bash
+make submission-preflight
+```
+
+It verifies the current public dashboard, manifest, RPC deployment, canonical
+benchmark values, Project ID, links and claim boundaries. It reports the final
+video URL, cohort email and X handle separately as manual pending fields. Run
+`node scripts/submission-preflight.mjs --public --strict` only after those
+placeholders have been replaced; strict mode fails while any remain.
 
 Do not submit until all are true:
 

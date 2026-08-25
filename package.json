@@ -6,7 +6,8 @@
   "scripts": {
     "build:dashboard": "node scripts/build-dashboard.mjs",
     "test:dashboard": "node --test tests/dashboard/*.test.mjs",
-    "check:live": "node scripts/check-live-demo.mjs"
+    "check:live": "node scripts/check-live-demo.mjs",
+    "preflight:submission": "node scripts/submission-preflight.mjs --public"
   },
   "dependencies": {
     "viem": "2.55.19"

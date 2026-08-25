@@ -1,4 +1,4 @@
-.PHONY: test test-core test-benchmark test-research test-dashboard test-deployment test-release-fuzz arithmetic coverage slither source-manifest source-manifest-check fmt lint snapshot verify-release video-proof build-dashboard check-live serve
+.PHONY: test test-core test-benchmark test-research test-dashboard test-deployment test-release-fuzz arithmetic coverage slither source-manifest source-manifest-check fmt lint snapshot verify-release video-proof build-dashboard check-live submission-preflight serve
 
 test: test-core test-benchmark test-research test-dashboard
 
@@ -18,6 +18,10 @@ build-dashboard:
 	npm run build:dashboard
 
 check-live:
+	npm run check:live
+
+submission-preflight:
+	npm run preflight:submission
 	npm run check:live
 
 test-deployment:
