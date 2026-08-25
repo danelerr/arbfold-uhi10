@@ -328,21 +328,22 @@ async function loadBenchmark() {
 
 async function readLiveState(blockNumber) {
   const hooks = [manifest.hooks.ab, manifest.hooks.bc, manifest.hooks.ac].map(canonicalAddress);
-  const snapshotBlock = blockNumber ?? await publicClient.getBlockNumber({ cacheTime: 0 });
-  const [ab, bc, ac, calls, rounds, residual] = await Promise.all([
-    publicClient.readContract({ address: hooks[0], abi: hookAbi, functionName: "reserves", blockNumber: snapshotBlock }),
-    publicClient.readContract({ address: hooks[1], abi: hookAbi, functionName: "reserves", blockNumber: snapshotBlock }),
-    publicClient.readContract({ address: hooks[2], abi: hookAbi, functionName: "reserves", blockNumber: snapshotBlock }),
-    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "totalFoldCalls", blockNumber: snapshotBlock }),
-    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "totalFoldRounds", blockNumber: snapshotBlock }),
-    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "lastResidualProfit", blockNumber: snapshotBlock }),
+  const atBlock = blockNumber === undefined ? {} : { blockNumber };
+  const [ab, bc, ac, calls, rounds, residual, observedBlock] = await Promise.all([
+    publicClient.readContract({ address: hooks[0], abi: hookAbi, functionName: "reserves", ...atBlock }),
+    publicClient.readContract({ address: hooks[1], abi: hookAbi, functionName: "reserves", ...atBlock }),
+    publicClient.readContract({ address: hooks[2], abi: hookAbi, functionName: "reserves", ...atBlock }),
+    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "totalFoldCalls", ...atBlock }),
+    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "totalFoldRounds", ...atBlock }),
+    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "lastResidualProfit", ...atBlock }),
+    blockNumber === undefined ? publicClient.getBlockNumber({ cacheTime: 0 }) : Promise.resolve(blockNumber),
   ]);
   return {
     network: normalizeNetwork([ab[0], ab[1], bc[0], bc[1], ac[0], ac[1]]),
     calls,
     rounds,
     residual,
-    blockNumber: snapshotBlock,
+    blockNumber: observedBlock,
   };
 }
 
