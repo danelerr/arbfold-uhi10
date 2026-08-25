@@ -68,7 +68,8 @@ deployment is not authorized for production deposits.
 
 ## Public validation transaction
 
-The wallet path was independently rerun on 2026-08-25:
+The same signed contract path was independently rerun with the dedicated
+testnet wallet on 2026-08-25 (outside the browser UI):
 
 - transaction: [`0x78f325…e7927`](https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927);
 - input: 1,000 Demo B;

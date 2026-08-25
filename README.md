@@ -42,7 +42,7 @@ Then open [http://localhost:8080/](http://localhost:8080/). See the exact
 
 **Judge proof:** [public canonical transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c) · [deployment manifest](deployments/unichain-sepolia-1301.json) · [hook](contracts/src/ArbFoldHook.sol) · [coordinator](contracts/src/ArbFoldCoordinator.sol) · [router](contracts/src/ArbFoldRouter.sol) · [six-path invariants](contracts/test/ArbFoldInvariant.t.sol) · [release evidence](docs/RELEASE_EVIDENCE.md). Run the complete fail-closed gate with `make verify-release`.
 
-**Public-chain status:** the research network and canonical demo are live on **Unichain Sepolia (chain 1301)** using the official v4 `PoolManager`. The latest independent interactive-path validation is [`0x78f325…e7927`](https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927): 1,000 Demo B entered, 0.291279 Demo A reached the user, one fold round ran and residual cyclic profit was zero. Demo assets are freely mintable and have no value.
+**Public-chain status:** the research network and canonical demo are live on **Unichain Sepolia (chain 1301)** using the official v4 `PoolManager`. The latest independent signed-path validation is [`0x78f325…e7927`](https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927): 1,000 Demo B entered, 0.291279 Demo A reached the user, one fold round ran and residual cyclic profit was zero. Demo assets are freely mintable and have no value.
 
 ## What happens in one transaction
 

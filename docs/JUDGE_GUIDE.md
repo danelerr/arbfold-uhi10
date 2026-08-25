@@ -36,7 +36,7 @@ The committed [deployment manifest](../deployments/unichain-sepolia-1301.json)
 records the official PoolManager, 28 deployment transactions, the three hooks,
 the demo state transition and its zero residual profit.
 
-The independently rerun interactive path is
+The independently rerun signed contract path is
 [`0x78f325…e7927`](https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927).
 It moved 1,000 Demo B through the deployed router, returned 0.291279 Demo A,
 executed one fold round and ended with zero residual. The [live-demo

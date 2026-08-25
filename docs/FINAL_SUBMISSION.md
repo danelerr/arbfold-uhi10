@@ -44,7 +44,8 @@ post-deployment verifier confirmed reserve-to-ERC-6909-claim equality,
 underlying backing and zero canonical residual profit. The public canonical
 transaction is
 `0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c`.
-The browser-execution path was independently rerun in transaction
+The same signed contract path was independently rerun with the dedicated
+testnet wallet in transaction
 `0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927`.
 
 ## Problem and background
@@ -115,7 +116,7 @@ independent audit and a separate authorization decision.
 - Dashboard: https://danelerr.github.io/arbfold-uhi10/
 - Repository: https://github.com/danelerr/arbfold-uhi10
 - Canonical transaction: https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c
-- Interactive-path transaction: https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927
+- Signed-path transaction: https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927
 - Deployment manifest: https://danelerr.github.io/arbfold-uhi10/deployments/unichain-sepolia-1301.json
 - Release benchmark: https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md
 - Hook: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldHook.sol#L72
