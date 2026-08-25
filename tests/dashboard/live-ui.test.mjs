@@ -11,7 +11,7 @@ test("demo exposes a compact comparison and modal signed execution path", () => 
   }
   assert.match(html, /<dialog id="testnet-dialog"/);
   assert.doesNotMatch(html, /Live network state|Wallet balances and allowance|REJECTED CLAIM/);
-  assert.match(html, /type="module" src="\.\/app\.js\?v=signed-gas-1"/);
+  assert.match(html, /type="module" src="\.\/app\.js\?v=receipt-state-1"/);
   assert.match(app, /showModal\(\)/);
   assert.match(app, /testnetDialog\.close\(\)/);
 });
@@ -32,4 +32,6 @@ test("live application verifies state and waits for signed receipts", () => {
   assert.match(app, /estimateContractGas/);
   assert.match(app, /gas: bufferedGasLimit\(estimatedGas\)/);
   assert.match(app, /DEMO_ALLOWANCE/);
+  assert.match(app, /getBlockNumber\(\{ cacheTime: 0 \}\)/);
+  assert.match(app, /readLiveState\(receipt\.blockNumber\)/);
 });

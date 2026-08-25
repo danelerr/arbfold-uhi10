@@ -326,23 +326,23 @@ async function loadBenchmark() {
   syncReplayAvailability();
 }
 
-async function readLiveState() {
+async function readLiveState(blockNumber) {
   const hooks = [manifest.hooks.ab, manifest.hooks.bc, manifest.hooks.ac].map(canonicalAddress);
-  const [ab, bc, ac, calls, rounds, residual, blockNumber] = await Promise.all([
-    publicClient.readContract({ address: hooks[0], abi: hookAbi, functionName: "reserves" }),
-    publicClient.readContract({ address: hooks[1], abi: hookAbi, functionName: "reserves" }),
-    publicClient.readContract({ address: hooks[2], abi: hookAbi, functionName: "reserves" }),
-    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "totalFoldCalls" }),
-    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "totalFoldRounds" }),
-    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "lastResidualProfit" }),
-    publicClient.getBlockNumber(),
+  const snapshotBlock = blockNumber ?? await publicClient.getBlockNumber({ cacheTime: 0 });
+  const [ab, bc, ac, calls, rounds, residual] = await Promise.all([
+    publicClient.readContract({ address: hooks[0], abi: hookAbi, functionName: "reserves", blockNumber: snapshotBlock }),
+    publicClient.readContract({ address: hooks[1], abi: hookAbi, functionName: "reserves", blockNumber: snapshotBlock }),
+    publicClient.readContract({ address: hooks[2], abi: hookAbi, functionName: "reserves", blockNumber: snapshotBlock }),
+    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "totalFoldCalls", blockNumber: snapshotBlock }),
+    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "totalFoldRounds", blockNumber: snapshotBlock }),
+    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "lastResidualProfit", blockNumber: snapshotBlock }),
   ]);
   return {
     network: normalizeNetwork([ab[0], ab[1], bc[0], bc[1], ac[0], ac[1]]),
     calls,
     rounds,
     residual,
-    blockNumber,
+    blockNumber: snapshotBlock,
   };
 }
 
@@ -659,7 +659,7 @@ async function executeDemo() {
   });
   setText("live-action-status", `Broadcast ${abbreviated(hash)}. Waiting for Unichain Sepolia…`);
   const receipt = await publicClient.waitForTransactionReceipt({ hash, confirmations: 1 });
-  const after = await readLiveState();
+  const after = await readLiveState(receipt.blockNumber);
   if (receipt.status !== "success") throw new Error("The swap + fold transaction reverted");
   if (!networkChanged(before.network, after.network)) throw new Error("Transaction succeeded but network reserves did not change");
 
