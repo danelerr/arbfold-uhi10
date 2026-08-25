@@ -135,7 +135,7 @@ flowchart LR
 | Claim movement | Coordinator internal | Coordinator → PoolManager | Security-critical multi-ledger transition | `ArbFoldCoordinator::_applyDirect` |
 | CREATE2 hook deployment | Public factory call | Operator → Deployer | Salt is public; constructor validates permission bits | `ArbFoldHookDeployer::deploy` |
 | Demo-token mint | Public EVM call | Any caller → demo token | Testnet-only; not a scarcity asset | `contracts/src/DemoToken.sol::mint` |
-| Live dashboard | Browser load/click | Files + RPC + wallet → Browser | Verifies public evidence; dry-run is unsigned; writes require explicit wallet confirmation | `app/app.js` |
+| Live dashboard | Browser load/click | Files + RPC + wallet → Browser | React/Vite client verifies public evidence; dry-run is unsigned; writes require explicit wallet confirmation | `app/src/` |
 
 ## Top abuse paths
 
@@ -161,7 +161,7 @@ flowchart LR
 | TM-004 | Non-standard token | Pool accepts callback, fee-on-transfer or rebasing token | Settlement amount differs or reenters | Backing drift, DoS | Custody, claims | Scope explicitly restricts tokens; SafeERC20 path in dependency | No onchain token allowlist | Hardcode audited token set or adapter; reentrancy analysis; balance-difference settlement | Compare underlying balances to claim supply after each transaction | Medium if unrestricted | High | high |
 | TM-005 | LP/share holder | Liquidity is withdrawn while network remains configured | Drains one custom pool and makes cycle math unusable | Availability loss | Pool availability | Atomic transactions prevent mid-swap withdrawal; reserve ledger updates on `_burn` | No network pause/minimum reserve lifecycle | Disallow full withdrawal while configured or add explicit decommission state | Monitor reserve floors and full-share redemption attempts | Medium | Medium | medium |
 | TM-006 | Searcher/builder | Public transaction and profitable cycle | Front-runs or captures permissionless solver reward | Lost opportunity; not accounting theft | Solver economics, availability | fold is atomic in originating unlock; reward capped at 10% | No sequencing/private-orderflow mechanism | Document permissionless solver model; optionally bind signed solver plan or private submission later | Compare originator and reward recipient; measure failed opportunities | High | Low | medium |
-| TM-007 | Malicious UI/repository editor | Can alter static files or published branch | Changes displayed benchmark or omits failed gate | Misrepresentation | Benchmark integrity | freeze/raw hashes; UI contains rejected-claim card; report preserved | No signed release artifact/CI verification yet | CI recompute hashes and tests; signed release tag; generate UI data from raw JSON | Verify hashes in CI and before video/submission | Low | Medium | low |
+| TM-007 | Malicious UI/repository editor | Can alter published files or branch | Changes displayed benchmark or omits failed gate | Misrepresentation | Benchmark integrity | freeze/raw hashes; README and immutable report preserve the rejected claim; UI data is generated from raw JSON | No signed release artifact/CI verification yet | CI recompute hashes and tests; signed release tag; retain raw-data generation | Verify hashes in CI and before video/submission | Low | Medium | low |
 | TM-008 | Arbitrary callback caller | Attempts direct callback invocation | Calls router/hook callback outside PoolManager lock | Unauthorized state change | Reserves, settlement | `BaseHook.onlyPoolManager`; router `NotPoolManager` | Relies on immutable manager correctness | Retain immutable manager and callback unit tests | Track reverted unauthorized callbacks in testing | Low | High | low |
 | TM-009 | Malicious site/repository editor | Can replace the dashboard build or manifest | Redirects testnet approval/execution to a lookalike address | Misleading demo or testnet token approval | Wallet intent, evidence integrity | Chain/manifest schema gate, receipt and bytecode checks, explicit wallet confirmations, testnet-only assets | No content-signing or production wallet guarantee | Publish from protected branch, retain CI/build checks and commit-pinned addresses | Compare connected chain and wallet transaction destination to manifest | Low | Medium | medium |
 
@@ -184,7 +184,7 @@ flowchart LR
 | `contracts/test/ArbFoldInvariant.t.sol` | Executable backing and monotonicity security properties | TM-001, TM-003 |
 | `benchmark/arbfold-foundry/src/BenchmarkHarnesses.sol` | Correctness of the public execution comparator | TM-007 |
 | `benchmark/arbfold-results/` | Integrity of measured and rejected claims | TM-007 |
-| `app/app.js` | Public RPC verification, dry-run and signed demo transaction construction | TM-007, TM-009 |
+| `app/src/App.tsx`, `app/src/hooks/useArbFoldDemo.ts` | Public RPC verification, dry-run and signed demo transaction construction | TM-007, TM-009 |
 
 ## Notes on use
 

@@ -4,15 +4,24 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "vite --config vite.config.ts",
+    "typecheck": "tsc --noEmit",
     "build:dashboard": "node scripts/build-dashboard.mjs",
-    "test:dashboard": "node --test tests/dashboard/*.test.mjs",
+    "test:dashboard": "npm run typecheck && node --test tests/dashboard/*.test.mjs",
     "check:live": "node scripts/check-live-demo.mjs",
     "preflight:submission": "node scripts/submission-preflight.mjs --public"
   },
   "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "viem": "2.55.19"
   },
   "devDependencies": {
-    "esbuild": "0.28.2"
+    "@types/node": "^26.3.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "@vitejs/plugin-react": "^6.1.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2"
   }
 }

@@ -24,7 +24,7 @@ before the demo:
 
 1. **Replay the comparison:** click `Replay demo` to see the conventional three-leg backrun and ARBFOLD direct transition run side by side. The comparison loads immediately from the frozen equivalent-state Foundry benchmark while the public Unichain Sepolia deployment is verified independently in parallel.
 2. **Execute it yourself:** click `Run on testnet`, connect a wallet, get valueless demo tokens and submit one atomic `Demo USD-1 → Demo ETH swap + fold`. The compact receipt links the new transaction and reports output, fold rounds, residual arbitrage and gas.
-3. **Use the no-wallet fallback:** inside the testnet panel, expand `Simulate deployed contracts` to execute the complete deployed router call through RPC, return the real output and estimate gas without changing state.
+3. **Use the no-wallet fallback:** inside the testnet panel, expand `No wallet? Preview the deployed transaction without signing.` to execute the complete deployed router call through RPC, return the real output and estimate gas without changing state.
 
 The visual comparison remains usable if the public RPC is slow or unavailable.
 The testnet controls still fail closed: they only enable after checking chain
@@ -38,10 +38,13 @@ For a local copy:
 
 ```bash
 npm ci
-make serve
+npm run dev
 ```
 
-Then open [http://localhost:8080/](http://localhost:8080/). See the exact
+Then open the URL printed by Vite. The dashboard is a small React + Vite +
+TypeScript application; `npm run typecheck` validates the UI and wallet flow,
+while `npm run build:dashboard` creates the GitHub Pages artifact in `dist/`.
+See the exact
 [live-demo walkthrough](docs/LIVE_DEMO_GUIDE.md).
 
 **Judge proof:** [public canonical transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c) · [deployment manifest](deployments/unichain-sepolia-1301.json) · [hook](contracts/src/ArbFoldHook.sol) · [coordinator](contracts/src/ArbFoldCoordinator.sol) · [router](contracts/src/ArbFoldRouter.sol) · [six-path invariants](contracts/test/ArbFoldInvariant.t.sol) · [release evidence](docs/RELEASE_EVIDENCE.md). Run the complete fail-closed gate with `make verify-release`.
@@ -198,7 +201,7 @@ claimed.
 | [`contracts/src/`](contracts/src/) | Clean ARBFOLD hook, coordinator, router and cycle math. |
 | [`contracts/test/`](contracts/test/) | Unit, fuzz, invariant, deployment and gas tests. |
 | [`contracts/script/`](contracts/script/) | Reproducible full demo deployment. |
-| [`app/`](app/) | Live RPC, wallet execution and benchmark dashboard. |
+| [`app/src/`](app/src/) | React + TypeScript UI, live RPC verification, wallet execution and benchmark demo. |
 | [`benchmark/arbfold-foundry/`](benchmark/arbfold-foundry/) | Frozen end-to-end comparison harness. |
 | [`benchmark/arbfold-results/`](benchmark/arbfold-results/) | Immutable raw results and the failed economic gate. |
 | [`benchmark/clean-core-results/`](benchmark/clean-core-results/) | Immutable earlier clean-core validation. |

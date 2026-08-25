@@ -20,14 +20,14 @@ a separate frozen Foundry artifact and is never represented as live chain data.
 1. Open <https://danelerr.github.io/arbfold-uhi10/>.
 2. Click `Run on testnet`.
 3. Confirm the green `Public deployment verified` state.
-4. Expand `Simulate deployed contracts`.
+4. Expand `No wallet? Preview the deployed transaction without signing.`
 5. Change the Demo USD-1 input if desired; the public range is 100–25,000.
-6. Click `Run simulation`.
-5. Expect a result shaped like:
+6. Click `Preview output + gas`.
+7. Expect a result shaped like:
 
 ```text
-PASS · 1,000 Demo B → <live output> Demo A · estimated <live gas> gas
-· no signature · no state change
+Preview passed: 1,000 Demo USD-1 → <live output> Demo ETH
+· about <live gas> gas · no signature · no state change
 ```
 
 This is an `eth_call` through the deployed `ArbFoldRouter`; it executes the
@@ -50,12 +50,12 @@ and offers an installation/open-in-wallet link.
 Steps:
 
 1. Click `Run on testnet` and confirm that the detected wallet name appears.
-2. Click `Connect` and approve account access.
+2. Click `Connect wallet` and approve account access.
 3. Leave the default 1,000 Demo USD-1 input for the clearest demo.
-4. Click `Prepare`. Demo USD-1 is permissionlessly mintable and
+4. Click `Get tokens + approve`. Demo USD-1 is permissionlessly mintable and
    valueless. Depending on existing balance/allowance, the wallet asks for zero,
    one or two preparation transactions.
-5. Click `Execute` and confirm one atomic transaction.
+5. Click `Swap + run ARBFOLD` and confirm one atomic transaction.
 6. Wait for the receipt panel. It must show:
    - an explorer link for the wallet's transaction;
    - gas used;
@@ -79,8 +79,8 @@ The same signed contract path was executed from the public browser UI with the
 dedicated testnet wallet on 2026-08-25:
 
 - transaction: [`0x87a940…5deceb`](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb);
-- input: 1,000 Demo B;
-- output: 0.290518911748886010 Demo A;
+- input: 1,000 Demo USD-1;
+- output: 0.290518911748886010 Demo ETH;
 - fold rounds: 1;
 - residual cyclic profit: 0 wei A.
 

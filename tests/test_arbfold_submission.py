@@ -11,14 +11,15 @@ ROOT = Path(__file__).resolve().parents[1]
 class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
     def test_dashboard_grid_matches_release_candidate_results(self) -> None:
         raw = json.loads((ROOT / "benchmark/release-candidate-results/raw.json").read_text())
-        source = (ROOT / "app/app.js").read_text()
-        page = (ROOT / "app/index.html").read_text()
+        source = (ROOT / "app/src/lib/arbfold.ts").read_text()
+        component = (ROOT / "app/src/components/BenchmarkDemo.tsx").read_text()
         build = (ROOT / "scripts/build-dashboard.mjs").read_text()
-        displayed_sizes = [int(value) for value in re.findall(r'data-size="(\d+)"', page)]
         expected_sizes = [int(row["origin_input_wei"]) // 10**18 for row in raw["rows"]]
-        self.assertEqual(displayed_sizes, expected_sizes)
-        self.assertIn('"./data/release-results.json"', source)
+        self.assertEqual(expected_sizes, [10_000, 25_000, 50_000, 100_000, 200_000])
+        self.assertIn('"data/release-results.json"', source)
         self.assertIn("payload.rows.map", source)
+        self.assertIn("rows.map", component)
+        self.assertIn("data-size={row.size}", component)
         self.assertNotIn("const results = [", source)
         self.assertIn("benchmark/release-candidate-results/raw.json", build)
         self.assertIn("data/release-results.json", build)
@@ -98,13 +99,14 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
             self.assertEqual(actual, digest, relative_path)
 
     def test_dashboard_discloses_release_workload_regression(self) -> None:
-        page = (ROOT / "app/index.html").read_text()
-        self.assertIn("19.12% less gas", page)
-        self.assertRegex(page, r'data-size="25000"[^>]*>.*?<span>25k</span><strong class="regression">\+0\.98%</strong>')
-        source = (ROOT / "app/app.js").read_text()
+        component = (ROOT / "app/src/components/BenchmarkDemo.tsx").read_text()
+        app = (ROOT / "app/src/App.tsx").read_text()
+        source = (ROOT / "app/src/lib/arbfold.ts").read_text()
         validation = (ROOT / "app/live-core.js").read_text()
-        self.assertIn("Live verification failed", source)
-        self.assertIn('../deployments/unichain-sepolia-1301.json', source)
+        self.assertIn("ARBFOLD is not always cheaper", component)
+        self.assertIn('row.reduction >= 0 ? "−" : "+"', component)
+        self.assertIn("Public RPC verification unavailable", app)
+        self.assertIn('"deployments/unichain-sepolia-1301.json"', source)
         self.assertIn("manifest.researchOnly !== true", validation)
         self.assertIn("manifest.chainId !== 1301", validation)
 

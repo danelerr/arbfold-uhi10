@@ -1,0 +1,107 @@
+import { useCallback, useEffect, useState } from "react";
+import { BenchmarkDemo } from "./components/BenchmarkDemo";
+import { TestnetDialog } from "./components/TestnetDialog";
+import {
+  EXPLORER_URL,
+  loadBenchmark,
+  loadManifest,
+  readLiveState,
+  verifyDeployment,
+} from "./lib/arbfold";
+import type { BenchmarkRow, DeploymentManifest } from "./types";
+
+const REPOSITORY = "https://github.com/danelerr/arbfold-uhi10";
+
+export default function App() {
+  const [rows, setRows] = useState<BenchmarkRow[]>([]);
+  const [manifest, setManifest] = useState<DeploymentManifest | null>(null);
+  const [liveReady, setLiveReady] = useState(false);
+  const [proofLabel, setProofLabel] = useState("Verifying public deployment");
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    loadBenchmark()
+      .then((nextRows) => { if (active) setRows(nextRows); })
+      .catch(() => { if (active) setProofLabel("Benchmark data unavailable"); });
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    async function initializeDeployment() {
+      try {
+        const nextManifest = await loadManifest();
+        if (!active) return;
+        setManifest(nextManifest);
+        const state = await verifyDeployment(nextManifest);
+        if (!active) return;
+        setLiveReady(true);
+        setProofLabel(`Public deployment verified · block ${state.blockNumber.toLocaleString("en-US")}`);
+      } catch {
+        if (!active) return;
+        setLiveReady(false);
+        setProofLabel("Public RPC verification unavailable");
+      }
+    }
+    void initializeDeployment();
+    return () => { active = false; };
+  }, []);
+
+  const refreshLiveState = useCallback(async () => {
+    if (!manifest) return;
+    const state = await readLiveState(manifest);
+    setLiveReady(true);
+    setProofLabel(`Public deployment verified · block ${state.blockNumber.toLocaleString("en-US")}`);
+  }, [manifest]);
+
+  const closeDialog = useCallback(() => setDialogOpen(false), []);
+  const transactionUrl = manifest
+    ? `${EXPLORER_URL}/tx/${manifest.canonicalDemoTransaction}`
+    : EXPLORER_URL;
+
+  return (
+    <>
+      <a className="skip-link" href="#main">Skip to demo</a>
+      <header className="site-header shell">
+        <a className="brand" href="#top" aria-label="ARBFOLD demo home">
+          <span className="brand-mark">A</span>
+          <span>ARBFOLD</span>
+        </a>
+        <a className="header-link" href={REPOSITORY}>GitHub</a>
+      </header>
+
+      <main id="main">
+        <BenchmarkDemo rows={rows} onOpenTestnet={() => setDialogOpen(true)} />
+
+        <section className="verify shell" aria-labelledby="verify-title">
+          <div className="section-label">
+            <h2 id="verify-title">Verify everything</h2>
+            <p>{proofLabel}</p>
+          </div>
+          <nav className="verify-links" aria-label="Technical evidence">
+            <a href={transactionUrl} target="_blank" rel="noreferrer">Onchain transaction</a>
+            <a href={`${REPOSITORY}/blob/main/benchmark/release-candidate-results/REPORT.md`}>Benchmark</a>
+            <a href={`${REPOSITORY}/tree/main/contracts/test`}>Tests and invariants</a>
+            <a href={`${REPOSITORY}/blob/main/docs/ARCHITECTURE.md`}>Architecture</a>
+          </nav>
+          <p className="evidence-summary">61 Solidity tests · 10,000 release fuzz cases · stateful invariants · 98.5% line coverage · Slither checked</p>
+        </section>
+      </main>
+
+      <TestnetDialog
+        open={dialogOpen}
+        onClose={closeDialog}
+        manifest={manifest}
+        liveReady={liveReady}
+        proofLabel={proofLabel}
+        onLiveStateChanged={refreshLiveState}
+      />
+
+      <footer className="site-footer shell">
+        <span>ARBFOLD</span>
+        <span>Research-grade execution compression for cooperating Uniswap v4 pools.</span>
+      </footer>
+    </>
+  );
+}

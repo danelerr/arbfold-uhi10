@@ -8,6 +8,8 @@ on:
       - "deployments/unichain-sepolia-1301.json"
       - "benchmark/release-candidate-results/raw.json"
       - "scripts/build-dashboard.mjs"
+      - "vite.config.ts"
+      - "tsconfig.json"
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/pages.yml"
