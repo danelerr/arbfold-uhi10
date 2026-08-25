@@ -1,7 +1,7 @@
 # ARBFOLD
 
 [![ARBFOLD verification](https://github.com/danelerr/arbfold-uhi10/actions/workflows/ci.yml/badge.svg)](https://github.com/danelerr/arbfold-uhi10/actions/workflows/ci.yml)
-[![Live dashboard](https://img.shields.io/badge/live-dashboard-c9ff5b?style=flat&labelColor=111319)](https://danelerr.github.io/arbfold-uhi10/)
+[![Interactive demo](https://img.shields.io/badge/interactive-demo-c9ff5b?style=flat&labelColor=111319)](https://danelerr.github.io/arbfold-uhi10/)
 
 ### 3 swaps → 1 verified transition
 
@@ -15,20 +15,23 @@ The release-candidate code under `contracts/src` measured **440,128 gas for ARBF
 
 **The advantage is workload-dependent:** 4.41% less gas at 10k, **0.98% more at 25k**, and 19.12% less from 50k through 200k in the fixed publication grid.
 
-## Try the real deployment in 30 seconds
+## See it run in 30 seconds
 
-[Open the live ARBFOLD dashboard](https://danelerr.github.io/arbfold-uhi10/).
+[Open the ARBFOLD interactive benchmark](https://danelerr.github.io/arbfold-uhi10/).
 
-The dashboard now has two deliberately separate proof paths:
+The page opens directly on the experiment—there is no marketing flow to finish
+before the demo:
 
-1. **No-wallet live dry-run:** click `Run read-only test`. The browser executes the complete deployed router call through Unichain Sepolia RPC, returns the real output and estimates gas without changing state.
-2. **Signed testnet execution:** expand the optional wallet panel, mint valueless Demo USD-1, approve the exact input and execute one atomic `Demo USD-1 → Demo ETH swap + fold`. The receipt panel links the user's transaction and shows live reserves before and after.
+1. **Replay the verified comparison:** click `Replay verified comparison` to see the conventional three-leg backrun and ARBFOLD direct transition run side by side. The starting event is loaded from the public Unichain Sepolia transaction; the gas comparison is loaded separately from the frozen equivalent-state Foundry benchmark.
+2. **Run the deployed code without a wallet:** click `Run deployed code`, then `Run deployed read-only test`. The browser executes the complete deployed router call through Unichain Sepolia RPC, returns the real output and estimates gas without changing state.
+3. **Optional signed testnet execution:** expand the wallet panel, mint valueless Demo USD-1, approve the exact input and execute one atomic `Demo USD-1 → Demo ETH swap + fold`. The receipt panel links the user's transaction and shows live reserves before and after.
 
-The page first verifies chain ID 1301, both public receipts, deployed bytecode,
-current fold counters and all six reserves. It fails closed instead of replacing
-unavailable chain data with fixtures. The benchmark chart is loaded separately
-from [`raw.json`](benchmark/release-candidate-results/raw.json); it is not
-presented as live state.
+Before enabling the replay, the page verifies chain ID 1301, both public
+receipts, deployed bytecode, current fold counters and all six reserves. It
+fails closed instead of replacing unavailable chain data with fixtures. The
+Foundry comparison comes from [`raw.json`](benchmark/release-candidate-results/raw.json)
+and is explicitly labeled as benchmark evidence—not as one public transaction
+that somehow executes both alternative histories.
 
 For a local copy:
 

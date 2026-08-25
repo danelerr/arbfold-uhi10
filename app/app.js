@@ -64,7 +64,10 @@ let manifest;
 let walletClient;
 let walletAccount;
 let liveReady = false;
+let benchmarkReady = false;
 let actionBusy = false;
+let replayRunning = false;
+let replayTimers = [];
 
 function element(id) {
   return document.querySelector(`#${id}`);
@@ -114,6 +117,70 @@ function describeError(error) {
   return message.split("\n")[0].slice(0, 220);
 }
 
+function syncReplayAvailability() {
+  const button = element("replay-demo");
+  if (!button) return;
+  button.disabled = !benchmarkReady || !liveReady || replayRunning;
+  const replayStatus = element("replay-status")?.textContent || "";
+  if (
+    benchmarkReady
+    && liveReady
+    && !replayRunning
+    && /^(Loading|Benchmark loaded|Replay disabled)/.test(replayStatus)
+  ) {
+    setText("replay-status", "Ready · public transaction verified · frozen benchmark loaded");
+  }
+}
+
+function resetReplayVisuals() {
+  replayTimers.forEach((timer) => window.clearTimeout(timer));
+  replayTimers = [];
+  const consolePanel = element("replay-console");
+  consolePanel?.classList.remove("is-replaying", "is-complete");
+  element("replay-result")?.classList.remove("is-revealed");
+  document.querySelectorAll("[data-replay-step]").forEach((step) => step.classList.remove("is-active", "is-done"));
+}
+
+function scheduleReplayStep(key, delay, speed) {
+  replayTimers.push(window.setTimeout(() => {
+    const step = document.querySelector(`[data-replay-step="${key}"]`);
+    if (!step) return;
+    step.parentElement.querySelectorAll("li.is-active").forEach((active) => {
+      active.classList.remove("is-active");
+      active.classList.add("is-done");
+    });
+    step.classList.add("is-active");
+  }, delay * speed));
+}
+
+function runReplay() {
+  if (!benchmarkReady || !liveReady || replayRunning) return;
+  resetReplayVisuals();
+  replayRunning = true;
+  syncReplayAvailability();
+  const consolePanel = element("replay-console");
+  consolePanel.classList.add("is-replaying");
+  setText("replay-status", "Replaying both equivalent execution paths…");
+
+  const speed = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0.05 : 1;
+  ["backrun-0", "backrun-1", "backrun-2", "backrun-3", "backrun-4"].forEach((key, index) => scheduleReplayStep(key, index * 330, speed));
+  ["direct-0", "direct-1", "direct-2"].forEach((key, index) => scheduleReplayStep(key, index * 470, speed));
+
+  replayTimers.push(window.setTimeout(() => {
+    document.querySelectorAll("[data-replay-step].is-active").forEach((step) => {
+      step.classList.remove("is-active");
+      step.classList.add("is-done");
+    });
+    consolePanel.classList.remove("is-replaying");
+    consolePanel.classList.add("is-complete");
+    element("replay-result").classList.add("is-revealed");
+    setText("replay-status", "Replay complete · same output · same reward · equivalent final reserves");
+    element("replay-demo").innerHTML = "<span aria-hidden=\"true\">↻</span> Replay comparison";
+    replayRunning = false;
+    syncReplayAvailability();
+  }, 1750 * speed));
+}
+
 async function loadJson(paths) {
   for (const path of paths) {
     const response = await fetch(path, { cache: "no-store" });
@@ -150,6 +217,13 @@ async function loadBenchmark() {
       : `${numberFormat.format(Math.abs(gasDelta))} additional gas`);
     setText("selected-size", `${numberFormat.format(size / 1000)}k`);
     buttons.forEach((button) => button.classList.toggle("active", Number(button.dataset.size) === size));
+    if (!replayRunning) {
+      element("replay-result")?.classList.remove("is-revealed");
+      element("replay-console")?.classList.remove("is-complete");
+      setText("replay-status", liveReady
+        ? `Ready to replay the ${numberFormat.format(size / 1000)}k workload`
+        : "Benchmark loaded · waiting for public transaction verification");
+    }
   }
 
   buttons.forEach((button) => {
@@ -157,6 +231,8 @@ async function loadBenchmark() {
     button.addEventListener("click", () => render(Number(button.dataset.size)));
   });
   render(100000);
+  benchmarkReady = true;
+  syncReplayAvailability();
 }
 
 async function readLiveState() {
@@ -195,7 +271,7 @@ function renderManifestSnapshot(data) {
   setText("proof-manager-kind", official ? "Official Uniswap v4 PoolManager" : "Isolated research PoolManager");
   setText("proof-block", numberFormat.format(data.blockNumber));
   setText("proof-source", data.sourceVerification);
-  setExplorerLink("proof-transaction", "tx", data.canonicalDemoTransaction);
+  setExplorerLink("proof-transaction", "tx", data.canonicalDemoTransaction, "View canonical transaction ↗");
   setExplorerLink("proof-manager", "address", data.poolManager);
   setExplorerLink("proof-coordinator", "address", data.coordinator);
   setExplorerLink("proof-router", "address", data.router);
@@ -206,6 +282,10 @@ function renderManifestSnapshot(data) {
   setText("proof-rounds", `${data.demo.foldRounds} verified fold round${data.demo.foldRounds === 1 ? "" : "s"}`);
   setText("proof-reward", `${tokenAmount(data.demo.solverReward)} Demo ETH`);
   setText("proof-residual", `${data.demo.residualProfit} wei Demo ETH`);
+  setText("replay-origin-detail", `${tokenAmount(data.demo.amountIn)} Demo USD-1 → ${tokenAmount(data.demo.amountOut)} Demo ETH · block ${numberFormat.format(data.blockNumber)}`);
+  setText("replay-user-output", `${tokenAmount(data.demo.amountOut)} Demo ETH`);
+  setText("replay-solver-reward", `${tokenAmount(data.demo.solverReward)} Demo ETH`);
+  setText("replay-residual", `${data.demo.residualProfit} wei`);
   setText("proof-pre-reserves", reserveLine(data.demo.preReserves));
   setText("proof-post-reserves", reserveLine(data.demo.postReserves));
   const commitLink = element("proof-commit");
@@ -264,6 +344,7 @@ async function loadOnchainProof() {
     element("live-refresh").disabled = false;
     element("live-simulate").disabled = false;
     element("live-connect").disabled = false;
+    syncReplayAvailability();
   } catch (error) {
     liveReady = false;
     proofStatus.className = "proof-status pending";
@@ -272,6 +353,8 @@ async function loadOnchainProof() {
     setText("live-rpc-status", "RPC verification failed");
     setText("proof-pending-detail", `Fail-closed: the page will not claim a live deployment. ${describeError(error)}`);
     setText("live-action-status", describeError(error));
+    setText("replay-status", `Replay disabled: ${describeError(error)}`);
+    syncReplayAvailability();
   }
 }
 
@@ -486,6 +569,7 @@ async function runAction(action) {
 }
 
 element("live-connect").addEventListener("click", () => runAction(connectWallet));
+element("replay-demo").addEventListener("click", runReplay);
 element("live-refresh").addEventListener("click", () => runAction(refreshLiveState));
 element("live-simulate").addEventListener("click", () => runAction(simulateLiveDemo));
 element("live-prepare").addEventListener("click", () => runAction(prepareDemo));
