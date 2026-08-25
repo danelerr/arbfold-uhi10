@@ -14,7 +14,8 @@ test("dashboard exposes no-wallet and signed live execution paths", () => {
 
 test("live application verifies state and waits for signed receipts", () => {
   assert.match(app, /runReplay/);
-  assert.match(app, /benchmarkReady\s*&&\s*liveReady/);
+  assert.match(app, /button\.disabled = !benchmarkReady \|\| replayRunning/);
+  assert.doesNotMatch(app, /if \(!benchmarkReady \|\| !liveReady \|\| replayRunning\) return/);
   assert.match(app, /verifyLiveDeployment/);
   assert.match(app, /simulateLiveDemo/);
   assert.match(app, /waitForTransactionReceipt/);

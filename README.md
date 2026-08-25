@@ -22,14 +22,15 @@ The release-candidate code under `contracts/src` measured **440,128 gas for ARBF
 The page opens directly on the experiment—there is no marketing flow to finish
 before the demo:
 
-1. **Replay the verified comparison:** click `Replay verified comparison` to see the conventional three-leg backrun and ARBFOLD direct transition run side by side. The starting event is loaded from the public Unichain Sepolia transaction; the gas comparison is loaded separately from the frozen equivalent-state Foundry benchmark.
-2. **Run the deployed code without a wallet:** click `Run deployed code`, then `Run deployed read-only test`. The browser executes the complete deployed router call through Unichain Sepolia RPC, returns the real output and estimates gas without changing state.
+1. **Run the comparison:** click `Run the comparison` to see the conventional three-leg backrun and ARBFOLD direct transition run side by side. The animation and gas comparison load immediately from the frozen equivalent-state Foundry benchmark while the public Unichain Sepolia deployment is verified independently in parallel.
+2. **Try ARBFOLD live without a wallet:** click `Try live`, then `Simulate live swap + fold`. The browser executes the complete deployed router call through Unichain Sepolia RPC, returns the real output and estimates gas without changing state.
 3. **Optional signed testnet execution:** expand the wallet panel, mint valueless Demo USD-1, approve the exact input and execute one atomic `Demo USD-1 → Demo ETH swap + fold`. The receipt panel links the user's transaction and shows live reserves before and after.
 
-Before enabling the replay, the page verifies chain ID 1301, both public
-receipts, deployed bytecode, current fold counters and all six reserves. It
-fails closed instead of replacing unavailable chain data with fixtures. The
-Foundry comparison comes from [`raw.json`](benchmark/release-candidate-results/raw.json)
+The visual comparison remains usable if the public RPC is slow or unavailable.
+The live-proof and deployed-code controls still fail closed: they only report a
+verified deployment after checking chain ID 1301, both public receipts,
+deployed bytecode, current fold counters and all six reserves. The Foundry
+comparison comes from [`raw.json`](benchmark/release-candidate-results/raw.json)
 and is explicitly labeled as benchmark evidence—not as one public transaction
 that somehow executes both alternative histories.
 

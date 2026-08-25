@@ -6,14 +6,14 @@
     <meta name="description" content="Replay ARBFOLD: three arbitrage swaps compressed into one verified Uniswap v4 reserve transition." />
     <title>ARBFOLD — Interactive benchmark</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23c9ff5b'/%3E%3Cpath d='M18 47 29 17h7l11 30h-8l-2-7H27l-2 7Zm11-14h6l-3-10Z' fill='%23090a0d'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="./styles.css?v=interactive-demo-1" />
+    <link rel="stylesheet" href="./styles.css?v=interactive-demo-2" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to demo</a>
     <header class="nav shell">
       <a class="brand" href="#top" aria-label="ARBFOLD demo home"><span class="brand-mark">A</span><span>ARBFOLD</span></a>
       <nav class="nav-links" aria-label="Primary navigation">
-        <a href="#top">Demo</a><a href="#live-demo">Run deployed code</a><a href="#onchain">Proof</a><a href="#evidence">Research</a>
+        <a href="#top">Demo</a><a href="#live-demo">Try live</a><a href="#evidence">Evidence</a><a href="https://github.com/danelerr/arbfold-uhi10">GitHub ↗</a>
       </nav>
       <span class="status"><i></i> Unichain Sepolia</span>
     </header>
@@ -46,7 +46,7 @@
               <strong>A user swap creates a 3-pool arbitrage cycle</strong>
               <small id="replay-origin-detail">Loading canonical swap from the public deployment…</small>
             </div>
-            <button id="replay-demo" class="button primary replay-button" type="button" disabled><span aria-hidden="true">▶</span> Replay verified comparison</button>
+            <button id="replay-demo" class="button primary replay-button" type="button" disabled><span aria-hidden="true">▶</span> Run the comparison</button>
           </div>
 
           <div class="demo-paths">
@@ -89,12 +89,12 @@
               <span>Workload</span>
               <button data-size="10000" disabled>10k</button><button data-size="25000" disabled>25k</button><button data-size="50000" disabled>50k</button><button class="active" data-size="100000" disabled>100k</button><button data-size="200000" disabled>200k</button>
             </div>
-            <p id="replay-status">Loading public transaction and frozen benchmark…</p>
+            <p id="replay-status">Loading benchmark · verifying onchain proof in parallel…</p>
           </div>
         </div>
 
         <p class="source-disclosure">
-          <b>What is replayed:</b> the public ARBFOLD transaction is verified through live RPC; the conventional path and gas comparison come from the frozen, equivalent-state Foundry benchmark.
+          <b>What is replayed:</b> the animation and gas comparison come from the frozen, equivalent-state Foundry benchmark; the public ARBFOLD deployment is verified separately through live RPC.
           Result is workload-dependent: −4.41% at 10k · <strong>+0.98% at 25k</strong> · −19.12% at 50k–200k.
           <a href="https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md">Inspect the benchmark ↗</a>
         </p>
@@ -104,7 +104,7 @@
         <div class="explanation-copy">
           <span class="eyebrow">The intuition</span>
           <h2>Why execute every intermediate trade if the destination is already verifiable?</h2>
-          <p>Arbitrage aligns AMM prices. ARBFOLD does not suppress it: cooperating pools calculate the equivalent post-arbitrage state, verify that no pool invariant decreases and apply that state directly.</p>
+          <p>Arbitrage normally reconciles these pools through three additional swaps. ARBFOLD asks whether cooperating pools need to replay those swaps when they can verify and apply the equivalent final state directly.</p>
           <div class="boundary-callout"><strong>Research boundary</strong><p>Built for new hook-owned pools. It cannot attach to existing Uniswap pools and does not claim material LP net-value improvement.</p></div>
         </div>
         <div class="triangle-compact" aria-label="Three-pool cyclic arbitrage">
@@ -116,8 +116,8 @@
 
       <section id="live-demo" class="live-demo shell">
         <div class="section-heading">
-          <div><span class="eyebrow">Run deployed code</span><h2>Test ARBFOLD without a wallet.</h2></div>
-          <p>The browser executes the deployed router call against current Unichain Sepolia state. No signature, faucet or state change.</p>
+          <div><span class="eyebrow">Try ARBFOLD live</span><h2>Run a real swap + fold. No wallet required.</h2></div>
+          <p>Simulate the deployed Unichain Sepolia contracts through RPC. No tokens, gas, signature or state change.</p>
         </div>
         <div class="try-grid">
           <article class="no-wallet-card">
@@ -125,7 +125,7 @@
             <h3>Simulate a real swap + fold.</h3>
             <p><strong>Demo USD-1 → Demo ETH</strong><br />Then verify and fold the A/B → B/C → A/C cycle.</p>
             <label class="amount-field" for="live-amount"><span>Demo USD-1 input</span><div><input id="live-amount" inputmode="decimal" value="1000" min="100" max="25000" /> <b>USD-1</b></div><small id="live-amount-error">100–25,000 · up to 6 decimals</small></label>
-            <button id="live-simulate" class="button primary full-button" type="button" disabled>Run deployed read-only test</button>
+            <button id="live-simulate" class="button primary full-button" type="button" disabled>Simulate live swap + fold</button>
             <p id="live-simulation-result" class="simulation-result">Waiting for live RPC verification.</p>
           </article>
           <article class="live-state-summary">
@@ -152,33 +152,39 @@
         <p class="live-warning">Valueless demo assets · new hook-owned pools · research deployment · not audited</p>
       </section>
 
-      <section id="onchain" class="onchain shell">
-        <div class="section-heading"><div><span class="eyebrow">Technical proof</span><h2>Now check that the comparison is fair.</h2></div><p>The page verifies the receipt, deployed bytecode, live counters and reserves through RPC before enabling the replay.</p></div>
-        <div class="public-proof-grid">
-          <article class="canonical-card"><span class="metric-label">Canonical ARBFOLD execution</span><h3>One public swap triggered the three-pool fold.</h3><dl><div><dt>Block</dt><dd id="proof-block">—</dd></div><div><dt>User flow</dt><dd id="proof-swap">—</dd></div><div><dt>Fold rounds</dt><dd id="proof-rounds">—</dd></div><div><dt>Remaining arbitrage</dt><dd id="proof-residual">—</dd></div></dl></article>
-          <article class="verification-card"><span class="metric-label">Verification gate</span><h3>Not a screenshot or hardcoded receipt.</h3><ul><li>Correct chain ID</li><li>Successful transaction receipt</li><li>Bytecode at every contract address</li><li>Current counters and reserves</li></ul><p id="proof-pending-detail">Loading a committed, versioned manifest…</p></article>
+      <section id="evidence" class="evidence-hub shell">
+        <div class="section-heading">
+          <div><span class="eyebrow">Technical evidence</span><h2>Inspect the proof only if you want it.</h2></div>
+          <p>The demo stays simple. The transaction, contracts, benchmark and rejected research claim remain one click away.</p>
         </div>
-        <details class="technical-drawer">
-          <summary><span>Contracts, events, reserve trace and backing</span><b>Inspect full proof</b></summary>
+        <nav class="evidence-links" aria-label="ARBFOLD evidence">
+          <a href="https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c">Onchain transaction <span>↗</span></a>
+          <a href="https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md">Benchmark report <span>↗</span></a>
+          <a href="https://github.com/danelerr/arbfold-uhi10/tree/main/contracts/test">Tests &amp; invariants <span>↗</span></a>
+          <a href="https://github.com/danelerr/arbfold-uhi10/blob/main/docs/ARCHITECTURE.md">Architecture <span>↗</span></a>
+        </nav>
+
+        <details id="onchain" class="technical-drawer">
+          <summary><span>Receipt, bytecode, contracts, events and reserve trace</span><b>Inspect live proof</b></summary>
           <div class="drawer-body">
+            <div class="public-proof-grid">
+              <article class="canonical-card"><span class="metric-label">Canonical ARBFOLD execution</span><h3>One public swap triggered the three-pool fold.</h3><dl><div><dt>Block</dt><dd id="proof-block">—</dd></div><div><dt>User flow</dt><dd id="proof-swap">—</dd></div><div><dt>Fold rounds</dt><dd id="proof-rounds">—</dd></div><div><dt>Remaining arbitrage</dt><dd id="proof-residual">—</dd></div></dl></article>
+              <article class="verification-card"><span class="metric-label">Verification gate</span><h3>Not a screenshot or hardcoded receipt.</h3><ul><li>Correct chain ID</li><li>Successful transaction receipt</li><li>Bytecode at every contract address</li><li>Current counters and reserves</li></ul><p id="proof-pending-detail">Loading a committed, versioned manifest…</p></article>
+            </div>
             <div class="onchain-grid"><article class="onchain-card"><span class="metric-label">Deployment provenance</span><dl><div><dt>Source verification</dt><dd id="proof-source">—</dd></div><div><dt>Source commit</dt><dd><a id="proof-commit" rel="noreferrer">—</a></dd></div><div><dt>Solver reward</dt><dd id="proof-reward">—</dd></div></dl></article><article class="onchain-card contracts-card"><span class="metric-label">Deployed contracts</span><dl><div><dt>PoolManager</dt><dd><a id="proof-manager" rel="noreferrer">—</a></dd></div><div><dt>Coordinator</dt><dd><a id="proof-coordinator" rel="noreferrer">—</a></dd></div><div><dt>Router</dt><dd><a id="proof-router" rel="noreferrer">—</a></dd></div><div><dt>Hooks A/B · B/C · A/C</dt><dd><a id="proof-hook-ab" rel="noreferrer">—</a> · <a id="proof-hook-bc" rel="noreferrer">—</a> · <a id="proof-hook-ac" rel="noreferrer">—</a></dd></div></dl></article></div>
             <div class="event-grid"><div><span>SwapAndFold</span><strong>✓ confirmed</strong></div><div><span>FoldRound</span><strong>Receipt trace</strong></div><div><span>Solver reward</span><strong>Bounded onchain</strong></div><div><span>FoldCompleted</span><strong>Residual verified</strong></div></div>
             <div class="reserve-proof"><div><span>Before</span><pre id="proof-pre-reserves">Waiting for public evidence.</pre></div><div><span>After</span><pre id="proof-post-reserves">Waiting for public evidence.</pre></div></div>
           </div>
         </details>
-      </section>
 
-      <section id="evidence" class="evidence shell">
-        <div class="section-heading"><div><span class="eyebrow">Research integrity</span><h2>What survived the experiment—and what did not.</h2></div><p>The system result is validated. The stronger economic claim remains rejected.</p></div>
-        <details id="mechanics" class="technical-drawer mechanics-drawer">
-          <summary><span>Equivalent reserves, invariants and PoolManager backing</span><b>Open canonical state trace</b></summary>
+        <details id="mechanics" class="technical-drawer">
+          <summary><span>Validated system result and rejected economic claim</span><b>Research boundary</b></summary>
           <div class="drawer-body">
-            <div class="state-flow"><div class="state-column"><div class="state-title">After the user swap</div><div class="pool-card"><b>Demo ETH / USD-1</b><span>303.112970 ETH</span><span>1,100,000 USD-1</span></div><div class="pool-card"><b>USD-1 / USD-2</b><span>1,000,000 USD-1</span><span>1,000,000 USD-2</span></div><div class="pool-card"><b>Demo ETH / USD-2</b><span>333.333333 ETH</span><span>1,000,000 USD-2</span></div></div><div class="fold-core"><strong>FOLD</strong><small>2 deterministic rounds</small></div><div class="state-column"><div class="state-title">Equivalent final state</div><div class="pool-card good"><b>Demo ETH / USD-1</b><span>312.268112 ETH</span><span>1,067,843.924 USD-1</span></div><div class="pool-card good"><b>USD-1 / USD-2</b><span>1,032,156.076 USD-1</span><span>968,936.316 USD-2</span></div><div class="pool-card good"><b>Demo ETH / USD-2</b><span>324.092342 ETH</span><span>1,031,063.684 USD-2</span></div></div></div>
+            <div class="evidence-grid"><article class="evidence-card passed"><span class="verdict">VALIDATED RESULT</span><h3>Equivalent state with 19.12% less gas at the canonical workload.</h3><p>Delivered contracts, real PoolManager, fixed five-size grid and reproducible Foundry benchmark.</p></article><article class="evidence-card rejected"><span class="verdict">REJECTED CLAIM</span><h3>Not 10% more LP net value.</h3><p>The measured improvement was <b>0.000287%</b>. The <code>KILL_ARBFOLD economic thesis</code> remains preserved.</p></article></div>
             <div class="proof-grid"><div><span>✓</span><b>Token conservation</b><small>exact totals</small></div><div><span>✓</span><b>PoolManager backing</b><small>claims = reserves</small></div><div><span>✓</span><b>No pool ends worse</b><small>invariants non-decreasing</small></div><div><span>✓</span><b>Atomic settlement</b><small>zero unsettled deltas</small></div></div>
+            <div class="run-panel"><div><span>Run complete gate</span><code>make verify-release</code></div><div><span>Reproduce benchmark</span><code>cd benchmark/arbfold-foundry &amp;&amp; forge test --offline</code></div></div>
           </div>
         </details>
-        <div class="evidence-grid"><article class="evidence-card passed"><span class="verdict">VALIDATED RESULT</span><h3>Equivalent state with 19.12% less gas at the canonical workload.</h3><p>Delivered contracts, real PoolManager, fixed five-size grid and reproducible Foundry benchmark.</p></article><article class="evidence-card rejected"><span class="verdict">REJECTED CLAIM</span><h3>Not 10% more LP net value.</h3><p>The measured improvement was <b>0.000287%</b>. The <code>KILL_ARBFOLD economic thesis</code> remains preserved.</p></article></div>
-        <div class="run-panel"><div><span>Run complete gate</span><code>make verify-release</code></div><div><span>Reproduce benchmark</span><code>cd benchmark/arbfold-foundry &amp;&amp; forge test --offline</code></div></div>
       </section>
     </main>
 

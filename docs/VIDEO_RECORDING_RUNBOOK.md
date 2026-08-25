@@ -48,8 +48,8 @@ output.
 
 | Time | Screen | Action | Message |
 |---:|---|---|---|
-| 0:00–0:45 | Interactive benchmark | The page opens on the experiment. Click `Replay verified comparison` and let both lanes complete. | Conventional execution performs three arbitrage swaps plus reinjection; ARBFOLD applies one verified direct transition to the equivalent state. |
-| 0:45–1:20 | Deployed-code test | Click `Run deployed code`, then `Run deployed read-only test`; show its real quote/gas estimate, current block/reserves and linked signed validation transaction. | The RPC executes the deployed router path now; no wallet is required, and the linked signed transaction proves the contract path persisted onchain. |
+| 0:00–0:45 | Interactive benchmark | The page opens on the experiment. Click `Run the comparison` and let both lanes complete. | Conventional execution performs three arbitrage swaps plus reinjection; ARBFOLD applies one verified direct transition to the equivalent state. |
+| 0:45–1:20 | Deployed-code test | Click `Try live`, then `Simulate live swap + fold`; show its real quote/gas estimate, current block/reserves and linked signed validation transaction. | The RPC executes the deployed router path now; no wallet is required, and the linked signed transaction proves the contract path persisted onchain. |
 | 1:20–1:50 | Workload controls | Return to the top. Click 10k, 25k, 50k, 100k and 200k slowly. Stop at 25k, then return to 100k. | Same user swap, output and reward. The canonical result is 19.12% less gas, but 25k is 0.98% more expensive, so the claim is workload-dependent. |
 | 1:50–2:20 | Public proof and state trace | Scroll to onchain proof and show before/after reserves. | Official Unichain Sepolia PoolManager, live bytecode/counters/reserves, exact claims/backing and zero canonical residual profit. |
 | 2:20–3:00 | Commit-pinned code tabs | Show the highlighted hook, coordinator and router functions. Do not scroll through whole files. | BaseCustomCurve computes the user output; the fixed coordinator transfers backed claims under conservation/invariant guards; the router settles every delta in one unlock. |

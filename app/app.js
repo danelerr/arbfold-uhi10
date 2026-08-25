@@ -120,15 +120,22 @@ function describeError(error) {
 function syncReplayAvailability() {
   const button = element("replay-demo");
   if (!button) return;
-  button.disabled = !benchmarkReady || !liveReady || replayRunning;
+  button.disabled = !benchmarkReady || replayRunning;
   const replayStatus = element("replay-status")?.textContent || "";
+  const proofFailed = element("proof-status")?.textContent === "Live verification failed";
   if (
     benchmarkReady
-    && liveReady
     && !replayRunning
-    && /^(Loading|Benchmark loaded|Replay disabled)/.test(replayStatus)
+    && /^(Loading|Benchmark loaded|Replay disabled|Ready)/.test(replayStatus)
   ) {
-    setText("replay-status", "Ready · public transaction verified · frozen benchmark loaded");
+    setText(
+      "replay-status",
+      liveReady
+        ? "Ready · public transaction verified · frozen benchmark loaded"
+        : proofFailed
+          ? "Ready · frozen benchmark loaded · onchain proof temporarily unavailable"
+        : "Ready · frozen benchmark loaded · verifying onchain proof in parallel",
+    );
   }
 }
 
@@ -154,7 +161,7 @@ function scheduleReplayStep(key, delay, speed) {
 }
 
 function runReplay() {
-  if (!benchmarkReady || !liveReady || replayRunning) return;
+  if (!benchmarkReady || replayRunning) return;
   resetReplayVisuals();
   replayRunning = true;
   syncReplayAvailability();
@@ -175,7 +182,7 @@ function runReplay() {
     consolePanel.classList.add("is-complete");
     element("replay-result").classList.add("is-revealed");
     setText("replay-status", "Replay complete · same output · same reward · equivalent final reserves");
-    element("replay-demo").innerHTML = "<span aria-hidden=\"true\">↻</span> Replay comparison";
+    element("replay-demo").innerHTML = "<span aria-hidden=\"true\">↻</span> Run comparison again";
     replayRunning = false;
     syncReplayAvailability();
   }, 1750 * speed));
@@ -221,8 +228,8 @@ async function loadBenchmark() {
       element("replay-result")?.classList.remove("is-revealed");
       element("replay-console")?.classList.remove("is-complete");
       setText("replay-status", liveReady
-        ? `Ready to replay the ${numberFormat.format(size / 1000)}k workload`
-        : "Benchmark loaded · waiting for public transaction verification");
+        ? `Ready to run the ${numberFormat.format(size / 1000)}k comparison`
+        : `Ready to run the ${numberFormat.format(size / 1000)}k benchmark · verifying onchain proof in parallel`);
     }
   }
 
@@ -353,7 +360,7 @@ async function loadOnchainProof() {
     setText("live-rpc-status", "RPC verification failed");
     setText("proof-pending-detail", `Fail-closed: the page will not claim a live deployment. ${describeError(error)}`);
     setText("live-action-status", describeError(error));
-    setText("replay-status", `Replay disabled: ${describeError(error)}`);
+    setText("replay-status", `Ready · benchmark available · onchain proof unavailable: ${describeError(error)}`);
     syncReplayAvailability();
   }
 }

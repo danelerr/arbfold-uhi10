@@ -6,8 +6,8 @@ Target length: **3:30–4:15**. Use a real human voice. Do not exceed five minut
 
 > A cyclic arbitrage normally reconciles three inconsistent pools by executing three full swaps. Even if a protocol reinjects the profit, the EVM still pays for that full path. ARBFOLD asks whether cooperating v4 pools can reach the same safe state more efficiently.
 
-The page opens directly on `3 swaps → 1 verified transition`. Click `Replay
-verified comparison`; let both execution lanes finish before speaking over the
+The page opens directly on `3 swaps → 1 verified transition`. Click `Run the
+comparison`; let both execution lanes finish before speaking over the
 result.
 
 > The left side executes the conventional user swap, three-leg backrun and
@@ -17,8 +17,8 @@ result.
 
 ## 0:45–1:20 — Run the deployed code
 
-Click `Run deployed code`, point out that no wallet is required, then
-click `Run read-only test`. Show the returned Demo USD-1 → Demo ETH quote and gas estimate before opening the live contract state.
+Click `Try live`, point out that no wallet is required, then click `Simulate
+live swap + fold`. Show the returned Demo USD-1 → Demo ETH quote and gas estimate before opening the live contract state.
 
 > This is not a pre-rendered animation. The page has verified the deployed
 > bytecode and is now executing the complete router call against current

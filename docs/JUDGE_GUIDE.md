@@ -13,15 +13,15 @@ The one-sentence claim is:
 
 > ARBFOLD compresses three arbitrage swaps plus profit reinjection into one verified reserve transition, with the same user output, solver reward and equivalent final reserves. It uses 19.12% less gas at the canonical 100k benchmark.
 
-Click `Replay verified comparison`. The first screen animates the conventional
+Click `Run the comparison`. The first screen animates the conventional
 user swap + three arbitrage swaps + reinjection beside ARBFOLD's user swap +
 verification + direct transition, then reveals the measured gas and equivalence
 checks. No wallet is required.
 
 Change the five workload buttons after the replay. The result is workload-dependent:
 ARBFOLD is 19.12% cheaper at 50k–200k, 4.41% cheaper at 10k and 0.98% more
-expensive at 25k. Then open `Run deployed code` and click `Run deployed read-only
-test`. This executes the complete deployed router call against current Unichain
+expensive at 25k. Then open `Try live` and click `Simulate live swap + fold`.
+This executes the complete deployed router call against current Unichain
 Sepolia state. For a persistent run, expand the optional wallet panel. The
 result panel links the new transaction and shows reserves before and after.
 
