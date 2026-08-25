@@ -15,31 +15,32 @@ ARBFOLD is now a functional research-grade v4 prototype, not only a simulation:
 - onchain conservation, backing, authorization and non-decreasing-invariant checks;
 - unit, fuzz and stateful invariant tests;
 - a reproducible Foundry comparison against a three-leg atomic backrun plus profit reinjection;
-- a public interactive benchmark dashboard.
+- a public interactive benchmark dashboard;
+- a research deployment and canonical transaction on Unichain Sepolia using the official v4 `PoolManager`.
 
 ## Measured result
 
-> **Same outcome. Same user output. Same solver reward. 18.86% less gas at the canonical 100k benchmark.**
+> **Same outcome. Same user output. Same solver reward. 19.12% less gas at the canonical 100k benchmark.**
 
-At 100k, the published safety-hardened core measured:
+At 100k, the delivered release-candidate core measured:
 
 ```text
-Atomic backrun + reinjection   537,896 gas
-ARBFOLD direct transition     436,430 gas
-Reduction                     18.86%
+Atomic backrun + reinjection   544,187 gas
+ARBFOLD direct transition     440,128 gas
+Reduction                     19.12%
 ```
 
 The result is workload-dependent, and we disclose the complete fixed grid:
 
 ```text
-10k      4.21% less
-25k      1.13% more
-50k     18.86% less
-100k    18.86% less
-200k    18.86% less
+10k      4.41% less
+25k      0.98% more
+50k     19.12% less
+100k    19.12% less
+200k    19.12% less
 ```
 
-Across the clean-core gate, the user output and solver reward are identical, the six final reserves agree within 1 wei, PoolManager backing is exact and canonical residual cyclic profit is zero.
+Across the release gate, the user output and solver reward are identical, the six final reserves agree within 1 wei, PoolManager backing is exact and canonical residual cyclic profit is zero. The public demo separately completed two fold rounds with zero residual profit and passed the post-deployment reserve/claim/backing verifier.
 
 ## Research integrity
 
@@ -57,9 +58,11 @@ ARBFOLD does not claim universal economic superiority, production readiness or i
 
 - Repository: https://github.com/danelerr/arbfold-uhi10
 - Live dashboard: https://danelerr.github.io/arbfold-uhi10/
-- Clean-core report: https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/clean-core-results/REPORT.md
+- Release report: https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md
+- Public transaction: https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c
+- Deployment manifest: https://github.com/danelerr/arbfold-uhi10/blob/main/deployments/unichain-sepolia-1301.json
 - CI: https://github.com/danelerr/arbfold-uhi10/actions/workflows/ci.yml
 
 ## Next checkpoint
 
-No new mechanism or sponsor integration. The remaining work is presentation: verify the hosted dashboard, record a human-narrated demo under five minutes, and submit direct links to the hook, coordinator, tests and evidence.
+No new mechanism or sponsor integration. The remaining work is presentation: record a human-narrated demo under five minutes and submit direct links to the hook, coordinator, tests and evidence.

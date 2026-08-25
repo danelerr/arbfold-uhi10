@@ -873,42 +873,42 @@ ARBFOLD is ready for final submission only when all of the following are true:
 
 ### Mechanism integrity
 
-- [ ] No new economic mechanism was added.
-- [ ] User output and solver reward match the reference path.
-- [ ] Final reserves match the reference within the frozen tolerance.
-- [ ] Every accepted transition preserves token totals and non-decreasing invariants.
-- [ ] Every PoolManager unlock finishes with zero deltas.
+- [x] No new economic mechanism was added.
+- [x] User output and solver reward match the reference path.
+- [x] Final reserves match the reference within the frozen tolerance.
+- [x] Every accepted transition preserves token totals and non-decreasing invariants.
+- [x] Every PoolManager unlock finishes with zero deltas.
 
 ### Security evidence
 
-- [ ] All six swap origin/direction paths are fuzzed.
-- [ ] Critical external entry points have negative tests.
-- [ ] Release fuzz/invariant profile passes.
-- [ ] Arithmetic domain and rounding error are documented.
-- [ ] Coverage is measured and published.
-- [ ] Slither has no unresolved critical accounting issue.
+- [x] All six swap origin/direction paths are fuzzed.
+- [x] Critical external entry points have negative tests.
+- [x] Release fuzz/invariant profile passes.
+- [x] Arithmetic domain and rounding error are documented.
+- [x] Coverage is measured and published.
+- [x] Slither has no unresolved critical accounting issue.
 
 ### Public proof
 
-- [ ] Testnet deployment manifest exists.
-- [ ] At least one canonical public transaction is final.
-- [ ] Explorer links and source verification status are public.
-- [ ] Post-deployment reserve/claim/backing verification passes.
-- [ ] Dashboard exposes the proof without requiring a wallet.
+- [x] Testnet deployment manifest exists.
+- [x] At least one canonical public transaction is final.
+- [x] Explorer links and source verification status are public.
+- [x] Post-deployment reserve/claim/backing verification passes.
+- [x] Dashboard exposes the proof without requiring a wallet.
 
 ### Research integrity
 
-- [ ] The 10% LP-value hypothesis remains marked killed.
-- [ ] Historical 39.58% and delivered-core numbers remain separated.
-- [ ] The complete workload grid is visible.
-- [ ] No result was overwritten after observation.
+- [x] The 10% LP-value hypothesis remains marked killed.
+- [x] Historical 39.58% and delivered-core numbers remain separated.
+- [x] The complete workload grid is visible.
+- [x] No result was overwritten after observation.
 
 ### Submission quality
 
-- [ ] Root README gives the result, demo and code in the first viewport.
+- [x] Root README gives the result, demo and code in the first viewport.
 - [ ] Critical links are pinned to the final commit.
 - [ ] Video is under five minutes and understandable in 30 seconds.
-- [ ] Project ID is `HK-UHI10-1057` everywhere.
+- [x] Project ID is `HK-UHI10-1057` in the submission evidence.
 - [ ] Final submission is sent no later than September 2.
 
 ## Explicit post-Hookathon backlog

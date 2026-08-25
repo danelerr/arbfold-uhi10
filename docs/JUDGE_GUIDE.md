@@ -23,6 +23,12 @@ Change the five trade-size buttons. The result is workload-dependent: ARBFOLD is
 
 ## 2:00–3:15 — Check the evidence
 
+First inspect the dashboard's read-only public-proof panel and the [canonical
+Unichain Sepolia transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c).
+The committed [deployment manifest](../deployments/unichain-sepolia-1301.json)
+records the official PoolManager, 28 deployment transactions, the three hooks,
+the demo state transition and its zero residual profit.
+
 ```bash
 cd contracts
 forge test --offline -q

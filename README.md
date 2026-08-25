@@ -19,11 +19,11 @@ The release-candidate code under `contracts/src` measured **440,128 gas for ARBF
 
 [Open the live benchmark dashboard](https://danelerr.github.io/arbfold-uhi10/).
 
-For a local copy, run `python3 -m http.server 8080` and open [http://localhost:8080/app/](http://localhost:8080/app/). The dashboard is dependency-free and uses the five measurements from [`raw.json`](benchmark/release-candidate-results/raw.json). Its read-only onchain panel fails closed until a committed Unichain Sepolia manifest exists; judges never need a wallet.
+For a local copy, run `python3 -m http.server 8080` and open [http://localhost:8080/app/](http://localhost:8080/app/). The dashboard is dependency-free and uses the five measurements from [`raw.json`](benchmark/release-candidate-results/raw.json). Its read-only onchain panel loads the committed Unichain Sepolia manifest; judges never need a wallet.
 
-**Judge proof:** [hook](contracts/src/ArbFoldHook.sol) · [coordinator](contracts/src/ArbFoldCoordinator.sol) · [router](contracts/src/ArbFoldRouter.sol) · [six-path invariants](contracts/test/ArbFoldInvariant.t.sol) · [release evidence](docs/RELEASE_EVIDENCE.md). Run the complete fail-closed gate with `make verify-release`.
+**Judge proof:** [public canonical transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c) · [deployment manifest](deployments/unichain-sepolia-1301.json) · [hook](contracts/src/ArbFoldHook.sol) · [coordinator](contracts/src/ArbFoldCoordinator.sol) · [router](contracts/src/ArbFoldRouter.sol) · [six-path invariants](contracts/test/ArbFoldInvariant.t.sol) · [release evidence](docs/RELEASE_EVIDENCE.md). Run the complete fail-closed gate with `make verify-release`.
 
-**Public-chain status:** deployment is pending. The complete deploy → canonical swap → post-deployment verifier path already runs against a fresh local `PoolManager` in CI; this line and the dashboard will only show an explorer transaction after a real Unichain Sepolia manifest is committed.
+**Public-chain status:** the research network and canonical demo are live on **Unichain Sepolia (chain 1301)** using the official v4 `PoolManager`. All 28 deployment transactions and all three demo transactions finalized successfully; the read-only post-deployment reserve/claim/backing verifier passed. Demo assets are freely mintable and have no value.
 
 ## What happens in one transaction
 
@@ -191,6 +191,8 @@ make test-deployment
 ```
 
 For the research-only Unichain Sepolia path, follow the fail-closed [deployment runbook](docs/DEPLOYMENT_RUNBOOK.md). It resolves the current official v4 PoolManager from Uniswap's deployment feed instead of embedding a potentially stale address. Never place a testnet key or RPC credential in the repository.
+
+The canonical public deployment is recorded in [`deployments/unichain-sepolia-1301.json`](deployments/unichain-sepolia-1301.json). Its source commit is `1c7d7edff2c52fea060beee3e3791a086bcdc044`; explorer source verification is explicitly reported as `not-available`, so the repository, manifest and onchain state remain the reproducible evidence.
 
 ## Explicit limitations
 

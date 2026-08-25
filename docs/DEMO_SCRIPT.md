@@ -18,9 +18,10 @@ Click 10k, 25k, 50k, 100k and 200k. Explicitly show that the direct path costs 0
 
 ## 1:05–1:45 — Same result
 
-Show the before/after reserve section.
+Show the public-proof panel, open the canonical Unichain Sepolia transaction,
+then show the before/after reserve section.
 
-> This is not three numbers changed in memory. The implementation uses a real v4 PoolManager. Each virtual reserve must exactly equal its ERC-6909 claim balance. Token totals are conserved except for the same capped solver reward, no invariant may decrease, and residual cyclic profit is zero in the canonical case.
+> This is not three numbers changed in memory. The public demo uses the official v4 PoolManager on Unichain Sepolia. All 28 deployment transactions and all three demo transactions finalized, and the post-deployment verifier passed. Each virtual reserve must exactly equal its ERC-6909 claim balance. Token totals are conserved except for the same capped solver reward, no invariant may decrease, and residual cyclic profit is zero in the canonical case.
 
 ## 1:45–2:30 — Code
 
