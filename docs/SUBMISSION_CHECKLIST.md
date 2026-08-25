@@ -9,12 +9,14 @@ This matrix separates completed repository work from manual publication tasks. I
 | Tests or frontend | Both complete | [`contracts/test/`](../contracts/test/) and [`app/`](../app/) |
 | Public GitHub repository | Complete | [github.com/danelerr/arbfold-uhi10](https://github.com/danelerr/arbfold-uhi10) |
 | Public dashboard | Complete and verified | [danelerr.github.io/arbfold-uhi10](https://danelerr.github.io/arbfold-uhi10/) returns publicly and the 25k regression is interactive. |
+| Project thumbnail | Complete | [`assets/arbfold-uhi10-thumbnail.png`](../assets/arbfold-uhi10-thumbnail.png) |
 | Demo/explainer video ≤5 minutes | Pending recording | Use [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md); human voice only. |
 | Problem/background | Drafted | Root [`README.md`](../README.md) and [`JUDGE_GUIDE.md`](JUDGE_GUIDE.md) |
 | Impact and uniqueness | Drafted | Same-state execution comparison in README and dashboard; release 19.12%, earlier clean-core 18.86% and frozen v0 39.58% remain separated. |
 | Challenges | Drafted | [`LIMITATIONS.md`](LIMITATIONS.md) and [`THREAT_MODEL.md`](THREAT_MODEL.md) |
 | Future plans | Drafted | [`LIMITATIONS.md`](LIMITATIONS.md) |
-| Partner integrations with exact locations | Complete | Integration table in [`README.md`](../README.md); no unsupported sponsor claims. |
+| Partner integrations with exact locations | Complete | Unichain Sepolia deployment and official v4 `PoolManager` are documented in [`README.md`](../README.md) and the public manifest; no unsupported partner claims. |
+| Final form copy | Complete | [`FINAL_SUBMISSION.md`](FINAL_SUBMISSION.md) contains copy-ready answers and leaves personal fields to Daniel. |
 | Originality and credits | Complete | Paper, Uniswap, OpenZeppelin and Homelander credited in README. |
 | Returning cohort declaration | Manual form step | Select **UHI7** in the final submission form. |
 | Submission deadline | Manual form step | Submit before **2026-09-03 23:59 PDT**. |

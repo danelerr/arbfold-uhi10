@@ -1,5 +1,12 @@
 # ARBFOLD — Absolute Improvement Plan
 
+> **Archived execution plan.** The public Unichain Sepolia deployment, proof
+> panel and Progress Update 1 are complete. Historical pending language and
+> earlier 18.86% planning numbers below are retained only as a dated work
+> record. The current sources of truth are [`RELEASE_EVIDENCE.md`](RELEASE_EVIDENCE.md),
+> [`FINAL_SUBMISSION.md`](FINAL_SUBMISSION.md) and the root README. No further
+> Progress Update 1 action is required.
+
 **Project ID:** `HK-UHI10-1057`  
 **Registered project:** MATURE  
 **Current project:** ARBFOLD  
@@ -215,11 +222,9 @@ These rules apply from this plan onward.
 9. Do not add an external integration merely to qualify for another prize.
 10. Testnet tokens must remain obviously named and documented as valueless demo assets.
 
-## Workstream A — Submit Progress Update 1
+## Workstream A — Progress Update 1 completed
 
-**Priority:** immediate  
-**Deadline:** 2026-08-24  
-**Effort:** 15–30 minutes after Daniel's review
+**Status:** complete; no further action required.
 
 ### Actions
 
@@ -245,11 +250,7 @@ These rules apply from this plan onward.
 
 ### Gate A
 
-- [ ] Daniel has reviewed every field.
-- [ ] The form still contains `HK-UHI10-1057`.
-- [ ] All URLs open in an incognito window.
-- [ ] No field claims production readiness or universal gas savings.
-- [ ] Daniel—not the agent—presses Submit.
+- [x] Completed and removed from the active release path.
 
 ## Workstream B — Make deployment a tested product path
 

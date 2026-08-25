@@ -163,7 +163,10 @@ The project therefore claims an **execution primitive**, not universal economic 
 | OpenZeppelin `BaseCustomCurve` | [`ArbFoldHook._beforeSwap`](contracts/src/ArbFoldHook.sol#L72) | Implements hook-owned constant-product liquidity and return-delta swaps. |
 | v4 `HookMiner` | [`ArbFoldTestBase._mineAndDeploy`](contracts/test/ArbFoldTestBase.sol#L75) and [`DeployArbFold._mineAndDeploy`](contracts/script/DeployArbFold.s.sol#L185) | Mines and deploys addresses with the exact hook permission bits. |
 
-No Chainlink, Reactive Network or other sponsor integration is claimed.
+The only Hookathon partner integration claimed is **Unichain**: ARBFOLD has a
+public research deployment on Unichain Sepolia using the official v4
+`PoolManager`. No Chainlink, Reactive Network or other sponsor integration is
+claimed.
 
 ## Repository map
 
@@ -179,7 +182,9 @@ No Chainlink, Reactive Network or other sponsor integration is claimed.
 | [`benchmark/release-candidate-results/`](benchmark/release-candidate-results/) | Delivered-source report, raw grid, environment and source manifest. |
 | [`docs/`](docs/) | Architecture, limits, judge guide and demo script. |
 | [`docs/DEPLOYMENT_RUNBOOK.md`](docs/DEPLOYMENT_RUNBOOK.md) | Official-manager resolution, deployment, demo, verification and manifest finalization. |
-| [`docs/NEXT_ITERATION_PLAN.md`](docs/NEXT_ITERATION_PLAN.md) | Submission release plan: testnet proof, all-path testing, release gates and calendar. |
+| [`docs/NEXT_ITERATION_PLAN.md`](docs/NEXT_ITERATION_PLAN.md) | Archived execution plan; current evidence lives in the release evidence and final-submission copy. |
+| [`docs/FINAL_SUBMISSION.md`](docs/FINAL_SUBMISSION.md) | Copy-ready final form answers, public proof links and claim boundaries. |
+| [`assets/arbfold-uhi10-thumbnail.png`](assets/arbfold-uhi10-thumbnail.png) | Final submission thumbnail. |
 | [`Makefile`](Makefile) | One-command test, formatting, lint, snapshot and dashboard entry points. |
 
 ## Deploy the demo network
