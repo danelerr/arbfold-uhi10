@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { createPublicClient, getAddress, http, parseAbi } from "viem";
-import { normalizeNetwork, validateManifest } from "../app/live-core.js";
+import { bufferedGasLimit, normalizeNetwork, validateManifest } from "../app/live-core.js";
 
 const rpcUrl = process.env.UNICHAIN_SEPOLIA_RPC_URL || "https://sepolia.unichain.org";
 const manifest = validateManifest(JSON.parse(await readFile(
@@ -94,9 +94,28 @@ if (simulationBalance < simulationAmount || simulationAllowance < simulationAmou
   throw new Error("public RPC dry-run account is not prepared");
 }
 if (simulation.result <= 0n) throw new Error("public RPC dry-run returned no output");
+const signedMinimumOut = simulation.result * 995n / 1000n;
+const signedSimulation = await client.simulateContract({
+  account: simulationAccount,
+  address: getAddress(manifest.router.toLowerCase()),
+  abi: routerAbi,
+  functionName: "swapExactInput",
+  args: [
+    getAddress(manifest.hooks.ab.toLowerCase()),
+    false,
+    simulationAmount,
+    signedMinimumOut,
+    simulationAccount,
+    BigInt(Math.floor(Date.now() / 1_000) + 900),
+  ],
+});
+const signedGasEstimate = await client.estimateContractGas(signedSimulation.request);
+if (signedSimulation.result < signedMinimumOut) throw new Error("signed path violates its minimum output");
+if (bufferedGasLimit(signedGasEstimate) <= signedGasEstimate) throw new Error("signed path gas buffer was not applied");
 
 console.log("PASS: ARBFOLD live demo deployment verified");
 console.log(`chain=${chainId} block=${block} canonicalTx=${manifest.canonicalDemoTransaction}`);
 console.log(`foldCalls=${calls} foldRounds=${rounds} residualWeiA=${residual}`);
 console.log(`AB=${state.abA}/${state.abB} BC=${state.bcB}/${state.bcC} AC=${state.acA}/${state.acC}`);
 console.log(`dryRunInput=${simulationAmount} dryRunOutput=${simulation.result}`);
+console.log(`signedPathMinOut=${signedMinimumOut} signedPathGas=${signedGasEstimate} bufferedGas=${bufferedGasLimit(signedGasEstimate)}`);

@@ -80,3 +80,10 @@ export function reductionPercent(backrun, direct) {
   }
   return ((backrun - direct) / backrun) * 100;
 }
+
+export function bufferedGasLimit(estimate) {
+  if (typeof estimate !== "bigint" || estimate <= 0n) {
+    throw new Error("invalid gas estimate");
+  }
+  return (estimate * 120n + 99n) / 100n;
+}

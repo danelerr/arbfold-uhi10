@@ -11,6 +11,7 @@ import {
   parseUnits,
 } from "viem";
 import {
+  bufferedGasLimit,
   networkChanged,
   normalizeNetwork,
   parseDemoAmount,
@@ -516,6 +517,10 @@ async function connectWallet() {
   walletProvider = candidate.provider;
   await walletProvider.request({ method: "eth_requestAccounts" });
   await switchToUnichain(walletProvider);
+  const connectedChain = await walletProvider.request({ method: "eth_chainId" });
+  if (Number.parseInt(connectedChain, 16) !== CHAIN_ID) {
+    throw new Error("Wallet did not switch to Unichain Sepolia");
+  }
   const accounts = await walletProvider.request({ method: "eth_accounts" });
   if (!accounts.length) throw new Error("No wallet account is connected");
   walletAccount = canonicalAddress(accounts[0]);
@@ -572,7 +577,11 @@ async function sendContract(functionName, address, abi, args) {
     functionName,
     args,
   });
-  const hash = await walletClient.writeContract(simulation.request);
+  const estimatedGas = await publicClient.estimateContractGas(simulation.request);
+  const hash = await walletClient.writeContract({
+    ...simulation.request,
+    gas: bufferedGasLimit(estimatedGas),
+  });
   setText("live-action-status", `Submitted ${abbreviated(hash)}. Waiting for confirmation…`);
   return publicClient.waitForTransactionReceipt({ hash, confirmations: 1 });
 }
@@ -642,7 +651,11 @@ async function executeDemo() {
     functionName: "swapExactInput",
     args: [originHook, false, amount, minimumOut, walletAccount, deadline],
   });
-  const hash = await walletClient.writeContract(execution.request);
+  const estimatedGas = await publicClient.estimateContractGas(execution.request);
+  const hash = await walletClient.writeContract({
+    ...execution.request,
+    gas: bufferedGasLimit(estimatedGas),
+  });
   setText("live-action-status", `Broadcast ${abbreviated(hash)}. Waiting for Unichain Sepolia…`);
   const receipt = await publicClient.waitForTransactionReceipt({ hash, confirmations: 1 });
   const after = await readLiveState();

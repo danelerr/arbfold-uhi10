@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  bufferedGasLimit,
   networkChanged,
   normalizeNetwork,
   parseDemoAmount,
@@ -67,4 +68,11 @@ test("reductionPercent preserves gains and regressions", () => {
   assert.ok(Math.abs(reductionPercent(544187, 440128) - 19.121919487235086) < 1e-12);
   assert.ok(reductionPercent(409381, 413409) < 0);
   assert.throws(() => reductionPercent(0, 1), /invalid gas row/);
+});
+
+test("bufferedGasLimit adds a rounded-up wallet-safe margin", () => {
+  assert.equal(bufferedGasLimit(325_437n), 390_525n);
+  assert.equal(bufferedGasLimit(1n), 2n);
+  assert.throws(() => bufferedGasLimit(0n), /invalid gas estimate/);
+  assert.throws(() => bufferedGasLimit(1), /invalid gas estimate/);
 });

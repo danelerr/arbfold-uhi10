@@ -65,7 +65,7 @@ check("25k regression remains disclosed", regressionIncrease.toFixed(2) === "0.9
 check("Complete five-size grid is displayed", JSON.stringify(displayedSizes) === JSON.stringify(rows.map((row) => row.size)));
 check("Interactive demo remains the first claim", includesAll(page, ["3 arbitrage swaps.", "1 verified transition.", "Replay demo", "Run on testnet"]));
 check("Wallet integration uses EIP-6963", includesAll(app, ["eip6963:requestProvider", "eip6963:announceProvider", "custom(walletProvider)"]));
-check("Wallet bundle is explicitly versioned", page.includes('./app.js?v=wallet-eip6963-1'));
+check("Wallet bundle is explicitly versioned", page.includes('./app.js?v=signed-gas-1'));
 check("Canonical transaction is linked", page.includes(manifest.canonicalDemoTransaction));
 check("Deployment uses Unichain Sepolia", manifest.chainId === 1301 && manifest.network === "unichain-sepolia");
 check("Deployment is explicitly research-only", manifest.researchOnly === true);
@@ -82,7 +82,7 @@ if (publicMode) {
       fetchText(`https://raw.githubusercontent.com/danelerr/arbfold-uhi10/main/README.md?preflight=${cacheKey}`),
     ]);
     const servedManifest = validateManifest(JSON.parse(publicManifest));
-    check("Public dashboard serves current wallet bundle", publicPage.includes("./app.js?v=wallet-eip6963-1"));
+    check("Public dashboard serves current wallet bundle", publicPage.includes("./app.js?v=signed-gas-1"));
     check("Public manifest matches canonical transaction", servedManifest.canonicalDemoTransaction === manifest.canonicalDemoTransaction);
     check("Public repository serves current claim", includesAll(publicReadme, ["19.12% less gas", "0.98% more at 25k"]));
   } catch (error) {
