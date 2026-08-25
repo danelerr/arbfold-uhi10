@@ -6,7 +6,7 @@
     <meta name="description" content="Replay ARBFOLD: three arbitrage swaps compressed into one verified Uniswap v4 reserve transition." />
     <title>ARBFOLD — Interactive benchmark</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23c9ff5b'/%3E%3Cpath d='M18 47 29 17h7l11 30h-8l-2-7H27l-2 7Zm11-14h6l-3-10Z' fill='%23090a0d'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="./styles.css?v=interactive-demo-3" />
+    <link rel="stylesheet" href="./styles.css?v=interactive-demo-4" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to demo</a>
@@ -27,8 +27,9 @@
             <p>Same user output. Same solver reward. Equivalent final reserves.</p>
             <div class="demo-actions">
               <button id="replay-demo" class="button primary replay-button" type="button" disabled><span aria-hidden="true">▶</span> Run the comparison</button>
-              <a id="proof-transaction" class="text-link" rel="noreferrer">View public transaction ↗</a>
+              <a id="hero-execute" class="button testnet-button" href="#execute-live"><span aria-hidden="true">⚡</span> Execute on testnet</a>
             </div>
+            <a id="proof-transaction" class="text-link hero-proof-link" rel="noreferrer">View public transaction ↗</a>
           </div>
 
           <div id="replay-console" class="comparison-stage" aria-label="ARBFOLD interactive benchmark">
@@ -105,31 +106,57 @@
 
       <section id="live-demo" class="live-demo shell">
         <div class="section-heading">
-          <div><span class="eyebrow">Try ARBFOLD live</span><h2>Run a real swap + fold. No wallet required.</h2></div>
-          <p>Simulate the deployed Unichain Sepolia contracts through RPC. No tokens, gas, signature or state change.</p>
+          <div><span class="eyebrow">Live deployment</span><h2>Two ways to prove it runs.</h2></div>
+          <p>Simulate the deployed contracts instantly, or connect a wallet and write a real swap + fold to Unichain Sepolia.</p>
         </div>
         <div class="try-grid">
-          <article class="no-wallet-card">
-            <div class="try-heading"><span>Recommended</span><b>No wallet · no tokens · no gas</b></div>
-            <h3>Simulate a real swap + fold.</h3>
-            <p><strong>Demo USD-1 → Demo ETH</strong><br />Then verify and fold the A/B → B/C → A/C cycle.</p>
+          <article class="live-path simulation-path">
+            <div class="path-heading"><span>01 · Instant proof</span><b>Read-only</b></div>
+            <h3>Simulate without a wallet.</h3>
+            <p>Run the complete deployed router call through RPC. No signature, gas or state change.</p>
+            <div class="path-facts"><span>No wallet</span><span>No tokens</span><span>No gas</span></div>
             <label class="amount-field" for="live-amount"><span>Demo USD-1 input</span><div><input id="live-amount" inputmode="decimal" value="1000" min="100" max="25000" /> <b>USD-1</b></div><small id="live-amount-error">100–25,000 · up to 6 decimals</small></label>
-            <button id="live-simulate" class="button primary full-button" type="button" disabled>Simulate live swap + fold</button>
+            <button id="live-simulate" class="button secondary full-button" type="button" disabled>Run live simulation</button>
             <p id="live-simulation-result" class="simulation-result">Waiting for live RPC verification.</p>
           </article>
-          <article class="live-state-summary">
+          <article id="execute-live" class="live-path execution-path">
+            <div class="execution-beam" aria-hidden="true"></div>
+            <div class="path-heading"><span>02 · Real transaction</span><b class="contract-badge"><i></i> Live contracts</b></div>
+            <h3>Execute on Unichain Sepolia.</h3>
+            <p>Connect your wallet, mint valueless demo tokens and submit one atomic swap + fold.</p>
+
+            <div class="wallet-steps">
+              <div id="wallet-step-connect" class="wallet-step">
+                <span class="step-marker">1</span>
+                <div><b>Connect</b><small id="live-wallet-status" class="live-status">Wallet not connected</small></div>
+                <button id="live-connect" class="button testnet-button" type="button" disabled>Connect wallet</button>
+              </div>
+              <div id="wallet-step-prepare" class="wallet-step">
+                <span class="step-marker">2</span>
+                <div><b>Get demo tokens</b><small>Mint tokens and approve the exact input</small></div>
+                <button id="live-prepare" class="button secondary" type="button" disabled>Get test tokens</button>
+              </div>
+              <div id="wallet-step-execute" class="wallet-step execute-step">
+                <span class="step-marker">3</span>
+                <div><b>Run ARBFOLD</b><small>One signed testnet transaction</small></div>
+                <label class="compact-amount" for="wallet-amount"><input id="wallet-amount" inputmode="decimal" value="1000" min="100" max="25000" /><span>USD-1</span></label>
+                <button id="live-execute" class="button primary" type="button" disabled>Execute swap + fold</button>
+              </div>
+            </div>
+            <small id="wallet-amount-error" class="wallet-amount-error">100–25,000 · up to 6 decimals</small>
+            <p id="live-action-status" class="action-status">Your wallet shows every valueless testnet transaction before signing.</p>
+            <details class="wallet-balance-details">
+              <summary>Wallet balances and allowance</summary>
+              <div class="wallet-balances"><div><span>Gas</span><strong id="live-eth-balance">—</strong></div><div><span>Demo USD-1</span><strong id="live-token-balance">—</strong></div><div><span>Router allowance</span><strong id="live-allowance">—</strong></div></div>
+            </details>
+          </article>
+        </div>
+        <details class="technical-drawer live-state-drawer">
+          <summary><span>Current reserves, counters and RPC block</span><b>Inspect live state</b></summary>
+          <div class="drawer-body"><article class="live-state-summary">
             <div class="live-card-heading"><div><span class="metric-label">Read directly from contracts</span><h3>Live network state</h3></div><button id="live-refresh" class="mini-button" type="button" disabled>Refresh</button></div>
             <div class="live-rpc-strip"><div><span>RPC</span><strong id="live-rpc-status" class="live-status">Connecting…</strong></div><div><span>Block</span><strong id="live-rpc-block">—</strong></div><div><span>Fold calls</span><strong id="live-fold-calls">—</strong></div><div><span>Rounds</span><strong id="live-fold-rounds">—</strong></div><div><span>Residual</span><strong id="live-residual">—</strong></div></div>
             <pre id="live-current-reserves">Reading current reserves from the three deployed hooks…</pre><small>Values correspond to the live block shown above.</small>
-          </article>
-        </div>
-        <details class="technical-drawer wallet-drawer">
-          <summary><span>Optional: submit your own testnet transaction</span><b>Run with wallet</b></summary>
-          <div class="drawer-body"><article class="wallet-card">
-            <div class="live-card-heading"><div><span class="metric-label">Your testnet execution</span><h3 id="live-wallet-status" class="live-status">Wallet not connected</h3></div><button id="live-connect" class="button primary" type="button" disabled>Connect wallet</button></div>
-            <div class="wallet-balances"><div><span>Gas</span><strong id="live-eth-balance">—</strong></div><div><span>Demo USD-1</span><strong id="live-token-balance">—</strong></div><div><span>Router allowance</span><strong id="live-allowance">—</strong></div></div>
-            <div class="live-actions"><button id="live-prepare" class="button secondary" type="button" disabled>1. Mint + approve test input</button><button id="live-execute" class="button primary" type="button" disabled>2. Execute swap + fold</button></div>
-            <p id="live-action-status" class="action-status">Your wallet shows every valueless testnet transaction before signing.</p>
           </article></div>
         </details>
         <article id="live-result" class="live-result" hidden>

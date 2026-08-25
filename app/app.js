@@ -344,10 +344,12 @@ async function loadOnchainProof() {
     proofStatus.textContent = "Live RPC verified";
     element("live-rpc-status").className = "live-status ready";
     setText("live-rpc-status", "Connected to Unichain Sepolia");
+    setText("live-simulation-result", "Ready · deployed router verified through live RPC.");
     setText("proof-pending-detail", "Verified now through RPC: chain ID, canonical receipt, deployed bytecode, live counters and current reserves.");
     element("live-refresh").disabled = false;
     element("live-simulate").disabled = false;
     element("live-connect").disabled = false;
+    element("wallet-step-connect")?.classList.add("is-ready");
     syncReplayAvailability();
   } catch (error) {
     liveReady = false;
@@ -355,6 +357,7 @@ async function loadOnchainProof() {
     proofStatus.textContent = "Live verification failed";
     element("live-rpc-status").className = "live-status error";
     setText("live-rpc-status", "RPC verification failed");
+    setText("live-simulation-result", `Live simulation unavailable · ${describeError(error)}`);
     setText("proof-pending-detail", `Fail-closed: the page will not claim a live deployment. ${describeError(error)}`);
     setText("live-action-status", describeError(error));
     setText("replay-status", `Ready · benchmark available · onchain proof unavailable: ${describeError(error)}`);
@@ -429,7 +432,13 @@ async function connectWallet() {
   setText("live-wallet-status", abbreviated(walletAccount));
   element("live-wallet-status").className = "live-status ready";
   element("live-connect").textContent = "Wallet connected";
+  element("wallet-step-connect")?.classList.remove("is-ready");
+  element("wallet-step-connect")?.classList.add("is-complete");
   await refreshWalletState();
+}
+
+function walletInputAmount() {
+  return parseUnits(parseDemoAmount(element("wallet-amount").value), TOKEN_DECIMALS);
 }
 
 async function refreshWalletState() {
@@ -444,8 +453,19 @@ async function refreshWalletState() {
   setText("live-eth-balance", `${Number(formatEther(eth)).toFixed(5)} ETH`);
   setText("live-token-balance", `${tokenAmount(balance)} Demo USD-1`);
   setText("live-allowance", `${tokenAmount(allowance)} Demo USD-1`);
-  element("live-prepare").disabled = actionBusy;
-  element("live-execute").disabled = actionBusy || balance === 0n || allowance === 0n;
+  let amount = 0n;
+  try {
+    amount = walletInputAmount();
+  } catch {
+    // The input listener renders the actionable validation message.
+  }
+  const prepared = amount > 0n && balance >= amount && allowance >= amount;
+  element("live-prepare").disabled = actionBusy || prepared;
+  element("live-prepare").textContent = prepared ? "Tokens ready" : "Get test tokens";
+  element("live-execute").disabled = actionBusy || !prepared;
+  element("wallet-step-prepare")?.classList.toggle("is-complete", prepared);
+  element("wallet-step-prepare")?.classList.toggle("is-ready", !prepared);
+  element("wallet-step-execute")?.classList.toggle("is-ready", prepared);
 }
 
 async function sendContract(functionName, address, abi, args) {
@@ -462,7 +482,7 @@ async function sendContract(functionName, address, abi, args) {
 }
 
 async function prepareDemo() {
-  const amount = parseUnits(parseDemoAmount(element("live-amount").value), TOKEN_DECIMALS);
+  const amount = walletInputAmount();
   const tokenB = canonicalAddress(manifest.tokens.b);
   const router = canonicalAddress(manifest.router);
   const [balance, allowance] = await Promise.all([
@@ -497,7 +517,7 @@ function decodedEvents(receipt) {
 }
 
 async function executeDemo() {
-  const amount = parseUnits(parseDemoAmount(element("live-amount").value), TOKEN_DECIMALS);
+  const amount = walletInputAmount();
   const router = canonicalAddress(manifest.router);
   const originHook = canonicalAddress(manifest.hooks.ab);
   const tokenB = canonicalAddress(manifest.tokens.b);
@@ -584,6 +604,19 @@ element("live-amount").addEventListener("input", () => {
     setText("live-amount-error", "");
   } catch (error) {
     setText("live-amount-error", error.message);
+  }
+});
+element("wallet-amount").addEventListener("input", async () => {
+  try {
+    parseDemoAmount(element("wallet-amount").value);
+    setText("wallet-amount-error", "");
+    if (walletAccount) await refreshWalletState();
+  } catch (error) {
+    setText("wallet-amount-error", error.message);
+    element("live-prepare").disabled = true;
+    element("live-execute").disabled = true;
+    element("wallet-step-prepare")?.classList.remove("is-ready", "is-complete");
+    element("wallet-step-execute")?.classList.remove("is-ready");
   }
 });
 

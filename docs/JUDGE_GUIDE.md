@@ -21,10 +21,11 @@ checks. No wallet is required.
 Expand `Benchmark scope and workload grid`, then change the five workload buttons.
 The result is workload-dependent:
 ARBFOLD is 19.12% cheaper at 50k–200k, 4.41% cheaper at 10k and 0.98% more
-expensive at 25k. Then open `Try live` and click `Simulate live swap + fold`.
+expensive at 25k. Then open `Try live` and click `Run live simulation`.
 This executes the complete deployed router call against current Unichain
-Sepolia state. For a persistent run, expand the optional wallet panel. The
-result panel links the new transaction and shows reserves before and after.
+Sepolia state. The adjacent `Execute on Unichain Sepolia` path exposes the
+signed `Connect → Get demo tokens → Run ARBFOLD` flow. Its result panel links
+the new transaction and shows reserves before and after.
 
 ## 0:45–2:00 — Inspect the v4-native path
 

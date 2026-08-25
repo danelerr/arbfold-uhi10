@@ -23,8 +23,8 @@ The page opens directly on the experiment—there is no marketing flow to finish
 before the demo:
 
 1. **Run the comparison:** click `Run the comparison` to see the conventional three-leg backrun and ARBFOLD direct transition run side by side. The animation and gas comparison load immediately from the frozen equivalent-state Foundry benchmark while the public Unichain Sepolia deployment is verified independently in parallel.
-2. **Try ARBFOLD live without a wallet:** click `Try live`, then `Simulate live swap + fold`. The browser executes the complete deployed router call through Unichain Sepolia RPC, returns the real output and estimates gas without changing state.
-3. **Optional signed testnet execution:** expand the wallet panel, mint valueless Demo USD-1, approve the exact input and execute one atomic `Demo USD-1 → Demo ETH swap + fold`. The receipt panel links the user's transaction and shows live reserves before and after.
+2. **Try ARBFOLD live without a wallet:** click `Try live`, then `Run live simulation`. The browser executes the complete deployed router call through Unichain Sepolia RPC, returns the real output and estimates gas without changing state.
+3. **Execute it yourself:** click `Execute on testnet` in the hero, connect a wallet, get valueless demo tokens and submit one atomic `Demo USD-1 → Demo ETH swap + fold`. The receipt panel links the new transaction and shows live reserves before and after.
 
 The visual comparison remains usable if the public RPC is slow or unavailable.
 The live-proof and deployed-code controls still fail closed: they only report a

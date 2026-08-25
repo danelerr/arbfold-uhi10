@@ -17,13 +17,15 @@ result.
 
 ## 0:45–1:20 — Run the deployed code
 
-Click `Try live`, point out that no wallet is required, then click `Simulate
-live swap + fold`. Show the returned Demo USD-1 → Demo ETH quote and gas estimate before opening the live contract state.
+Click `Try live` and show the two visible paths: instant read-only simulation
+and real testnet execution. Click `Run live simulation`, then show the returned
+Demo USD-1 → Demo ETH quote and gas estimate before opening the live contract state.
 
 > This is not a pre-rendered animation. The page has verified the deployed
 > bytecode and is now executing the complete router call against current
 > Unichain Sepolia state. The dry-run needs no wallet and changes no state. A
-> signed run uses the adjacent wallet flow and produces its own explorer receipt.
+> The adjacent wallet flow makes the deployed protocol directly executable and
+> produces its own explorer receipt.
 
 Open the latest interactive validation transaction and show its `SwapAndFold`,
 `FoldRound` and `FoldCompleted` evidence.

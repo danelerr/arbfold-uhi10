@@ -5,10 +5,12 @@ import test from "node:test";
 const html = await readFile(new URL("../../app/index.html", import.meta.url), "utf8");
 const app = await readFile(new URL("../../app/app.js", import.meta.url), "utf8");
 
-test("dashboard exposes no-wallet and signed live execution paths", () => {
-  for (const id of ["replay-demo", "replay-result", "live-simulate", "live-connect", "live-prepare", "live-execute", "live-result-tx"]) {
+test("dashboard exposes no-wallet and prominent signed live execution paths", () => {
+  for (const id of ["replay-demo", "replay-result", "hero-execute", "live-simulate", "execute-live", "live-connect", "live-prepare", "wallet-amount", "live-execute", "live-result-tx"]) {
     assert.match(html, new RegExp(`id=["']${id}["']`));
   }
+  assert.match(html, /href="#execute-live"/);
+  assert.doesNotMatch(html, /Optional: submit your own testnet transaction/);
   assert.match(html, /type="module" src="\.\/app\.js"/);
 });
 
