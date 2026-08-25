@@ -5,7 +5,8 @@
 Open the [live dashboard](https://danelerr.github.io/arbfold-uhi10/), or serve the repository locally with:
 
 ```bash
-python3 -m http.server 8080
+npm ci
+make serve
 ```
 
 The one-sentence claim is:
@@ -13,6 +14,12 @@ The one-sentence claim is:
 > Same outcome. Same user output. Same solver reward. ARBFOLD uses 19.12% less gas at the canonical 100k benchmark.
 
 Change the five trade-size buttons. The result is workload-dependent: ARBFOLD is 19.12% cheaper at 50k–200k, 4.41% cheaper at 10k and 0.98% more expensive at 25k.
+
+Before reading code, open `Live demo` and click `Dry-run deployed swap + fold
+(no wallet)`. This executes the complete deployed router call against current
+Unichain Sepolia state. For a persistent run, connect a wallet and use the
+two-step mint/approve then swap/fold flow. The result panel links the new
+transaction and shows reserves before and after.
 
 ## 0:45–2:00 — Inspect the v4-native path
 
@@ -23,11 +30,18 @@ Change the five trade-size buttons. The result is workload-dependent: ARBFOLD is
 
 ## 2:00–3:15 — Check the evidence
 
-First inspect the dashboard's read-only public-proof panel and the [canonical
+First inspect the dashboard's live RPC proof panel and the [canonical
 Unichain Sepolia transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c).
 The committed [deployment manifest](../deployments/unichain-sepolia-1301.json)
 records the official PoolManager, 28 deployment transactions, the three hooks,
 the demo state transition and its zero residual profit.
+
+The independently rerun interactive path is
+[`0x78f325…e7927`](https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927).
+It moved 1,000 Demo B through the deployed router, returned 0.291279 Demo A,
+executed one fold round and ended with zero residual. The [live-demo
+guide](LIVE_DEMO_GUIDE.md) separates the no-wallet `eth_call`, signed transaction
+and frozen benchmark evidence.
 
 ```bash
 cd contracts

@@ -12,21 +12,16 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
     def test_dashboard_grid_matches_release_candidate_results(self) -> None:
         raw = json.loads((ROOT / "benchmark/release-candidate-results/raw.json").read_text())
         source = (ROOT / "app/app.js").read_text()
-        rows = re.findall(
-            r"size:\s*(\d+),\s*backrun:\s*(\d+),\s*direct:\s*(\d+),\s*ratioBps:\s*(\d+)",
-            source,
-        )
-        displayed = [tuple(map(int, row)) for row in rows]
-        expected = [
-            (
-                int(row["origin_input_wei"]) // 10**18,
-                row["backrun_total_gas"],
-                row["direct_total_gas"],
-                row["gas_ratio_bps"],
-            )
-            for row in raw["rows"]
-        ]
-        self.assertEqual(displayed, expected)
+        page = (ROOT / "app/index.html").read_text()
+        build = (ROOT / "scripts/build-dashboard.mjs").read_text()
+        displayed_sizes = [int(value) for value in re.findall(r'data-size="(\d+)"', page)]
+        expected_sizes = [int(row["origin_input_wei"]) // 10**18 for row in raw["rows"]]
+        self.assertEqual(displayed_sizes, expected_sizes)
+        self.assertIn('"./data/release-results.json"', source)
+        self.assertIn("payload.rows.map", source)
+        self.assertNotIn("const results = [", source)
+        self.assertIn("benchmark/release-candidate-results/raw.json", build)
+        self.assertIn("data/release-results.json", build)
 
     def test_dashboard_discloses_failed_economic_gate(self) -> None:
         page = (ROOT / "app/index.html").read_text()
@@ -104,10 +99,11 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
         self.assertIn("19.12% less gas", page)
         self.assertIn("+0.98% at 25k", page)
         source = (ROOT / "app/app.js").read_text()
-        self.assertIn("Public deployment pending", source)
+        validation = (ROOT / "app/live-core.js").read_text()
+        self.assertIn("Live verification failed", source)
         self.assertIn('../deployments/unichain-sepolia-1301.json', source)
-        self.assertIn("manifest.researchOnly !== true", source)
-        self.assertIn("manifest.chainId !== 1301", source)
+        self.assertIn("manifest.researchOnly !== true", validation)
+        self.assertIn("manifest.chainId !== 1301", validation)
 
     def test_public_deployment_executor_fails_closed(self) -> None:
         path = ROOT / "scripts/deploy-unichain-sepolia.sh"

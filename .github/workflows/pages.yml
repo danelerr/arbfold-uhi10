@@ -6,6 +6,10 @@ on:
     paths:
       - "app/**"
       - "deployments/unichain-sepolia-1301.json"
+      - "benchmark/release-candidate-results/raw.json"
+      - "scripts/build-dashboard.mjs"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -28,21 +32,25 @@ jobs:
       - name: Check out dashboard
         uses: actions/checkout@v6
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Build live dashboard
+        run: |
+          npm ci
+          npm run test:dashboard
+          npm run build:dashboard
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-
-      - name: Stage dashboard and optional public deployment evidence
-        run: |
-          mkdir -p _site/deployments
-          cp -R app/. _site/
-          if [[ -f deployments/unichain-sepolia-1301.json ]]; then
-            cp deployments/unichain-sepolia-1301.json _site/deployments/
-          fi
 
       - name: Upload dashboard artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: _site
+          path: dist
 
       - name: Deploy dashboard
         id: deployment

@@ -54,6 +54,22 @@
     "a": "0x536eD5b326d148fB0097b1f29F0Cb45862b91DC7"
   },
   "usesExistingManager": true,
+  "interactiveDemo": {
+    "amountIn": "1000000000000000000000",
+    "amountOut": "291279366794057286",
+    "blockNumber": 60817602,
+    "foldRounds": 1,
+    "residualProfit": "0",
+    "solverReward": "9092672678964",
+    "transaction": "0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927",
+    "user": "0x75464f762bc50d0A0B127ab5a085504BF102Bb88"
+  },
+  "rpcSimulation": {
+    "account": "0x75464f762bc50d0A0B127ab5a085504BF102Bb88",
+    "allowanceBlock": 60817719,
+    "allowanceTransaction": "0xc759e250ba10f2124b389dc5bba9b245ebed41af0866cbf95b4fec537f3ca030",
+    "maximumInput": "25000000000000000000000"
+  },
   "demo": {
     "amountIn": "100000000000000000000000",
     "amountOut": "30220363129338304386",

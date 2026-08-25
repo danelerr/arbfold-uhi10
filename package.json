@@ -1,0 +1,17 @@
+{
+  "name": "arbfold-uhi10-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:dashboard": "node scripts/build-dashboard.mjs",
+    "test:dashboard": "node --test tests/dashboard/*.test.mjs",
+    "check:live": "node scripts/check-live-demo.mjs"
+  },
+  "dependencies": {
+    "viem": "2.55.19"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

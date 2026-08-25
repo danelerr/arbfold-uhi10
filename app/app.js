@@ -1,64 +1,94 @@
-const results = [
-  { size: 10000, backrun: 407272, direct: 389292, ratioBps: 9558 },
-  { size: 25000, backrun: 409381, direct: 413409, ratioBps: 10098 },
-  { size: 50000, backrun: 544186, direct: 440127, ratioBps: 8087 },
-  { size: 100000, backrun: 544187, direct: 440128, ratioBps: 8087 },
-  { size: 200000, backrun: 544177, direct: 440117, ratioBps: 8087 },
-];
+import {
+  createPublicClient,
+  createWalletClient,
+  custom,
+  decodeEventLog,
+  formatEther,
+  formatUnits,
+  getAddress,
+  http,
+  parseAbi,
+  parseUnits,
+} from "viem";
+import {
+  networkChanged,
+  normalizeNetwork,
+  parseDemoAmount,
+  reductionPercent,
+  validateManifest,
+} from "./live-core.js";
 
-const format = new Intl.NumberFormat("en-US");
-const buttons = [...document.querySelectorAll("[data-size]")];
-const backrunGas = document.querySelector("#backrun-gas");
-const directGas = document.querySelector("#direct-gas");
-const backrunBar = document.querySelector("#backrun-bar");
-const directBar = document.querySelector("#direct-bar");
-const saving = document.querySelector("#gas-saving");
-const saved = document.querySelector("#gas-saved");
-const selectedSize = document.querySelector("#selected-size");
+const CHAIN_ID = 1301;
+const CHAIN_HEX = "0x515";
+const RPC_URL = "https://sepolia.unichain.org";
+const EXPLORER_URL = "https://sepolia.uniscan.xyz";
+const TOKEN_DECIMALS = 18;
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-function render(size) {
-  const row = results.find((item) => item.size === size);
-  const reduction = ((row.backrun - row.direct) / row.backrun) * 100;
-  const maximum = Math.max(row.backrun, row.direct);
-  backrunGas.textContent = format.format(row.backrun);
-  directGas.textContent = format.format(row.direct);
-  backrunBar.style.width = `${(row.backrun / maximum) * 100}%`;
-  directBar.style.width = `${(row.direct / maximum) * 100}%`;
-  saving.textContent = reduction >= 0 ? `${reduction.toFixed(2)}% less` : `${Math.abs(reduction).toFixed(2)}% more`;
-  const gasDelta = row.backrun - row.direct;
-  saved.textContent = gasDelta >= 0
-    ? `${format.format(gasDelta)} gas avoided`
-    : `${format.format(Math.abs(gasDelta))} additional gas`;
-  selectedSize.textContent = `${format.format(size / 1000)}k`;
-  buttons.forEach((button) => button.classList.toggle("active", Number(button.dataset.size) === size));
-}
+const unichainSepolia = {
+  id: CHAIN_ID,
+  name: "Unichain Sepolia",
+  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+  rpcUrls: { default: { http: [RPC_URL] } },
+  blockExplorers: { default: { name: "Uniscan", url: EXPLORER_URL } },
+  testnet: true,
+};
 
-buttons.forEach((button) => button.addEventListener("click", () => render(Number(button.dataset.size))));
-render(100000);
+const hookAbi = parseAbi(["function reserves() view returns (uint256 reserve0, uint256 reserve1)"]);
+const coordinatorAbi = parseAbi([
+  "function totalFoldCalls() view returns (uint256)",
+  "function totalFoldRounds() view returns (uint256)",
+  "function lastResidualProfit() view returns (uint256)",
+  "event FoldRound(address indexed originHook, address indexed solver, uint256 indexed round, bool reverse, uint256 threatenedProfit, uint256 solverReward)",
+  "event FoldCompleted(address indexed originHook, address indexed solver, uint256 rounds, uint256 residualProfit)",
+]);
+const routerAbi = parseAbi([
+  "function swapExactInput(address hook, bool zeroForOne, uint256 amountIn, uint256 minAmountOut, address solver, uint256 deadline) returns (uint256 amountOut)",
+  "event SwapAndFold(address indexed payer, address indexed hook, address indexed solver, bool zeroForOne, uint256 amountIn, uint256 amountOut)",
+]);
+const tokenAbi = parseAbi([
+  "function mint(address to, uint256 amount)",
+  "function approve(address spender, uint256 amount) returns (bool)",
+  "function balanceOf(address account) view returns (uint256)",
+  "function allowance(address owner, address spender) view returns (uint256)",
+  "function symbol() view returns (string)",
+]);
 
-const zeroAddress = "0x0000000000000000000000000000000000000000";
-const proofStatus = document.querySelector("#proof-status");
+const publicClient = createPublicClient({
+  chain: unichainSepolia,
+  transport: http(RPC_URL, { retryCount: 3, retryDelay: 500 }),
+});
 
-function abbreviated(value) {
-  return value && value.startsWith("0x") ? `${value.slice(0, 8)}…${value.slice(-6)}` : value;
-}
+const numberFormat = new Intl.NumberFormat("en-US", { maximumFractionDigits: 6 });
+let manifest;
+let walletClient;
+let walletAccount;
+let liveReady = false;
+let actionBusy = false;
 
-function tokenAmount(value) {
-  if (value === undefined || value === null) return "—";
-  const amount = BigInt(value);
-  const whole = amount / 10n ** 18n;
-  const fraction = (amount % 10n ** 18n).toString().padStart(18, "0").slice(0, 6).replace(/0+$/, "");
-  return fraction ? `${format.format(whole)}.${fraction}` : format.format(whole);
+function element(id) {
+  return document.querySelector(`#${id}`);
 }
 
 function setText(id, value) {
-  document.querySelector(`#${id}`).textContent = value;
+  const target = element(id);
+  if (target) target.textContent = value;
 }
 
-function setExplorerLink(id, base, kind, value) {
-  const link = document.querySelector(`#${id}`);
-  link.textContent = abbreviated(value);
-  link.href = `${base}/${kind}/${value}`;
+function abbreviated(value) {
+  return value?.startsWith("0x") ? `${value.slice(0, 8)}…${value.slice(-6)}` : value;
+}
+
+function canonicalAddress(value) {
+  return getAddress(value.toLowerCase());
+}
+
+function tokenAmount(value, precision = 6) {
+  if (value === undefined || value === null) return "—";
+  const rendered = formatUnits(BigInt(value), TOKEN_DECIMALS);
+  const [whole, fraction = ""] = rendered.split(".");
+  const shortFraction = fraction.slice(0, precision).replace(/0+$/, "");
+  return shortFraction ? `${Number(whole).toLocaleString("en-US")}.${shortFraction}` : Number(whole).toLocaleString("en-US");
 }
 
 function reserveLine(reserves) {
@@ -69,65 +99,413 @@ function reserveLine(reserves) {
   ].join("\n");
 }
 
-async function loadOnchainProof() {
-  try {
-    const manifestPaths = [
-      "./deployments/unichain-sepolia-1301.json",
-      "../deployments/unichain-sepolia-1301.json",
-    ];
-    let response;
-    for (const path of manifestPaths) {
-      const candidate = await fetch(path, { cache: "no-store" });
-      if (candidate.ok) {
-        response = candidate;
-        break;
-      }
-    }
-    if (!response) throw new Error("manifest unavailable");
-    const manifest = await response.json();
-    if (manifest.researchOnly !== true || manifest.chainId !== 1301 || !manifest.demo) {
-      throw new Error("manifest failed the research-deployment schema gate");
-    }
+function setExplorerLink(id, kind, value, label = abbreviated(value)) {
+  const link = element(id);
+  link.textContent = label;
+  link.href = `${EXPLORER_URL}/${kind}/${value}`;
+  link.target = "_blank";
+}
 
-    const explorer = manifest.explorerBaseUrl.replace(/\/$/, "");
-    const official = manifest.officialPoolManager !== zeroAddress
-      && manifest.officialPoolManager.toLowerCase() === manifest.poolManager.toLowerCase();
-    proofStatus.classList.add("ready");
-    proofStatus.textContent = "Verified public evidence";
-    setText("proof-network", `${manifest.network} · chain ${manifest.chainId}`);
-    setText("proof-manager-kind", official ? "Official Uniswap v4 PoolManager" : "Isolated research PoolManager");
-    setText("proof-block", format.format(manifest.blockNumber));
-    setText("proof-source", manifest.sourceVerification);
-    setExplorerLink("proof-transaction", explorer, "tx", manifest.canonicalDemoTransaction);
-    setExplorerLink("proof-manager", explorer, "address", manifest.poolManager);
-    setExplorerLink("proof-coordinator", explorer, "address", manifest.coordinator);
-    setExplorerLink("proof-router", explorer, "address", manifest.router);
-    setExplorerLink("proof-hook-ab", explorer, "address", manifest.hooks.ab);
-    setExplorerLink("proof-hook-bc", explorer, "address", manifest.hooks.bc);
-    setExplorerLink("proof-hook-ac", explorer, "address", manifest.hooks.ac);
+function describeError(error) {
+  const message = error?.shortMessage || error?.details || error?.message || String(error);
+  if (/User rejected|user rejected|denied transaction signature/i.test(message)) return "The wallet request was cancelled.";
+  if (/insufficient funds/i.test(message)) return "The wallet needs Unichain Sepolia ETH to pay testnet gas.";
+  if (/TooLittleReceived/i.test(message)) return "The pool changed before confirmation. Refresh and try again.";
+  return message.split("\n")[0].slice(0, 220);
+}
 
-    setText("proof-swap", `${tokenAmount(manifest.demo.amountIn)} in → ${tokenAmount(manifest.demo.amountOut)} out`);
-    setText("proof-rounds", `${manifest.demo.foldRounds} verified fold round${manifest.demo.foldRounds === 1 ? "" : "s"}`);
-    setText("proof-reward", `${tokenAmount(manifest.demo.solverReward)} A`);
-    setText("proof-residual", `${manifest.demo.residualProfit} wei A`);
-    setText("proof-pre-reserves", reserveLine(manifest.demo.preReserves));
-    setText("proof-post-reserves", reserveLine(manifest.demo.postReserves));
+async function loadJson(paths) {
+  for (const path of paths) {
+    const response = await fetch(path, { cache: "no-store" });
+    if (response.ok) return response.json();
+  }
+  throw new Error(`Unable to load ${paths[0]}`);
+}
 
-    const commitLink = document.querySelector("#proof-commit");
-    commitLink.textContent = manifest.gitCommit.slice(0, 12);
-    commitLink.href = `https://github.com/danelerr/arbfold-uhi10/commit/${manifest.gitCommit}`;
+async function loadBenchmark() {
+  const payload = await loadJson([
+    "./data/release-results.json",
+    "../benchmark/release-candidate-results/raw.json",
+  ]);
+  const results = payload.rows.map((row) => ({
+    size: Number(BigInt(row.origin_input_wei) / 10n ** 18n),
+    backrun: Number(row.backrun_total_gas),
+    direct: Number(row.direct_total_gas),
+  }));
+  const buttons = [...document.querySelectorAll("[data-size]")];
+
+  function render(size) {
+    const row = results.find((item) => item.size === size);
+    if (!row) return;
+    const reduction = reductionPercent(row.backrun, row.direct);
+    const maximum = Math.max(row.backrun, row.direct);
+    setText("backrun-gas", numberFormat.format(row.backrun));
+    setText("direct-gas", numberFormat.format(row.direct));
+    element("backrun-bar").style.width = `${(row.backrun / maximum) * 100}%`;
+    element("direct-bar").style.width = `${(row.direct / maximum) * 100}%`;
+    setText("gas-saving", reduction >= 0 ? `${reduction.toFixed(2)}% less` : `${Math.abs(reduction).toFixed(2)}% more`);
+    const gasDelta = row.backrun - row.direct;
+    setText("gas-saved", gasDelta >= 0
+      ? `${numberFormat.format(gasDelta)} gas avoided`
+      : `${numberFormat.format(Math.abs(gasDelta))} additional gas`);
+    setText("selected-size", `${numberFormat.format(size / 1000)}k`);
+    buttons.forEach((button) => button.classList.toggle("active", Number(button.dataset.size) === size));
+  }
+
+  buttons.forEach((button) => {
+    button.disabled = false;
+    button.addEventListener("click", () => render(Number(button.dataset.size)));
+  });
+  render(100000);
+}
+
+async function readLiveState() {
+  const hooks = [manifest.hooks.ab, manifest.hooks.bc, manifest.hooks.ac].map(canonicalAddress);
+  const [ab, bc, ac, calls, rounds, residual, blockNumber] = await Promise.all([
+    publicClient.readContract({ address: hooks[0], abi: hookAbi, functionName: "reserves" }),
+    publicClient.readContract({ address: hooks[1], abi: hookAbi, functionName: "reserves" }),
+    publicClient.readContract({ address: hooks[2], abi: hookAbi, functionName: "reserves" }),
+    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "totalFoldCalls" }),
+    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "totalFoldRounds" }),
+    publicClient.readContract({ address: canonicalAddress(manifest.coordinator), abi: coordinatorAbi, functionName: "lastResidualProfit" }),
+    publicClient.getBlockNumber(),
+  ]);
+  return {
+    network: normalizeNetwork([ab[0], ab[1], bc[0], bc[1], ac[0], ac[1]]),
+    calls,
+    rounds,
+    residual,
+    blockNumber,
+  };
+}
+
+function renderLiveState(state) {
+  setText("live-rpc-block", numberFormat.format(state.blockNumber));
+  setText("live-fold-calls", numberFormat.format(state.calls));
+  setText("live-fold-rounds", numberFormat.format(state.rounds));
+  setText("live-residual", `${state.residual} wei A`);
+  setText("live-current-reserves", reserveLine(state.network));
+}
+
+function renderManifestSnapshot(data) {
+  const explorer = data.explorerBaseUrl.replace(/\/$/, "");
+  const official = data.officialPoolManager !== ZERO_ADDRESS
+    && data.officialPoolManager.toLowerCase() === data.poolManager.toLowerCase();
+  setText("proof-network", `${data.network} · chain ${data.chainId}`);
+  setText("proof-manager-kind", official ? "Official Uniswap v4 PoolManager" : "Isolated research PoolManager");
+  setText("proof-block", numberFormat.format(data.blockNumber));
+  setText("proof-source", data.sourceVerification);
+  setExplorerLink("proof-transaction", "tx", data.canonicalDemoTransaction);
+  setExplorerLink("proof-manager", "address", data.poolManager);
+  setExplorerLink("proof-coordinator", "address", data.coordinator);
+  setExplorerLink("proof-router", "address", data.router);
+  setExplorerLink("proof-hook-ab", "address", data.hooks.ab);
+  setExplorerLink("proof-hook-bc", "address", data.hooks.bc);
+  setExplorerLink("proof-hook-ac", "address", data.hooks.ac);
+  setText("proof-swap", `${tokenAmount(data.demo.amountIn)} in → ${tokenAmount(data.demo.amountOut)} out`);
+  setText("proof-rounds", `${data.demo.foldRounds} verified fold round${data.demo.foldRounds === 1 ? "" : "s"}`);
+  setText("proof-reward", `${tokenAmount(data.demo.solverReward)} A`);
+  setText("proof-residual", `${data.demo.residualProfit} wei A`);
+  setText("proof-pre-reserves", reserveLine(data.demo.preReserves));
+  setText("proof-post-reserves", reserveLine(data.demo.postReserves));
+  const commitLink = element("proof-commit");
+  commitLink.textContent = data.gitCommit.slice(0, 12);
+  commitLink.href = `https://github.com/danelerr/arbfold-uhi10/commit/${data.gitCommit}`;
+  commitLink.target = "_blank";
+  element("proof-transaction").href = `${explorer}/tx/${data.canonicalDemoTransaction}`;
+  if (data.interactiveDemo?.transaction) {
+    setExplorerLink("live-validation-link", "tx", data.interactiveDemo.transaction);
     setText(
-      "proof-pending-detail",
-      "Committed manifest loaded; transaction, contracts and canonical state are linked to public evidence.",
+      "live-validation-detail",
+      ` · ${tokenAmount(data.interactiveDemo.amountIn)} Demo B → ${tokenAmount(data.interactiveDemo.amountOut)} Demo A · ${data.interactiveDemo.foldRounds} round · residual ${data.interactiveDemo.residualProfit}`,
     );
-  } catch (error) {
-    proofStatus.classList.add("pending");
-    proofStatus.textContent = "Public deployment pending";
-    setText("proof-network", "Local end-to-end path verified in CI");
-    setText("proof-manager-kind", "Unichain Sepolia manifest not published yet");
-    document.querySelector("#proof-pending-detail").textContent =
-      `The dashboard is fail-closed: it will not invent onchain evidence. ${error.message}.`;
   }
 }
 
-loadOnchainProof();
+async function verifyLiveDeployment(data) {
+  const [chainId, receipt, interactiveReceipt, ...codes] = await Promise.all([
+    publicClient.getChainId(),
+    publicClient.getTransactionReceipt({ hash: data.canonicalDemoTransaction }),
+    data.interactiveDemo?.transaction
+      ? publicClient.getTransactionReceipt({ hash: data.interactiveDemo.transaction })
+      : Promise.resolve(null),
+    ...[
+      data.poolManager,
+      data.coordinator,
+      data.router,
+      data.hooks.ab,
+      data.hooks.bc,
+      data.hooks.ac,
+    ].map((address) => publicClient.getCode({ address: canonicalAddress(address) })),
+  ]);
+  if (chainId !== CHAIN_ID) throw new Error(`RPC returned chain ${chainId}, expected ${CHAIN_ID}`);
+  if (receipt.status !== "success") throw new Error("canonical transaction did not succeed");
+  if (interactiveReceipt && interactiveReceipt.status !== "success") throw new Error("interactive validation transaction did not succeed");
+  if (codes.some((code) => !code || code === "0x")) throw new Error("one or more deployed contracts have no bytecode");
+  return readLiveState();
+}
+
+async function loadOnchainProof() {
+  const proofStatus = element("proof-status");
+  try {
+    manifest = validateManifest(await loadJson([
+      "./deployments/unichain-sepolia-1301.json",
+      "../deployments/unichain-sepolia-1301.json",
+    ]));
+    renderManifestSnapshot(manifest);
+    const state = await verifyLiveDeployment(manifest);
+    renderLiveState(state);
+    liveReady = true;
+    proofStatus.className = "proof-status ready";
+    proofStatus.textContent = "Live RPC verified";
+    element("live-rpc-status").className = "live-status ready";
+    setText("live-rpc-status", "Connected to Unichain Sepolia");
+    setText("proof-pending-detail", "Verified now through RPC: chain ID, canonical receipt, deployed bytecode, live counters and current reserves.");
+    element("live-refresh").disabled = false;
+    element("live-simulate").disabled = false;
+    element("live-connect").disabled = false;
+  } catch (error) {
+    liveReady = false;
+    proofStatus.className = "proof-status pending";
+    proofStatus.textContent = "Live verification failed";
+    element("live-rpc-status").className = "live-status error";
+    setText("live-rpc-status", "RPC verification failed");
+    setText("proof-pending-detail", `Fail-closed: the page will not claim a live deployment. ${describeError(error)}`);
+    setText("live-action-status", describeError(error));
+  }
+}
+
+async function refreshLiveState() {
+  if (!liveReady) return;
+  const state = await readLiveState();
+  renderLiveState(state);
+}
+
+async function simulateLiveDemo() {
+  if (!manifest.rpcSimulation?.account) throw new Error("No public simulation account is configured");
+  const amount = parseUnits(parseDemoAmount(element("live-amount").value), TOKEN_DECIMALS);
+  const maximumInput = BigInt(manifest.rpcSimulation.maximumInput);
+  if (amount > maximumInput) throw new Error("Input exceeds the public dry-run allowance");
+  const account = canonicalAddress(manifest.rpcSimulation.account);
+  const address = canonicalAddress(manifest.router);
+  const args = [
+    canonicalAddress(manifest.hooks.ab),
+    false,
+    amount,
+    0n,
+    account,
+    BigInt(Math.floor(Date.now() / 1000) + 15 * 60),
+  ];
+  setText("live-simulation-result", "Running the complete deployed swap + fold as an RPC dry-run…");
+  const [simulation, gas] = await Promise.all([
+    publicClient.simulateContract({ account, address, abi: routerAbi, functionName: "swapExactInput", args }),
+    publicClient.estimateContractGas({ account, address, abi: routerAbi, functionName: "swapExactInput", args }),
+  ]);
+  setText(
+    "live-simulation-result",
+    `PASS · ${tokenAmount(amount)} Demo B → ${tokenAmount(simulation.result)} Demo A · estimated ${numberFormat.format(gas)} gas · no signature · no state change`,
+  );
+}
+
+async function switchToUnichain() {
+  const provider = window.ethereum;
+  try {
+    await provider.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CHAIN_HEX }] });
+  } catch (error) {
+    if (error.code !== 4902) throw error;
+    await provider.request({
+      method: "wallet_addEthereumChain",
+      params: [{
+        chainId: CHAIN_HEX,
+        chainName: unichainSepolia.name,
+        nativeCurrency: unichainSepolia.nativeCurrency,
+        rpcUrls: [RPC_URL],
+        blockExplorerUrls: [EXPLORER_URL],
+      }],
+    });
+  }
+}
+
+async function connectWallet() {
+  if (!liveReady) throw new Error("Wait for live RPC verification first");
+  if (!window.ethereum) throw new Error("Install or enable an EVM browser wallet to run the live demo");
+  await window.ethereum.request({ method: "eth_requestAccounts" });
+  await switchToUnichain();
+  const accounts = await window.ethereum.request({ method: "eth_accounts" });
+  if (!accounts.length) throw new Error("No wallet account is connected");
+  walletAccount = canonicalAddress(accounts[0]);
+  walletClient = createWalletClient({
+    account: walletAccount,
+    chain: unichainSepolia,
+    transport: custom(window.ethereum),
+  });
+  setText("live-wallet-status", abbreviated(walletAccount));
+  element("live-wallet-status").className = "live-status ready";
+  element("live-connect").textContent = "Wallet connected";
+  await refreshWalletState();
+}
+
+async function refreshWalletState() {
+  if (!walletAccount || !manifest) return;
+  const tokenB = canonicalAddress(manifest.tokens.b);
+  const router = canonicalAddress(manifest.router);
+  const [eth, balance, allowance] = await Promise.all([
+    publicClient.getBalance({ address: walletAccount }),
+    publicClient.readContract({ address: tokenB, abi: tokenAbi, functionName: "balanceOf", args: [walletAccount] }),
+    publicClient.readContract({ address: tokenB, abi: tokenAbi, functionName: "allowance", args: [walletAccount, router] }),
+  ]);
+  setText("live-eth-balance", `${Number(formatEther(eth)).toFixed(5)} ETH`);
+  setText("live-token-balance", `${tokenAmount(balance)} Demo B`);
+  setText("live-allowance", `${tokenAmount(allowance)} Demo B`);
+  element("live-prepare").disabled = actionBusy;
+  element("live-execute").disabled = actionBusy || balance === 0n || allowance === 0n;
+}
+
+async function sendContract(functionName, address, abi, args) {
+  const simulation = await publicClient.simulateContract({
+    account: walletAccount,
+    address,
+    abi,
+    functionName,
+    args,
+  });
+  const hash = await walletClient.writeContract(simulation.request);
+  setText("live-action-status", `Submitted ${abbreviated(hash)}. Waiting for confirmation…`);
+  return publicClient.waitForTransactionReceipt({ hash, confirmations: 1 });
+}
+
+async function prepareDemo() {
+  const amount = parseUnits(parseDemoAmount(element("live-amount").value), TOKEN_DECIMALS);
+  const tokenB = canonicalAddress(manifest.tokens.b);
+  const router = canonicalAddress(manifest.router);
+  const [balance, allowance] = await Promise.all([
+    publicClient.readContract({ address: tokenB, abi: tokenAbi, functionName: "balanceOf", args: [walletAccount] }),
+    publicClient.readContract({ address: tokenB, abi: tokenAbi, functionName: "allowance", args: [walletAccount, router] }),
+  ]);
+  if (balance < amount) {
+    setText("live-action-status", "Step 1/2: confirm minting valueless Demo B…");
+    await sendContract("mint", tokenB, tokenAbi, [walletAccount, amount - balance]);
+  }
+  if (allowance < amount) {
+    setText("live-action-status", "Step 2/2: confirm the exact Demo B allowance…");
+    await sendContract("approve", tokenB, tokenAbi, [router, amount]);
+  }
+  setText("live-action-status", "Demo assets ready. You can now execute the live swap + fold.");
+  await refreshWalletState();
+}
+
+function decodedEvents(receipt) {
+  const events = [];
+  for (const log of receipt.logs) {
+    for (const abi of [routerAbi, coordinatorAbi]) {
+      try {
+        events.push(decodeEventLog({ abi, data: log.data, topics: log.topics, strict: true }));
+        break;
+      } catch {
+        // The receipt also contains PoolManager and ERC-20 events; ignore unrelated logs.
+      }
+    }
+  }
+  return events;
+}
+
+async function executeDemo() {
+  const amount = parseUnits(parseDemoAmount(element("live-amount").value), TOKEN_DECIMALS);
+  const router = canonicalAddress(manifest.router);
+  const originHook = canonicalAddress(manifest.hooks.ab);
+  const tokenB = canonicalAddress(manifest.tokens.b);
+  const [balance, allowance] = await Promise.all([
+    publicClient.readContract({ address: tokenB, abi: tokenAbi, functionName: "balanceOf", args: [walletAccount] }),
+    publicClient.readContract({ address: tokenB, abi: tokenAbi, functionName: "allowance", args: [walletAccount, router] }),
+  ]);
+  if (balance < amount || allowance < amount) throw new Error("Prepare Demo B and allowance before executing");
+
+  const before = await readLiveState();
+  const deadline = BigInt(Math.floor(Date.now() / 1000) + 15 * 60);
+  setText("live-action-status", "Quoting the real deployed router…");
+  const quote = await publicClient.simulateContract({
+    account: walletAccount,
+    address: router,
+    abi: routerAbi,
+    functionName: "swapExactInput",
+    args: [originHook, false, amount, 0n, walletAccount, deadline],
+  });
+  const minimumOut = quote.result * 995n / 1000n;
+  setText("live-action-status", `Confirm one atomic transaction. Quoted output: ${tokenAmount(quote.result)} Demo A.`);
+  const execution = await publicClient.simulateContract({
+    account: walletAccount,
+    address: router,
+    abi: routerAbi,
+    functionName: "swapExactInput",
+    args: [originHook, false, amount, minimumOut, walletAccount, deadline],
+  });
+  const hash = await walletClient.writeContract(execution.request);
+  setText("live-action-status", `Broadcast ${abbreviated(hash)}. Waiting for Unichain Sepolia…`);
+  const receipt = await publicClient.waitForTransactionReceipt({ hash, confirmations: 1 });
+  const after = await readLiveState();
+  if (receipt.status !== "success") throw new Error("The swap + fold transaction reverted");
+  if (!networkChanged(before.network, after.network)) throw new Error("Transaction succeeded but network reserves did not change");
+
+  const events = decodedEvents(receipt);
+  const swap = events.find((event) => event.eventName === "SwapAndFold");
+  const rounds = events.filter((event) => event.eventName === "FoldRound");
+  const completed = events.find((event) => event.eventName === "FoldCompleted");
+  if (!swap || !completed) throw new Error("Expected ARBFOLD events were not found in the receipt");
+
+  element("live-result").hidden = false;
+  setExplorerLink("live-result-tx", "tx", hash, abbreviated(hash));
+  setText("live-result-block", numberFormat.format(receipt.blockNumber));
+  setText("live-result-gas", numberFormat.format(receipt.gasUsed));
+  setText("live-result-output", `${tokenAmount(swap.args.amountOut)} Demo A`);
+  setText("live-result-rounds", `${completed.args.rounds} (${rounds.length} FoldRound event${rounds.length === 1 ? "" : "s"})`);
+  const reward = rounds.reduce((sum, event) => sum + event.args.solverReward, 0n);
+  setText("live-result-reward", `${tokenAmount(reward)} Demo A`);
+  setText("live-result-residual", `${completed.args.residualProfit} wei A`);
+  setText("live-result-before", reserveLine(before.network));
+  setText("live-result-after", reserveLine(after.network));
+  setText("live-action-status", "Confirmed: the deployed router executed the user swap and ARBFOLD transition atomically.");
+  renderLiveState(after);
+  await refreshWalletState();
+}
+
+async function runAction(action) {
+  if (actionBusy) return;
+  actionBusy = true;
+  for (const id of ["live-connect", "live-refresh", "live-simulate", "live-prepare", "live-execute"]) element(id).disabled = true;
+  try {
+    await action();
+  } catch (error) {
+    setText("live-action-status", describeError(error));
+  } finally {
+    actionBusy = false;
+    element("live-connect").disabled = !liveReady || Boolean(walletAccount);
+    element("live-refresh").disabled = !liveReady;
+    element("live-simulate").disabled = !liveReady;
+    if (walletAccount) await refreshWalletState();
+  }
+}
+
+element("live-connect").addEventListener("click", () => runAction(connectWallet));
+element("live-refresh").addEventListener("click", () => runAction(refreshLiveState));
+element("live-simulate").addEventListener("click", () => runAction(simulateLiveDemo));
+element("live-prepare").addEventListener("click", () => runAction(prepareDemo));
+element("live-execute").addEventListener("click", () => runAction(executeDemo));
+element("live-amount").addEventListener("input", () => {
+  try {
+    parseDemoAmount(element("live-amount").value);
+    setText("live-amount-error", "");
+  } catch (error) {
+    setText("live-amount-error", error.message);
+  }
+});
+
+if (window.ethereum?.on) {
+  window.ethereum.on("accountsChanged", () => window.location.reload());
+  window.ethereum.on("chainChanged", () => window.location.reload());
+}
+
+Promise.allSettled([loadBenchmark(), loadOnchainProof()]).then((results) => {
+  for (const result of results) {
+    if (result.status === "rejected") console.error(result.reason);
+  }
+});

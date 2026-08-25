@@ -28,6 +28,9 @@ jq -r '
   "Chain ID:         \(.chainId)",
   "PoolManager:      \(.poolManager)",
   "Canonical tx:     \(.canonicalDemoTransaction)",
+  "Interactive tx:   \(.interactiveDemo.transaction)",
+  "Interactive swap: \(.interactiveDemo.amountIn) B wei -> \(.interactiveDemo.amountOut) A wei",
+  "Live demo rounds: \(.interactiveDemo.foldRounds)",
   "Fold rounds:      \(.demo.foldRounds)",
   "Residual profit:  \(.demo.residualProfit)",
   "Research only:    \(.researchOnly)"

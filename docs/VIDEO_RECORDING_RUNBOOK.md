@@ -13,8 +13,9 @@ required disclosures.
 ## 1. One-time preflight
 
 Use a 1920×1080 or 2560×1440 desktop, disable notifications and close every
-wallet, password manager and terminal that could expose secrets. The public
-demo is read-only; no wallet extension is needed on screen.
+wallet, password manager and terminal that could expose secrets. Use the
+no-wallet live dry-run during recording; a signed transaction is already linked
+as evidence, so no wallet extension needs to appear on screen.
 
 From the repository root, run:
 
@@ -33,7 +34,7 @@ volume before recording the actual take.
 ## 2. Open these tabs in this order
 
 1. Dashboard hero: https://danelerr.github.io/arbfold-uhi10/
-2. Canonical transaction: https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c
+2. Interactive validation transaction: https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927
 3. Hook callback: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldHook.sol#L72
 4. Direct transition: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldCoordinator.sol#L144
 5. Atomic settlement: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldRouter.sol#L93
@@ -48,12 +49,13 @@ output.
 | Time | Screen | Action | Message |
 |---:|---|---|---|
 | 0:00–0:25 | Dashboard hero | Hold the frame, then point at the four metrics. | Three swaps normally reconcile the cycle; ARBFOLD tests a direct v4 transition to the same safe state. |
-| 0:25–1:05 | Benchmark | Click 10k, 25k, 50k, 100k and 200k slowly. Stop at 25k, then return to 100k. | Same user swap, output and reward. The canonical result is 19.12% less gas, but 25k is 0.98% more expensive, so the claim is workload-dependent. |
-| 1:05–1:45 | Public proof and state trace | Scroll to onchain proof, open the canonical transaction briefly, return and show before/after reserves. | Official Unichain Sepolia PoolManager, 31 successful transactions, exact claims/backing and zero canonical residual profit. |
-| 1:45–2:30 | Commit-pinned code tabs | Show the highlighted hook, coordinator and router functions. Do not scroll through whole files. | BaseCustomCurve computes the user output; the fixed coordinator transfers backed claims under conservation/invariant guards; the router settles every delta in one unlock. |
-| 2:30–3:05 | Terminal | Show the already completed `make video-proof` output and its final PASS line. | 61 core tests, all-six-path stateful invariants, exact backing, negative paths and the frozen five-size benchmark. |
-| 3:05–3:40 | Dashboard evidence cards / report | Show the rejected economic gate and the complete workload grid. | The 10% LP-value thesis failed. The historical 39.58%, earlier 18.86% and delivered 19.12% results remain separate rather than cherry-picked. |
-| 3:40–4:00 | Dashboard hero | Return to the headline. | Same outcome, same user output, same solver reward; 19.12% less gas at the canonical 100k workload. ARBFOLD folds the cycle instead of replaying it. |
+| 0:25–1:05 | Live demo | Show current block/reserves and click the no-wallet deployed-contract dry-run; open its linked persistent validation transaction. | The RPC executes the deployed router path now; the linked signed transaction proves the same UI path persisted onchain. |
+| 1:05–1:40 | Benchmark | Click 10k, 25k, 50k, 100k and 200k slowly. Stop at 25k, then return to 100k. | Same user swap, output and reward. The canonical result is 19.12% less gas, but 25k is 0.98% more expensive, so the claim is workload-dependent. |
+| 1:40–2:10 | Public proof and state trace | Scroll to onchain proof and show before/after reserves. | Official Unichain Sepolia PoolManager, live bytecode/counters/reserves, exact claims/backing and zero canonical residual profit. |
+| 2:10–2:50 | Commit-pinned code tabs | Show the highlighted hook, coordinator and router functions. Do not scroll through whole files. | BaseCustomCurve computes the user output; the fixed coordinator transfers backed claims under conservation/invariant guards; the router settles every delta in one unlock. |
+| 2:50–3:20 | Terminal | Show the already completed `make video-proof` output and its final PASS line. | 61 core tests, all-six-path stateful invariants, exact backing, negative paths and the frozen five-size benchmark. |
+| 3:20–3:50 | Dashboard evidence cards / report | Show the rejected economic gate and the complete workload grid. | The 10% LP-value thesis failed. The historical 39.58%, earlier 18.86% and delivered 19.12% results remain separate rather than cherry-picked. |
+| 3:50–4:10 | Dashboard hero | Return to the headline. | Same outcome, same user output, same solver reward; 19.12% less gas at the canonical 100k workload. ARBFOLD folds the cycle instead of replaying it. |
 
 Use the exact narration in [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md). The shorter
 phrases above are visual cues, not replacement claims.

@@ -38,12 +38,14 @@ and the complete five-point grid is public.
 ARBFOLD is publicly deployed on Unichain Sepolia (chain 1301) against the
 official Uniswap v4 `PoolManager` at
 `0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95`. The deployment comprises three
-hook-owned CPMM pools, a coordinator and a router. All 28 deployment
-transactions and three demo transactions finalized successfully, and the
+hook-owned CPMM pools, a coordinator and a router. The deployment and canonical
+demo transactions finalized successfully, and the
 post-deployment verifier confirmed reserve-to-ERC-6909-claim equality,
 underlying backing and zero canonical residual profit. The public canonical
 transaction is
 `0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c`.
+The browser-execution path was independently rerun in transaction
+`0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927`.
 
 ## Problem and background
 
@@ -80,7 +82,8 @@ cyclic profit is zero.
 The public build includes 61 passing core tests, all-six-path stateful
 invariants, 10,000-case release fuzzing, 50,000-case arithmetic fuzz and
 differential verification, 98.50% project line coverage, a reviewed Slither
-gate, a public Unichain Sepolia transaction and a wallet-free dashboard.
+gate, public Unichain Sepolia transactions, live RPC verification, a no-wallet
+contract dry-run and an optional signed testnet execution dashboard.
 
 ## Challenges
 
@@ -112,6 +115,7 @@ independent audit and a separate authorization decision.
 - Dashboard: https://danelerr.github.io/arbfold-uhi10/
 - Repository: https://github.com/danelerr/arbfold-uhi10
 - Canonical transaction: https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c
+- Interactive-path transaction: https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927
 - Deployment manifest: https://danelerr.github.io/arbfold-uhi10/deployments/unichain-sepolia-1301.json
 - Release benchmark: https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md
 - Hook: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldHook.sol#L72

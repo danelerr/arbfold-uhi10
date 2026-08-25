@@ -8,7 +8,20 @@ Target length: **3:30–4:15**. Use a real human voice. Do not exceed five minut
 
 Show the hero and the four proof metrics.
 
-## 0:25–1:05 — Two paths
+## 0:25–1:05 — Run the deployed product
+
+Scroll to `Live demo`, point out the current block, fold counters and six live
+reserves, then click `Dry-run deployed swap + fold (no wallet)`.
+
+> This is not a pre-rendered animation. The page has verified the deployed
+> bytecode and is now executing the complete router call against current
+> Unichain Sepolia state. The dry-run needs no wallet and changes no state. A
+> signed run uses the adjacent wallet flow and produces its own explorer receipt.
+
+Open the latest interactive validation transaction and show its `SwapAndFold`,
+`FoldRound` and `FoldCompleted` evidence.
+
+## 1:05–1:40 — Two measured paths
 
 Scroll to the benchmark comparison.
 
@@ -16,14 +29,14 @@ Scroll to the benchmark comparison.
 
 Click 10k, 25k, 50k, 100k and 200k. Explicitly show that the direct path costs 0.98% more at 25k: the advantage is workload-dependent, not universal.
 
-## 1:05–1:45 — Same result
+## 1:40–2:10 — Same result
 
 Show the public-proof panel, open the canonical Unichain Sepolia transaction,
 then show the before/after reserve section.
 
 > This is not three numbers changed in memory. The public demo uses the official v4 PoolManager on Unichain Sepolia. All 28 deployment transactions and all three demo transactions finalized, and the post-deployment verifier passed. Each virtual reserve must exactly equal its ERC-6909 claim balance. Token totals are conserved except for the same capped solver reward, no invariant may decrease, and residual cyclic profit is zero in the canonical case.
 
-## 1:45–2:30 — Code
+## 2:10–2:50 — Code
 
 Open these exact symbols:
 
@@ -34,7 +47,7 @@ Open these exact symbols:
 
 > The user output is computed first by OpenZeppelin BaseCustomCurve. The hook then calls the fixed coordinator inside the same PoolManager unlock. The coordinator transfers claims and applies independent conservation and invariant guards. The router settles the swap atomically.
 
-## 2:30–3:05 — Tests
+## 2:50–3:20 — Tests
 
 Run the recording-safe proof command:
 
@@ -47,12 +60,12 @@ benchmark and the committed public deployment facts. Mention fuzzing, stateful
 invariants, unauthorized calls, exact backing, slippage rollback and the
 five-size clean-core gas grid.
 
-## 3:05–3:40 — Honest boundary
+## 3:20–3:50 — Honest boundary
 
 Show the evidence cards.
 
 > We preregistered a harder claim: 10% more LP net value. It failed. Gas savings produced only 0.000287% LP-value improvement in that environment. The minimal frozen harness measured 39.58% lower gas, the earlier clean core measured 18.86%, and the delivered release candidate measures 19.12%, including a 25k case where direct execution is 0.98% more expensive. We preserved every result instead of selecting the flattering one.
 
-## 3:40–4:00 — Close
+## 3:50–4:10 — Close
 
 > Same outcome. Same user output. Same solver reward. At the canonical 100k benchmark, 19.12% less gas in the delivered core. The advantage is workload-dependent, and ARBFOLD folds the cycle instead of replaying it.

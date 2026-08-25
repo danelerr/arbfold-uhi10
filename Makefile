@@ -1,6 +1,6 @@
-.PHONY: test test-core test-benchmark test-research test-deployment test-release-fuzz arithmetic coverage slither source-manifest source-manifest-check fmt lint snapshot verify-release video-proof serve
+.PHONY: test test-core test-benchmark test-research test-dashboard test-deployment test-release-fuzz arithmetic coverage slither source-manifest source-manifest-check fmt lint snapshot verify-release video-proof build-dashboard check-live serve
 
-test: test-core test-benchmark test-research
+test: test-core test-benchmark test-research test-dashboard
 
 test-core:
 	cd contracts && forge test --offline
@@ -10,6 +10,15 @@ test-benchmark:
 
 test-research:
 	python3 -m unittest discover -s tests -p 'test_arbfold*.py' -v
+
+test-dashboard:
+	npm run test:dashboard
+
+build-dashboard:
+	npm run build:dashboard
+
+check-live:
+	npm run check:live
 
 test-deployment:
 	bash scripts/smoke-deployment.sh
@@ -51,6 +60,8 @@ verify-release: fmt
 	$(MAKE) arithmetic
 	$(MAKE) test-benchmark
 	$(MAKE) test-research
+	$(MAKE) test-dashboard
+	$(MAKE) build-dashboard
 	$(MAKE) test-deployment
 	$(MAKE) lint
 	$(MAKE) slither
@@ -61,4 +72,5 @@ video-proof:
 	bash scripts/video-proof.sh
 
 serve:
-	python3 -m http.server 8080
+	npm run build:dashboard
+	python3 -m http.server 8080 --directory dist

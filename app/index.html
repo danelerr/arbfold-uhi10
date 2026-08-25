@@ -16,6 +16,7 @@
         <span>ARBFOLD</span>
       </a>
       <div class="nav-links">
+        <a href="#live-demo">Live demo</a>
         <a href="#experiment">Experiment</a>
         <a href="#mechanics">Mechanics</a>
         <a href="#onchain">Onchain proof</a>
@@ -33,7 +34,8 @@
         </p>
         <p class="workload-note"><strong>Workload-dependent:</strong> −4.41% at 10k · +0.98% at 25k · −19.12% at 50k–200k.</p>
         <div class="hero-actions">
-          <a class="button primary" href="#experiment">Explore the benchmark</a>
+          <a class="button primary" href="#live-demo">Run it on testnet</a>
+          <a class="button secondary" href="#experiment">Explore the benchmark</a>
           <a class="button secondary" href="https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md">Read release report</a>
         </div>
 
@@ -61,6 +63,102 @@
         </div>
       </section>
 
+      <section id="live-demo" class="live-demo shell">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Interactive Unichain Sepolia demo</span>
+            <h2>Execute ARBFOLD.<br />Don’t trust a screenshot.</h2>
+          </div>
+          <p>
+            Connect a browser wallet, mint valueless Demo B, approve the exact input and execute a real
+            <code>B → A swap + fold</code> against the deployed three-pool network.
+          </p>
+        </div>
+
+        <div class="live-rpc-strip">
+          <div><span>RPC</span><strong id="live-rpc-status" class="live-status">Connecting live RPC…</strong></div>
+          <div><span>Current block</span><strong id="live-rpc-block">—</strong></div>
+          <div><span>Fold calls</span><strong id="live-fold-calls">—</strong></div>
+          <div><span>Fold rounds</span><strong id="live-fold-rounds">—</strong></div>
+          <div><span>Last residual</span><strong id="live-residual">—</strong></div>
+        </div>
+
+        <div class="live-grid">
+          <article class="live-card state-card">
+            <div class="live-card-heading">
+              <div>
+                <span class="metric-label">Live deployed state</span>
+                <h3>Three cooperating CPMMs</h3>
+              </div>
+              <button id="live-refresh" class="mini-button" type="button" disabled>Refresh RPC</button>
+            </div>
+            <pre id="live-current-reserves">Reading current reserves from the three deployed hooks…</pre>
+            <p>These values come from contract calls at the block shown above—not from the benchmark JSON.</p>
+            <button id="live-simulate" class="button secondary full-button" type="button" disabled>Dry-run deployed swap + fold (no wallet)</button>
+            <p id="live-simulation-result" class="action-status">Executes the full deployed call through RPC without signing or changing state.</p>
+          </article>
+
+          <article class="live-card wallet-card">
+            <div class="live-card-heading">
+              <div>
+                <span class="metric-label">Your testnet execution</span>
+                <h3 id="live-wallet-status" class="live-status">Wallet not connected</h3>
+              </div>
+              <button id="live-connect" class="button primary" type="button" disabled>Connect wallet</button>
+            </div>
+
+            <div class="wallet-balances">
+              <div><span>Gas</span><strong id="live-eth-balance">—</strong></div>
+              <div><span>Spendable input</span><strong id="live-token-balance">—</strong></div>
+              <div><span>Router allowance</span><strong id="live-allowance">—</strong></div>
+            </div>
+
+            <label class="amount-field" for="live-amount">
+              <span>Demo B input</span>
+              <div><input id="live-amount" inputmode="decimal" value="1000" min="100" max="25000" /> <b>Demo B</b></div>
+              <small id="live-amount-error">100–25,000 · up to 6 decimals</small>
+            </label>
+
+            <div class="live-actions">
+              <button id="live-prepare" class="button secondary" type="button" disabled>1. Mint + approve demo input</button>
+              <button id="live-execute" class="button primary" type="button" disabled>2. Execute swap + fold</button>
+            </div>
+            <p id="live-action-status" class="action-status">
+              No private key is entered here. Your wallet shows every testnet transaction before signing.
+            </p>
+          </article>
+        </div>
+
+        <article id="live-result" class="live-result" hidden>
+          <div class="live-result-heading">
+            <div><span class="eyebrow">Confirmed onchain</span><h3>Your ARBFOLD receipt</h3></div>
+            <a id="live-result-tx" class="button primary" rel="noreferrer">Open transaction</a>
+          </div>
+          <div class="result-metrics">
+            <div><span>Block</span><strong id="live-result-block">—</strong></div>
+            <div><span>Gas used</span><strong id="live-result-gas">—</strong></div>
+            <div><span>User output</span><strong id="live-result-output">—</strong></div>
+            <div><span>Fold rounds</span><strong id="live-result-rounds">—</strong></div>
+            <div><span>Solver reward</span><strong id="live-result-reward">—</strong></div>
+            <div><span>Residual cycle</span><strong id="live-result-residual">—</strong></div>
+          </div>
+          <div class="reserve-proof">
+            <div><span>Live state before your transaction</span><pre id="live-result-before">—</pre></div>
+            <div><span>Live state after your transaction</span><pre id="live-result-after">—</pre></div>
+          </div>
+        </article>
+
+        <p class="live-warning">
+          Research testnet only. Demo A/B/C have no value. Requires an injected EVM wallet and Unichain Sepolia ETH for gas.
+          Preparation uses at most two signatures; execution uses one atomic transaction.
+        </p>
+        <p class="live-validation">
+          Latest independent UI-path validation:
+          <a id="live-validation-link" rel="noreferrer">loading…</a>
+          <span id="live-validation-detail"></span>
+        </p>
+      </section>
+
       <section id="experiment" class="experiment shell">
         <div class="section-heading">
           <div>
@@ -71,11 +169,11 @@
         </div>
 
         <div class="size-picker" role="group" aria-label="Origin trade size">
-          <button data-size="10000">10k</button>
-          <button data-size="25000">25k</button>
-          <button data-size="50000">50k</button>
-          <button class="active" data-size="100000">100k</button>
-          <button data-size="200000">200k</button>
+          <button data-size="10000" disabled>10k</button>
+          <button data-size="25000" disabled>25k</button>
+          <button data-size="50000" disabled>50k</button>
+          <button class="active" data-size="100000" disabled>100k</button>
+          <button data-size="200000" disabled>200k</button>
         </div>
 
         <div class="comparison-grid">
@@ -187,10 +285,10 @@
       <section id="onchain" class="onchain shell">
         <div class="section-heading">
           <div>
-            <span class="eyebrow">Public onchain proof</span>
+            <span class="eyebrow">Live RPC proof</span>
             <h2>Evidence that fails closed.</h2>
           </div>
-          <p>No wallet is required. This panel only switches to “verified” when a committed Unichain Sepolia manifest passes its schema gate.</p>
+          <p>No wallet is required here. “Verified” now requires live chain ID, transaction receipt, deployed bytecode, counters and reserve reads—not only a committed manifest.</p>
         </div>
 
         <div class="research-notice">Research deployment · valueless demo assets · not audited · not for production deposits</div>
@@ -273,6 +371,6 @@
       <p>A specialized research primitive—not a production deployment or a global MEV solution.</p>
       <span>Built for UHI10 · 2026</span>
     </footer>
-    <script src="./app.js"></script>
+    <script type="module" src="./app.js"></script>
   </body>
 </html>

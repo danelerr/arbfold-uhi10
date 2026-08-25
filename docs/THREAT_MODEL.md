@@ -12,7 +12,8 @@ In scope:
 - `contracts/script/DeployArbFold.s.sol` deployment path;
 - `contracts/test/` security properties;
 - `benchmark/arbfold-foundry/` only as the reference comparison;
-- `app/` only for integrity of displayed claims, not wallet security.
+- `app/` for live RPC integrity and construction of research-testnet
+  transactions; the injected wallet and its key custody remain out of scope.
 
 Out of scope:
 
@@ -45,7 +46,10 @@ Open questions that would materially change risk ranking:
 - **ArbFoldCoordinator:** computes and applies direct multi-pool claim transfers with safety checks (`contracts/src/ArbFoldCoordinator.sol`).
 - **PoolManager:** authoritative custody, lock/unlock and ERC-6909 accounting boundary.
 - **Deployment tooling:** mines permission-encoded hook addresses and configures the immutable network (`contracts/script/DeployArbFold.s.sol`).
-- **Dashboard:** static presentation of frozen JSON measurements; it does not sign transactions (`app/`).
+- **Dashboard:** loads frozen benchmark JSON separately from live Unichain
+  Sepolia reads, exposes a no-wallet `eth_call`, and asks an injected wallet to
+  sign demo-token mint/approval and router execution (`app/`). The page never
+  receives a private key.
 
 ### Data flows and trust boundaries
 
@@ -55,7 +59,13 @@ Open questions that would materially change risk ranking:
 - ArbFoldHook → ArbFoldCoordinator: solver address over `fold`; coordinator accepts calls only from the three one-time configured hooks.
 - ArbFoldCoordinator → PoolManager: ERC-6909 `transferFrom`; each hook explicitly sets only the fixed coordinator as operator.
 - PoolManager ↔ ERC-20 tokens: settlement and custody; safe only under the standard-token assumption.
-- Frozen results → dashboard: hard-coded measurements copied from the hashed result artifact; no runtime authentication or backend.
+- Frozen results → dashboard: benchmark JSON is bundled at build time and kept
+  separate from live state.
+- Public RPC → dashboard: chain ID, receipts, bytecode, counters and reserves;
+  the UI fails closed if verification fails.
+- Browser wallet → testnet contracts: explicit user-approved transactions on
+  chain 1301; the router address and exact demo-token allowance come from the
+  validated manifest.
 
 #### Diagram
 
@@ -71,7 +81,10 @@ flowchart LR
     H3 --> C
     C --> M
     M --> T["ERC20 custody"]
-    F["Frozen results"] --> D["Static dashboard"]
+    F["Frozen results"] --> D["Live demo + benchmark dashboard"]
+    RPC["Unichain Sepolia RPC"] --> D
+    W["Injected wallet"] --> D
+    D --> R
 ```
 
 ## Assets and security objectives
@@ -86,6 +99,7 @@ flowchart LR
 | Hook/coordinator configuration | Defines which contracts may move claims | I |
 | Benchmark artifacts | Separately support release 19.12%, earlier clean-core 18.86%, and frozen-harness 39.58% claims | I |
 | Deployment key | Controls only research deployment operations | C, I |
+| Wallet transaction intent | Must target chain 1301 and the committed demo contracts | I |
 
 ## Attacker model
 
@@ -121,7 +135,7 @@ flowchart LR
 | Claim movement | Coordinator internal | Coordinator → PoolManager | Security-critical multi-ledger transition | `ArbFoldCoordinator::_applyDirect` |
 | CREATE2 hook deployment | Public factory call | Operator → Deployer | Salt is public; constructor validates permission bits | `ArbFoldHookDeployer::deploy` |
 | Demo-token mint | Public EVM call | Any caller → demo token | Testnet-only; not a scarcity asset | `contracts/src/DemoToken.sol::mint` |
-| Static benchmark UI | Browser load | Files → Browser | No wallet/backend; integrity depends on repository content | `app/app.js` |
+| Live dashboard | Browser load/click | Files + RPC + wallet → Browser | Verifies public evidence; dry-run is unsigned; writes require explicit wallet confirmation | `app/app.js` |
 
 ## Top abuse paths
 
@@ -131,7 +145,11 @@ flowchart LR
 4. **Trigger arithmetic edge behavior:** attacker selects reserve/input magnitudes that overflow normalization, underflow reserves or leave profitable residual cycles. Impact: denial of service or unsafe state if checks are bypassed.
 5. **Use unsupported tokens:** fee-on-transfer or reentrant token makes settlement received amount differ from assumed amount. Impact: backing drift or callback reentrancy.
 6. **Capture ordering/reward:** searcher front-runs the originating route or triggers the same opportunity with itself as solver. Impact: intended solver reward recipient changes; no pool accounting violation, but adoption economics degrade.
-7. **Mislead judges/users:** dashboard or README shows the gas pass while hiding the failed LP-value gate. Impact: integrity/reputation failure. The UI and README display both results.
+7. **Mislead judges/users:** dashboard or README shows the gas pass while hiding the failed LP-value gate, or presents an `eth_call` as a transaction. Impact: integrity/reputation failure. The UI displays both results and labels dry-run versus signed execution.
+8. **Malicious deployment metadata:** a changed manifest directs wallet approval
+   or execution to a lookalike contract. Impact: testnet token approval or
+   misleading evidence. The page validates address/transaction shape, verifies
+   bytecode and pins the built manifest; production wallet safety is not claimed.
 
 ## Threat model table
 
@@ -145,6 +163,7 @@ flowchart LR
 | TM-006 | Searcher/builder | Public transaction and profitable cycle | Front-runs or captures permissionless solver reward | Lost opportunity; not accounting theft | Solver economics, availability | fold is atomic in originating unlock; reward capped at 10% | No sequencing/private-orderflow mechanism | Document permissionless solver model; optionally bind signed solver plan or private submission later | Compare originator and reward recipient; measure failed opportunities | High | Low | medium |
 | TM-007 | Malicious UI/repository editor | Can alter static files or published branch | Changes displayed benchmark or omits failed gate | Misrepresentation | Benchmark integrity | freeze/raw hashes; UI contains rejected-claim card; report preserved | No signed release artifact/CI verification yet | CI recompute hashes and tests; signed release tag; generate UI data from raw JSON | Verify hashes in CI and before video/submission | Low | Medium | low |
 | TM-008 | Arbitrary callback caller | Attempts direct callback invocation | Calls router/hook callback outside PoolManager lock | Unauthorized state change | Reserves, settlement | `BaseHook.onlyPoolManager`; router `NotPoolManager` | Relies on immutable manager correctness | Retain immutable manager and callback unit tests | Track reverted unauthorized callbacks in testing | Low | High | low |
+| TM-009 | Malicious site/repository editor | Can replace the dashboard build or manifest | Redirects testnet approval/execution to a lookalike address | Misleading demo or testnet token approval | Wallet intent, evidence integrity | Chain/manifest schema gate, receipt and bytecode checks, explicit wallet confirmations, testnet-only assets | No content-signing or production wallet guarantee | Publish from protected branch, retain CI/build checks and commit-pinned addresses | Compare connected chain and wallet transaction destination to manifest | Low | Medium | medium |
 
 ## Criticality calibration
 
@@ -165,7 +184,7 @@ flowchart LR
 | `contracts/test/ArbFoldInvariant.t.sol` | Executable backing and monotonicity security properties | TM-001, TM-003 |
 | `benchmark/arbfold-foundry/src/BenchmarkHarnesses.sol` | Correctness of the public execution comparator | TM-007 |
 | `benchmark/arbfold-results/` | Integrity of measured and rejected claims | TM-007 |
-| `app/app.js` | Public presentation of frozen measurements | TM-007 |
+| `app/app.js` | Public RPC verification, dry-run and signed demo transaction construction | TM-007, TM-009 |
 
 ## Notes on use
 

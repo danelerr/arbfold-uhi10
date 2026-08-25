@@ -8,7 +8,7 @@ This matrix separates completed repository work from manual publication tasks. I
 | New Hookathon code | Complete and public | Clean core under [`contracts/`](../contracts/) with reproducible history and CI. |
 | Tests or frontend | Both complete | [`contracts/test/`](../contracts/test/) and [`app/`](../app/) |
 | Public GitHub repository | Complete | [github.com/danelerr/arbfold-uhi10](https://github.com/danelerr/arbfold-uhi10) |
-| Public dashboard | Complete and verified | [danelerr.github.io/arbfold-uhi10](https://danelerr.github.io/arbfold-uhi10/) returns publicly and the 25k regression is interactive. |
+| Public dashboard | Complete locally; publish updated build | Live RPC reads, no-wallet deployed-contract dry-run, signed testnet flow and interactive benchmark under [`app/`](../app/). |
 | Project thumbnail | Complete | [`assets/arbfold-uhi10-thumbnail.png`](../assets/arbfold-uhi10-thumbnail.png) |
 | Demo/explainer video ≤5 minutes | Pending recording | Use [`VIDEO_RECORDING_RUNBOOK.md`](VIDEO_RECORDING_RUNBOOK.md) and [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md); human voice only. |
 | Problem/background | Drafted | Root [`README.md`](../README.md) and [`JUDGE_GUIDE.md`](JUDGE_GUIDE.md) |
@@ -27,6 +27,7 @@ Do not submit until all are true:
 
 - repository opens in an incognito browser;
 - demo URL opens without authentication;
+- live RPC status becomes green and the no-wallet dry-run returns `PASS`;
 - video uses a real human voice and is at most five minutes;
 - README links resolve from GitHub;
 - the first minute shows the problem, both paths and the delivered 19.12% canonical result;

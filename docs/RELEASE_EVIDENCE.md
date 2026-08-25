@@ -26,6 +26,7 @@ external artifact is marked pending rather than inferred or fabricated.
 - [Threat model](https://github.com/danelerr/arbfold-uhi10/blob/67ca1283b236e03775005b0ba3bf7451fec1ad34/docs/THREAT_MODEL.md)
 - [Public Unichain Sepolia deployment manifest](../deployments/unichain-sepolia-1301.json)
 - [Canonical public transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c)
+- [Independent interactive-path transaction](https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927)
 
 ## Result
 
@@ -71,13 +72,18 @@ the generated `lcov.info` and complete Slither JSON artifact:
 | PoolManager | Official v4 manager `0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95` |
 | Deployment manifest | [`deployments/unichain-sepolia-1301.json`](../deployments/unichain-sepolia-1301.json) — 28 successful deployment receipts |
 | Canonical transaction | [`0x6220…bf7c`](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c) — final |
+| Interactive-path validation | [`0x78f325…e7927`](https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927) — 1,000 Demo B, one fold round, zero residual |
 | Explorer links | Manager, coordinator, router, three hooks and canonical transaction are encoded in the manifest |
 | Source verification | `not-available`; no explorer-verification claim is made |
 | Video | Pending recording |
 | Final submission timestamp | Pending; Daniel submits manually |
 
-The dashboard fails closed unless the committed manifest passes its client-side
-schema gate. It does not substitute local values for public evidence.
+The dashboard fails closed unless the committed manifest passes its schema gate
+and live RPC checks confirm chain ID, both receipts, deployed bytecode, current
+counters and reserves. It does not substitute local values for public evidence.
+It also exposes a wallet-free end-to-end `eth_call` and an optional signed
+testnet execution path. `npm run check:live` verifies the same public dry-run
+prerequisites from the command line.
 
 On 2026-08-25, the resolver returned
 `0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95`; bytecode and chain ID 1301 were
