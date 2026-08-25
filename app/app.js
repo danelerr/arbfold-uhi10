@@ -93,9 +93,9 @@ function tokenAmount(value, precision = 6) {
 
 function reserveLine(reserves) {
   return [
-    `AB  ${tokenAmount(reserves.abA)} A / ${tokenAmount(reserves.abB)} B`,
-    `BC  ${tokenAmount(reserves.bcB)} B / ${tokenAmount(reserves.bcC)} C`,
-    `AC  ${tokenAmount(reserves.acA)} A / ${tokenAmount(reserves.acC)} C`,
+    `ETH / USD-1   ${tokenAmount(reserves.abA)} ETH / ${tokenAmount(reserves.abB)} USD-1`,
+    `USD-1 / USD-2 ${tokenAmount(reserves.bcB)} USD-1 / ${tokenAmount(reserves.bcC)} USD-2`,
+    `ETH / USD-2   ${tokenAmount(reserves.acA)} ETH / ${tokenAmount(reserves.acC)} USD-2`,
   ].join("\n");
 }
 
@@ -183,7 +183,7 @@ function renderLiveState(state) {
   setText("live-rpc-block", numberFormat.format(state.blockNumber));
   setText("live-fold-calls", numberFormat.format(state.calls));
   setText("live-fold-rounds", numberFormat.format(state.rounds));
-  setText("live-residual", `${state.residual} wei A`);
+  setText("live-residual", `${state.residual} wei ETH`);
   setText("live-current-reserves", reserveLine(state.network));
 }
 
@@ -202,10 +202,10 @@ function renderManifestSnapshot(data) {
   setExplorerLink("proof-hook-ab", "address", data.hooks.ab);
   setExplorerLink("proof-hook-bc", "address", data.hooks.bc);
   setExplorerLink("proof-hook-ac", "address", data.hooks.ac);
-  setText("proof-swap", `${tokenAmount(data.demo.amountIn)} in → ${tokenAmount(data.demo.amountOut)} out`);
+  setText("proof-swap", `${tokenAmount(data.demo.amountIn)} Demo USD-1 → ${tokenAmount(data.demo.amountOut)} Demo ETH`);
   setText("proof-rounds", `${data.demo.foldRounds} verified fold round${data.demo.foldRounds === 1 ? "" : "s"}`);
-  setText("proof-reward", `${tokenAmount(data.demo.solverReward)} A`);
-  setText("proof-residual", `${data.demo.residualProfit} wei A`);
+  setText("proof-reward", `${tokenAmount(data.demo.solverReward)} Demo ETH`);
+  setText("proof-residual", `${data.demo.residualProfit} wei Demo ETH`);
   setText("proof-pre-reserves", reserveLine(data.demo.preReserves));
   setText("proof-post-reserves", reserveLine(data.demo.postReserves));
   const commitLink = element("proof-commit");
@@ -217,7 +217,7 @@ function renderManifestSnapshot(data) {
     setExplorerLink("live-validation-link", "tx", data.interactiveDemo.transaction);
     setText(
       "live-validation-detail",
-      ` · ${tokenAmount(data.interactiveDemo.amountIn)} Demo B → ${tokenAmount(data.interactiveDemo.amountOut)} Demo A · ${data.interactiveDemo.foldRounds} round · residual ${data.interactiveDemo.residualProfit}`,
+      ` · ${tokenAmount(data.interactiveDemo.amountIn)} Demo USD-1 → ${tokenAmount(data.interactiveDemo.amountOut)} Demo ETH · ${data.interactiveDemo.foldRounds} round · residual ${data.interactiveDemo.residualProfit}`,
     );
   }
 }
@@ -303,7 +303,7 @@ async function simulateLiveDemo() {
   ]);
   setText(
     "live-simulation-result",
-    `PASS · ${tokenAmount(amount)} Demo B → ${tokenAmount(simulation.result)} Demo A · estimated ${numberFormat.format(gas)} gas · no signature · no state change`,
+    `PASS · ${tokenAmount(amount)} Demo USD-1 → ${tokenAmount(simulation.result)} Demo ETH · estimated ${numberFormat.format(gas)} gas · no signature · no state change`,
   );
 }
 
@@ -355,8 +355,8 @@ async function refreshWalletState() {
     publicClient.readContract({ address: tokenB, abi: tokenAbi, functionName: "allowance", args: [walletAccount, router] }),
   ]);
   setText("live-eth-balance", `${Number(formatEther(eth)).toFixed(5)} ETH`);
-  setText("live-token-balance", `${tokenAmount(balance)} Demo B`);
-  setText("live-allowance", `${tokenAmount(allowance)} Demo B`);
+  setText("live-token-balance", `${tokenAmount(balance)} Demo USD-1`);
+  setText("live-allowance", `${tokenAmount(allowance)} Demo USD-1`);
   element("live-prepare").disabled = actionBusy;
   element("live-execute").disabled = actionBusy || balance === 0n || allowance === 0n;
 }
@@ -383,14 +383,14 @@ async function prepareDemo() {
     publicClient.readContract({ address: tokenB, abi: tokenAbi, functionName: "allowance", args: [walletAccount, router] }),
   ]);
   if (balance < amount) {
-    setText("live-action-status", "Step 1/2: confirm minting valueless Demo B…");
+    setText("live-action-status", "Step 1/2: confirm minting valueless Demo USD-1…");
     await sendContract("mint", tokenB, tokenAbi, [walletAccount, amount - balance]);
   }
   if (allowance < amount) {
-    setText("live-action-status", "Step 2/2: confirm the exact Demo B allowance…");
+    setText("live-action-status", "Step 2/2: confirm the exact Demo USD-1 allowance…");
     await sendContract("approve", tokenB, tokenAbi, [router, amount]);
   }
-  setText("live-action-status", "Demo assets ready. You can now execute the live swap + fold.");
+  setText("live-action-status", "Demo assets ready. You can now execute the Demo USD-1 → Demo ETH swap and fold.");
   await refreshWalletState();
 }
 
@@ -418,7 +418,7 @@ async function executeDemo() {
     publicClient.readContract({ address: tokenB, abi: tokenAbi, functionName: "balanceOf", args: [walletAccount] }),
     publicClient.readContract({ address: tokenB, abi: tokenAbi, functionName: "allowance", args: [walletAccount, router] }),
   ]);
-  if (balance < amount || allowance < amount) throw new Error("Prepare Demo B and allowance before executing");
+  if (balance < amount || allowance < amount) throw new Error("Prepare Demo USD-1 and allowance before executing");
 
   const before = await readLiveState();
   const deadline = BigInt(Math.floor(Date.now() / 1000) + 15 * 60);
@@ -431,7 +431,7 @@ async function executeDemo() {
     args: [originHook, false, amount, 0n, walletAccount, deadline],
   });
   const minimumOut = quote.result * 995n / 1000n;
-  setText("live-action-status", `Confirm one atomic transaction. Quoted output: ${tokenAmount(quote.result)} Demo A.`);
+  setText("live-action-status", `Confirm one atomic transaction. Quoted output: ${tokenAmount(quote.result)} Demo ETH.`);
   const execution = await publicClient.simulateContract({
     account: walletAccount,
     address: router,
@@ -456,11 +456,11 @@ async function executeDemo() {
   setExplorerLink("live-result-tx", "tx", hash, abbreviated(hash));
   setText("live-result-block", numberFormat.format(receipt.blockNumber));
   setText("live-result-gas", numberFormat.format(receipt.gasUsed));
-  setText("live-result-output", `${tokenAmount(swap.args.amountOut)} Demo A`);
+  setText("live-result-output", `${tokenAmount(swap.args.amountOut)} Demo ETH`);
   setText("live-result-rounds", `${completed.args.rounds} (${rounds.length} FoldRound event${rounds.length === 1 ? "" : "s"})`);
   const reward = rounds.reduce((sum, event) => sum + event.args.solverReward, 0n);
-  setText("live-result-reward", `${tokenAmount(reward)} Demo A`);
-  setText("live-result-residual", `${completed.args.residualProfit} wei A`);
+  setText("live-result-reward", `${tokenAmount(reward)} Demo ETH`);
+  setText("live-result-residual", `${completed.args.residualProfit} wei Demo ETH`);
   setText("live-result-before", reserveLine(before.network));
   setText("live-result-after", reserveLine(after.network));
   setText("live-action-status", "Confirmed: the deployed router executed the user swap and ARBFOLD transition atomically.");

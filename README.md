@@ -3,13 +3,13 @@
 [![ARBFOLD verification](https://github.com/danelerr/arbfold-uhi10/actions/workflows/ci.yml/badge.svg)](https://github.com/danelerr/arbfold-uhi10/actions/workflows/ci.yml)
 [![Live dashboard](https://img.shields.io/badge/live-dashboard-c9ff5b?style=flat&labelColor=111319)](https://danelerr.github.io/arbfold-uhi10/)
 
-### Gas-efficient defensive rebalancing for Uniswap v4
+### 3 swaps → 1 verified transition
 
-> **Can cooperating AMM pools reach the same Pareto-safe post-arbitrage state more efficiently through direct reserve transitions?**
+> **Why replay a three-swap arbitrage cycle when cooperating pools can verify and apply the equivalent final state directly?**
 
-ARBFOLD is a research-grade Uniswap v4 custom-accounting experiment. Three hook-owned CPMMs—A/B, B/C and A/C—can fold a cyclic arbitrage opportunity directly into their PoolManager-backed ERC-6909 reserves inside the transaction that created it.
+ARBFOLD is a research-grade Uniswap v4 custom-accounting experiment. After a user swap creates an arbitrage cycle across three new hook-owned pools, ARBFOLD replaces three follow-up swaps plus profit reinjection with one verified, PoolManager-backed reserve transition inside the same transaction.
 
-> **Same outcome. Same user output. Same solver reward. 19.12% less gas at the canonical 100k benchmark.**
+> **Same user output. Same solver reward. Equivalent final reserves. 19.12% less gas at the canonical 100k benchmark.**
 
 The release-candidate code under `contracts/src` measured **440,128 gas for ARBFOLD versus 544,187 gas for a three-leg atomic backrun plus profit reinjection** at 100k. Every participating invariant must remain non-decreasing.
 
@@ -21,8 +21,8 @@ The release-candidate code under `contracts/src` measured **440,128 gas for ARBF
 
 The dashboard now has two deliberately separate proof paths:
 
-1. **No-wallet live dry-run:** click `Dry-run deployed swap + fold`. The browser executes the complete deployed router call through Unichain Sepolia RPC, returns the real output and estimates gas without changing state.
-2. **Signed testnet execution:** connect an injected wallet, mint valueless Demo B, approve the exact input and execute one atomic `B → A swap + fold`. The receipt panel links the user's transaction and shows live reserves before and after.
+1. **No-wallet live dry-run:** click `Run read-only test`. The browser executes the complete deployed router call through Unichain Sepolia RPC, returns the real output and estimates gas without changing state.
+2. **Signed testnet execution:** expand the optional wallet panel, mint valueless Demo USD-1, approve the exact input and execute one atomic `Demo USD-1 → Demo ETH swap + fold`. The receipt panel links the user's transaction and shows live reserves before and after.
 
 The page first verifies chain ID 1301, both public receipts, deployed bytecode,
 current fold counters and all six reserves. It fails closed instead of replacing
@@ -42,7 +42,7 @@ Then open [http://localhost:8080/](http://localhost:8080/). See the exact
 
 **Judge proof:** [public canonical transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c) · [deployment manifest](deployments/unichain-sepolia-1301.json) · [hook](contracts/src/ArbFoldHook.sol) · [coordinator](contracts/src/ArbFoldCoordinator.sol) · [router](contracts/src/ArbFoldRouter.sol) · [six-path invariants](contracts/test/ArbFoldInvariant.t.sol) · [release evidence](docs/RELEASE_EVIDENCE.md). Run the complete fail-closed gate with `make verify-release`.
 
-**Public-chain status:** the research network and canonical demo are live on **Unichain Sepolia (chain 1301)** using the official v4 `PoolManager`. The latest independent signed-path validation is [`0x78f325…e7927`](https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927): 1,000 Demo B entered, 0.291279 Demo A reached the user, one fold round ran and residual cyclic profit was zero. Demo assets are freely mintable and have no value.
+**Public-chain status:** the research network and canonical demo are live on **Unichain Sepolia (chain 1301)** using the official v4 `PoolManager`. The latest independent signed-path validation is [`0x78f325…e7927`](https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927): 1,000 Demo USD-1 entered, 0.291279 Demo ETH reached the user, one fold round ran and residual cyclic profit was zero. Demo assets are freely mintable and have no value.
 
 ## What happens in one transaction
 

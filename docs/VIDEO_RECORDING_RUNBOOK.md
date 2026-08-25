@@ -48,14 +48,14 @@ output.
 
 | Time | Screen | Action | Message |
 |---:|---|---|---|
-| 0:00–0:25 | Dashboard hero | Hold the frame, then point at the four metrics. | Three swaps normally reconcile the cycle; ARBFOLD tests a direct v4 transition to the same safe state. |
-| 0:25–1:05 | Live demo | Show current block/reserves and click the no-wallet deployed-contract dry-run; open its linked persistent validation transaction. | The RPC executes the deployed router path now; the linked signed transaction proves the same UI path persisted onchain. |
+| 0:00–0:25 | Dashboard hero | Hold the frame, then point at the two execution lanes and −19.12% badge. | Three swaps normally reconcile the cycle; ARBFOLD tests one direct v4 transition to the equivalent final state. |
+| 0:25–1:05 | Live demo | Click `Run read-only test`, show its real quote/gas estimate, then show current block/reserves and the linked signed validation transaction. | The RPC executes the deployed router path now; the linked signed transaction proves the contract path persisted onchain. |
 | 1:05–1:40 | Benchmark | Click 10k, 25k, 50k, 100k and 200k slowly. Stop at 25k, then return to 100k. | Same user swap, output and reward. The canonical result is 19.12% less gas, but 25k is 0.98% more expensive, so the claim is workload-dependent. |
 | 1:40–2:10 | Public proof and state trace | Scroll to onchain proof and show before/after reserves. | Official Unichain Sepolia PoolManager, live bytecode/counters/reserves, exact claims/backing and zero canonical residual profit. |
 | 2:10–2:50 | Commit-pinned code tabs | Show the highlighted hook, coordinator and router functions. Do not scroll through whole files. | BaseCustomCurve computes the user output; the fixed coordinator transfers backed claims under conservation/invariant guards; the router settles every delta in one unlock. |
 | 2:50–3:20 | Terminal | Show the already completed `make video-proof` output and its final PASS line. | 61 core tests, all-six-path stateful invariants, exact backing, negative paths and the frozen five-size benchmark. |
 | 3:20–3:50 | Dashboard evidence cards / report | Show the rejected economic gate and the complete workload grid. | The 10% LP-value thesis failed. The historical 39.58%, earlier 18.86% and delivered 19.12% results remain separate rather than cherry-picked. |
-| 3:50–4:10 | Dashboard hero | Return to the headline. | Same outcome, same user output, same solver reward; 19.12% less gas at the canonical 100k workload. ARBFOLD folds the cycle instead of replaying it. |
+| 3:50–4:10 | Dashboard hero | Return to the headline. | Three swaps become one verified transition; same user output, same solver reward and equivalent final reserves; 19.12% less gas at the canonical 100k workload. |
 
 Use the exact narration in [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md). The shorter
 phrases above are visual cues, not replacement claims.
