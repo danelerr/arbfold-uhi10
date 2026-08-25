@@ -10,7 +10,7 @@ source_verification=${ARBFOLD_SOURCE_VERIFICATION:-not-available}
 
 usage() {
   cat <<'EOF'
-usage: scripts/deploy-unichain-sepolia.sh
+usage: scripts/deploy-unichain-sepolia.sh [--network-check|--preflight]
 
 Deploys the research-only ARBFOLD network and canonical demo to Unichain
 Sepolia, verifies the resulting state and writes one finalized public manifest.
@@ -28,6 +28,13 @@ Optional:
   ARBFOLD_SOURCE_VERIFICATION=not-available|partial|verified
 
 The script never commits, pushes or prints the private key.
+
+Modes:
+  --network-check  Validate clean main, chain ID and official PoolManager only.
+                   No credential is loaded and nothing is broadcast.
+  --preflight      Also validate the protected credential and funded account,
+                   then stop before any broadcast.
+  no argument      Run preflight and the full public deployment.
 EOF
 }
 
@@ -40,16 +47,26 @@ file_mode() {
   stat -f '%Lp' "$1" 2>/dev/null || stat -c '%a' "$1"
 }
 
-if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
-  usage
-  exit 0
-fi
-if [[ "$#" -ne 0 ]]; then
+operation=deploy
+case "${1:-}" in
+  "") ;;
+  --network-check) operation=network-check ;;
+  --preflight) operation=preflight ;;
+  --help|-h)
+    usage
+    exit 0
+    ;;
+  *)
+    usage >&2
+    exit 64
+    ;;
+esac
+[[ "$#" -le 1 ]] || {
   usage >&2
   exit 64
-fi
+}
 
-if [[ -z "${ARBFOLD_TESTNET_PRIVATE_KEY:-}" && -f "$credential_file" ]]; then
+if [[ "$operation" != "network-check" && -z "${ARBFOLD_TESTNET_PRIVATE_KEY:-}" && -f "$credential_file" ]]; then
   mode=$(file_mode "$credential_file")
   [[ "$mode" =~ ^[0-7]{3,4}$ ]] || fail "cannot determine safe permissions for $credential_file"
   permission_tail=${mode: -2}
@@ -60,8 +77,11 @@ if [[ -z "${ARBFOLD_TESTNET_PRIVATE_KEY:-}" && -f "$credential_file" ]]; then
   set +a
 fi
 
-private_key=${ARBFOLD_TESTNET_PRIVATE_KEY:-}
-[[ "$private_key" =~ ^0x[0-9a-fA-F]{64}$ ]] || fail "set a dedicated testnet key in the protected credential file; never paste it into chat"
+private_key=""
+if [[ "$operation" != "network-check" ]]; then
+  private_key=${ARBFOLD_TESTNET_PRIVATE_KEY:-}
+  [[ "$private_key" =~ ^0x[0-9a-fA-F]{64}$ ]] || fail "set a dedicated testnet key in the protected credential file; never paste it into chat"
+fi
 
 for command in cast curl forge git jq; do
   command -v "$command" >/dev/null || fail "missing required command: $command"
@@ -84,9 +104,26 @@ chain_id=$(cast chain-id --rpc-url "$rpc_url")
 manager_code=$(cast code "$pool_manager" --rpc-url "$rpc_url")
 [[ "$manager_code" != "0x" && -n "$manager_code" ]] || fail "official PoolManager has no bytecode"
 
+if [[ "$operation" == "network-check" ]]; then
+  printf 'ARBFOLD network preflight PASS\n'
+  printf 'Chain ID: %s\n' "$chain_id"
+  printf 'Official PoolManager: %s\n' "$pool_manager"
+  exit 0
+fi
+
 deployer_address=$(cast wallet address --private-key "$private_key")
 balance_wei=$(cast balance "$deployer_address" --rpc-url "$rpc_url")
 [[ "$balance_wei" =~ ^[0-9]+$ && "$balance_wei" != "0" ]] || fail "deployer $deployer_address has no Unichain Sepolia ETH"
+
+printf 'ARBFOLD deployer: %s\n' "$deployer_address"
+printf 'ARBFOLD balance (wei): %s\n' "$balance_wei"
+printf 'ARBFOLD official PoolManager: %s\n' "$pool_manager"
+
+if [[ "$operation" == "preflight" ]]; then
+  unset private_key ARBFOLD_TESTNET_PRIVATE_KEY PRIVATE_KEY
+  printf 'ARBFOLD funded-account preflight PASS; no transaction was broadcast\n'
+  exit 0
+fi
 
 temporary_directory=$(mktemp -d)
 demo_evidence="$temporary_directory/unichain-sepolia-1301-demo.json"
@@ -97,9 +134,6 @@ cleanup() {
 trap cleanup EXIT
 
 git_commit=$(git rev-parse HEAD)
-printf 'ARBFOLD deployer: %s\n' "$deployer_address"
-printf 'ARBFOLD balance (wei): %s\n' "$balance_wei"
-printf 'ARBFOLD official PoolManager: %s\n' "$pool_manager"
 
 (
   cd "$contracts_root"

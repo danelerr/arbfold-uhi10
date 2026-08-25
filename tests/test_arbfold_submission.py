@@ -115,6 +115,9 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
         self.assertNotEqual(path.stat().st_mode & 0o111, 0)
         for required_guard in (
             "permission_tail",
+            "--network-check",
+            "--preflight",
+            "no transaction was broadcast",
             'git branch --show-current)\" == \"main\"',
             "working tree must be clean",
             "local main must equal origin/main",

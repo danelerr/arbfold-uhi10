@@ -56,7 +56,14 @@ ARBFOLD_TESTNET_PRIVATE_KEY=0x...
 ```
 
 Never paste that value into chat. Once its derived address has Unichain
-Sepolia ETH, run:
+Sepolia ETH, validate each boundary without broadcasting:
+
+```bash
+scripts/deploy-unichain-sepolia.sh --network-check
+scripts/deploy-unichain-sepolia.sh --preflight
+```
+
+Only after both pass, run the broadcast explicitly:
 
 ```bash
 scripts/deploy-unichain-sepolia.sh
