@@ -63,11 +63,14 @@ const numberFormat = new Intl.NumberFormat("en-US", { maximumFractionDigits: 6 }
 let manifest;
 let walletClient;
 let walletAccount;
+let walletProvider;
 let liveReady = false;
 let benchmarkReady = false;
 let actionBusy = false;
 let replayRunning = false;
 let replayTimers = [];
+const announcedWallets = [];
+const boundWalletProviders = new WeakSet();
 
 function element(id) {
   return document.querySelector(`#${id}`);
@@ -84,6 +87,88 @@ function abbreviated(value) {
 
 function canonicalAddress(value) {
   return getAddress(value.toLowerCase());
+}
+
+function walletCandidates() {
+  const candidates = [...announcedWallets];
+  const legacy = window.ethereum;
+  const legacyProviders = Array.isArray(legacy?.providers) ? legacy.providers : [];
+  legacyProviders.forEach((provider) => candidates.push({ provider, info: {} }));
+  if (legacy) candidates.push({ provider: legacy, info: {} });
+
+  return candidates.filter((candidate, index, all) => (
+    candidate?.provider?.request
+    && all.findIndex((item) => item?.provider === candidate.provider) === index
+  ));
+}
+
+function selectWallet() {
+  const candidates = walletCandidates();
+  return candidates.find((candidate) => candidate.info?.rdns === "io.metamask")
+    || candidates.find((candidate) => candidate.provider?.isMetaMask && !candidate.provider?.isRabby)
+    || candidates[0]
+    || null;
+}
+
+function walletName(candidate) {
+  if (candidate?.info?.name) return candidate.info.name;
+  if (candidate?.provider?.isMetaMask) return "MetaMask";
+  if (candidate?.provider?.isCoinbaseWallet) return "Coinbase Wallet";
+  if (candidate?.provider?.isBraveWallet) return "Brave Wallet";
+  return "Browser wallet";
+}
+
+function refreshWalletAvailability() {
+  const button = element("live-connect");
+  const status = element("live-wallet-status");
+  const help = element("wallet-provider-help");
+  const step = element("wallet-step-connect");
+  if (!button || !status) return;
+
+  const candidate = selectWallet();
+  walletProvider = candidate?.provider || null;
+  if (walletAccount) {
+    button.disabled = true;
+    button.textContent = "Connected";
+    status.className = "live-status ready";
+    status.textContent = abbreviated(walletAccount);
+    step?.classList.remove("is-ready");
+    step?.classList.add("is-complete");
+    if (help) help.hidden = true;
+    return;
+  }
+
+  if (!candidate) {
+    button.disabled = true;
+    button.textContent = "Wallet not found";
+    status.className = "live-status error";
+    status.textContent = "No browser wallet detected";
+    step?.classList.remove("is-ready", "is-complete");
+    if (help) {
+      const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      help.hidden = false;
+      help.textContent = mobile ? "Open this demo in MetaMask" : "Install a browser wallet";
+      help.href = mobile
+        ? "https://metamask.app.link/dapp/danelerr.github.io/arbfold-uhi10/"
+        : "https://metamask.io/download/";
+    }
+    return;
+  }
+
+  button.disabled = actionBusy || !liveReady;
+  button.textContent = liveReady ? "Connect" : "Verifying";
+  status.className = "live-status";
+  status.textContent = `${walletName(candidate)} detected`;
+  step?.classList.toggle("is-ready", liveReady);
+  step?.classList.remove("is-complete");
+  if (help) help.hidden = true;
+}
+
+function bindWalletEvents(provider) {
+  if (!provider?.on || boundWalletProviders.has(provider)) return;
+  provider.on("accountsChanged", () => window.location.reload());
+  provider.on("chainChanged", () => window.location.reload());
+  boundWalletProviders.add(provider);
 }
 
 function tokenAmount(value, precision = 6) {
@@ -352,8 +437,7 @@ async function loadOnchainProof() {
     setText("proof-pending-detail", "Verified now through RPC: chain ID, canonical receipt, deployed bytecode, live counters and current reserves.");
     if (element("live-refresh")) element("live-refresh").disabled = false;
     if (element("live-simulate")) element("live-simulate").disabled = false;
-    if (element("live-connect")) element("live-connect").disabled = false;
-    element("wallet-step-connect")?.classList.add("is-ready");
+    refreshWalletAvailability();
     syncReplayAvailability();
   } catch (error) {
     liveReady = false;
@@ -366,6 +450,7 @@ async function loadOnchainProof() {
     setText("proof-pending-detail", `Fail-closed: the page will not claim a live deployment. ${describeError(error)}`);
     setText("live-action-status", describeError(error));
     setText("replay-status", `Ready · benchmark available · onchain proof unavailable: ${describeError(error)}`);
+    refreshWalletAvailability();
     syncReplayAvailability();
   }
 }
@@ -402,12 +487,12 @@ async function simulateLiveDemo() {
   );
 }
 
-async function switchToUnichain() {
-  const provider = window.ethereum;
+async function switchToUnichain(provider) {
   try {
     await provider.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CHAIN_HEX }] });
   } catch (error) {
-    if (error.code !== 4902) throw error;
+    const code = error?.code ?? error?.cause?.code;
+    if (code !== 4902) throw error;
     await provider.request({
       method: "wallet_addEthereumChain",
       params: [{
@@ -423,17 +508,23 @@ async function switchToUnichain() {
 
 async function connectWallet() {
   if (!liveReady) throw new Error("Wait for live RPC verification first");
-  if (!window.ethereum) throw new Error("Install or enable an EVM browser wallet to run the live demo");
-  await window.ethereum.request({ method: "eth_requestAccounts" });
-  await switchToUnichain();
-  const accounts = await window.ethereum.request({ method: "eth_accounts" });
+  const candidate = selectWallet();
+  if (!candidate) {
+    refreshWalletAvailability();
+    throw new Error("No browser wallet detected. A Cast keystore is not exposed to webpages.");
+  }
+  walletProvider = candidate.provider;
+  await walletProvider.request({ method: "eth_requestAccounts" });
+  await switchToUnichain(walletProvider);
+  const accounts = await walletProvider.request({ method: "eth_accounts" });
   if (!accounts.length) throw new Error("No wallet account is connected");
   walletAccount = canonicalAddress(accounts[0]);
   walletClient = createWalletClient({
     account: walletAccount,
     chain: unichainSepolia,
-    transport: custom(window.ethereum),
+    transport: custom(walletProvider),
   });
+  bindWalletEvents(walletProvider);
   setText("live-wallet-status", abbreviated(walletAccount));
   element("live-wallet-status").className = "live-status ready";
   element("live-connect").textContent = "Wallet connected";
@@ -592,7 +683,7 @@ async function runAction(action) {
     setText("live-action-status", describeError(error));
   } finally {
     actionBusy = false;
-    if (element("live-connect")) element("live-connect").disabled = !liveReady || Boolean(walletAccount);
+    refreshWalletAvailability();
     if (element("live-refresh")) element("live-refresh").disabled = !liveReady;
     if (element("live-simulate")) element("live-simulate").disabled = !liveReady;
     if (walletAccount) await refreshWalletState();
@@ -634,10 +725,15 @@ element("wallet-amount").addEventListener("input", async () => {
   }
 });
 
-if (window.ethereum?.on) {
-  window.ethereum.on("accountsChanged", () => window.location.reload());
-  window.ethereum.on("chainChanged", () => window.location.reload());
-}
+window.addEventListener("eip6963:announceProvider", (event) => {
+  const detail = event?.detail;
+  if (!detail?.provider?.request) return;
+  if (!announcedWallets.some((candidate) => candidate.provider === detail.provider)) announcedWallets.push(detail);
+  refreshWalletAvailability();
+});
+window.dispatchEvent(new Event("eip6963:requestProvider"));
+refreshWalletAvailability();
+window.setTimeout(refreshWalletAvailability, 500);
 
 Promise.allSettled([loadBenchmark(), loadOnchainProof()]).then((results) => {
   for (const result of results) {

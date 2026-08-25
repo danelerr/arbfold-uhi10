@@ -289,6 +289,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 .wallet-step > div { display: grid; gap: 3px; }
 .wallet-step > div strong { font-size: 12px; }
 .wallet-step > div small { color: var(--muted); font-size: 9px; }
+.wallet-provider-help { width: fit-content; margin-top: 3px; color: var(--violet); font-size: 9px; font-weight: 700; text-decoration: none; }
+.wallet-provider-help:hover { color: var(--text); }
 .wallet-step.is-ready .step-number { border-color: var(--violet); color: var(--violet); }
 .wallet-step.is-complete .step-number { border-color: var(--lime); color: #11150a; background: var(--lime); }
 .execute-step { grid-template-columns: 30px minmax(140px, 1fr) minmax(132px, 0.6fr) auto; }

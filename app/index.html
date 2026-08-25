@@ -126,7 +126,11 @@
         <div id="execute-live" class="wallet-flow">
           <div id="wallet-step-connect" class="wallet-step">
             <span class="step-number">1</span>
-            <div><strong>Connect wallet</strong><small id="live-wallet-status" class="live-status">Wallet not connected</small></div>
+            <div>
+              <strong>Connect wallet</strong>
+              <small id="live-wallet-status" class="live-status">Checking for a browser wallet</small>
+              <a id="wallet-provider-help" class="wallet-provider-help" href="https://metamask.io/download/" target="_blank" rel="noreferrer" hidden>Install a browser wallet</a>
+            </div>
             <button id="live-connect" class="button secondary" type="button" disabled>Connect</button>
           </div>
 

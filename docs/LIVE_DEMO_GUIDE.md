@@ -17,10 +17,12 @@ a separate frozen Foundry artifact and is never represented as live chain data.
 
 ## Test without a wallet
 
-1. Open <https://danelerr.github.io/arbfold-uhi10/#live-demo>.
-2. Confirm the green `Connected to Unichain Sepolia` state.
-3. Change `Demo B input` if desired; the public range is 100–25,000.
-4. Click `Dry-run deployed swap + fold (no wallet)`.
+1. Open <https://danelerr.github.io/arbfold-uhi10/>.
+2. Click `Run on testnet`.
+3. Confirm the green `Public deployment verified` state.
+4. Expand `Simulate deployed contracts`.
+5. Change the Demo USD-1 input if desired; the public range is 100–25,000.
+6. Click `Run simulation`.
 5. Expect a result shaped like:
 
 ```text
@@ -36,25 +38,30 @@ not claim to change reserves.
 
 Requirements:
 
-- an injected EVM wallet;
+- an injected browser wallet supporting EIP-1193 or EIP-6963;
 - Unichain Sepolia selected (the page can request adding/switching it);
 - a small amount of Unichain Sepolia ETH for gas.
 
+A Foundry/Cast keystore is not exposed to webpages and cannot satisfy the first
+requirement. Use a browser wallet extension or open the demo inside a mobile
+wallet browser. If no provider is detected, the panel now says so explicitly
+and offers an installation/open-in-wallet link.
+
 Steps:
 
-1. Click `Connect wallet` and approve account access.
-2. Leave the default 1,000 Demo B input for the clearest demo.
-3. Click `Mint + approve demo input`. Demo B is permissionlessly mintable and
+1. Click `Run on testnet` and confirm that the detected wallet name appears.
+2. Click `Connect` and approve account access.
+3. Leave the default 1,000 Demo USD-1 input for the clearest demo.
+4. Click `Prepare`. Demo USD-1 is permissionlessly mintable and
    valueless. Depending on existing balance/allowance, the wallet asks for zero,
    one or two preparation transactions.
-4. Click `Execute swap + fold` and confirm one atomic transaction.
-5. Wait for the receipt panel. It must show:
+5. Click `Execute` and confirm one atomic transaction.
+6. Wait for the receipt panel. It must show:
    - an explorer link for the wallet's transaction;
-   - block and gas used;
+   - gas used;
    - user output;
-   - `FoldRound` count and solver reward;
-   - `FoldCompleted` residual;
-   - the six reserves before and after.
+   - `FoldRound` count;
+   - `FoldCompleted` residual.
 
 The UI quotes first and applies a 0.5% minimum-output guard. It never requests a
 private key. Contracts are research-only, testnet assets have no value and the
