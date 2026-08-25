@@ -4,6 +4,12 @@ The final video should be **3:45–4:15**, use Daniel's real voice and remain
 below the five-minute limit. This runbook turns [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md)
 into a repeatable recording sequence; it does not add claims or features.
 
+An import-ready English subtitle template is available at
+[`assets/arbfold-demo-en.srt`](../assets/arbfold-demo-en.srt). Its current
+timeline runs to 4:12 and matches the planned sequence. After recording, retime
+it to the actual human narration rather than speeding up or cutting the
+required disclosures.
+
 ## 1. One-time preflight
 
 Use a 1920×1080 or 2560×1440 desktop, disable notifications and close every
@@ -78,6 +84,7 @@ form, verify all of the following:
 - the 0.98% 25k regression and failed 10% LP-value claim are audible;
 - the public transaction and actual v4 code appear on screen;
 - the uploaded video opens in a private browser window without authentication;
+- the subtitle track has been retimed against the final human narration;
 - the title and description identify it as a research-grade UHI10 build.
 
 Recommended title:

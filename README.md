@@ -185,6 +185,7 @@ claimed.
 | [`docs/NEXT_ITERATION_PLAN.md`](docs/NEXT_ITERATION_PLAN.md) | Archived execution plan; current evidence lives in the release evidence and final-submission copy. |
 | [`docs/FINAL_SUBMISSION.md`](docs/FINAL_SUBMISSION.md) | Copy-ready final form answers, public proof links and claim boundaries. |
 | [`docs/VIDEO_RECORDING_RUNBOOK.md`](docs/VIDEO_RECORDING_RUNBOOK.md) | Four-minute recording sequence, preflight and publication gate. |
+| [`assets/arbfold-demo-en.srt`](assets/arbfold-demo-en.srt) | Retimable English subtitle template for the human-narrated demo. |
 | [`assets/arbfold-uhi10-thumbnail.png`](assets/arbfold-uhi10-thumbnail.png) | Final submission thumbnail. |
 | [`Makefile`](Makefile) | One-command test, formatting, lint, snapshot and dashboard entry points. |
 
