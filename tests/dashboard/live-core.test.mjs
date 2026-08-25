@@ -47,6 +47,19 @@ test("validateManifest rejects the wrong chain and malformed addresses", () => {
     maximumInput: "1",
   };
   assert.throws(() => validateManifest(invalidSimulation), /invalid RPC simulation/);
+
+  const invalidInteractive = manifest();
+  invalidInteractive.interactiveDemo = {
+    user: address,
+    transaction,
+    amountIn: "1000",
+    amountOut: "900",
+    residualProfit: "0",
+    solverReward: "1",
+    blockNumber: 1,
+    foldRounds: -1,
+  };
+  assert.throws(() => validateManifest(invalidInteractive), /invalid interactive-demo evidence/);
 });
 
 test("parseDemoAmount enforces the public-demo range", () => {

@@ -41,9 +41,9 @@ The committed [deployment manifest](../deployments/unichain-sepolia-1301.json)
 records the official PoolManager, 28 deployment transactions, the three hooks,
 the demo state transition and its zero residual profit.
 
-The independently rerun signed contract path is
-[`0x78f325…e7927`](https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927).
-It moved 1,000 Demo USD-1 through the deployed router, returned 0.291279 Demo ETH,
+The browser-executed signed contract path is
+[`0x87a940…5deceb`](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb).
+It moved 1,000 Demo USD-1 through the deployed router, returned 0.290519 Demo ETH,
 executed one fold round and ended with zero residual. The [live-demo
 guide](LIVE_DEMO_GUIDE.md) separates the no-wallet `eth_call`, signed transaction
 and frozen benchmark evidence.

@@ -75,12 +75,12 @@ deployment is not authorized for production deposits.
 
 ## Public validation transaction
 
-The same signed contract path was independently rerun with the dedicated
-testnet wallet on 2026-08-25 (outside the browser UI):
+The same signed contract path was executed from the public browser UI with the
+dedicated testnet wallet on 2026-08-25:
 
-- transaction: [`0x78f325…e7927`](https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927);
+- transaction: [`0x87a940…5deceb`](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb);
 - input: 1,000 Demo B;
-- output: 0.291279366794057286 Demo A;
+- output: 0.290518911748886010 Demo A;
 - fold rounds: 1;
 - residual cyclic profit: 0 wei A.
 

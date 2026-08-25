@@ -27,7 +27,12 @@ export function validateManifest(manifest) {
   }
   if (manifest.interactiveDemo) {
     if (!ADDRESS_PATTERN.test(manifest.interactiveDemo.user ?? "")
-      || !/^0x[a-fA-F0-9]{64}$/.test(manifest.interactiveDemo.transaction ?? "")) {
+      || !/^0x[a-fA-F0-9]{64}$/.test(manifest.interactiveDemo.transaction ?? "")
+      || !["amountIn", "amountOut", "residualProfit", "solverReward"].every((field) => /^\d+$/.test(manifest.interactiveDemo[field] ?? ""))
+      || !Number.isSafeInteger(manifest.interactiveDemo.blockNumber)
+      || manifest.interactiveDemo.blockNumber <= 0
+      || !Number.isSafeInteger(manifest.interactiveDemo.foldRounds)
+      || manifest.interactiveDemo.foldRounds < 0) {
       throw new Error("manifest contains invalid interactive-demo evidence");
     }
   }

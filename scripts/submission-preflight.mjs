@@ -67,6 +67,7 @@ check("Interactive demo remains the first claim", includesAll(page, ["3 arbitrag
 check("Wallet integration uses EIP-6963", includesAll(app, ["eip6963:requestProvider", "eip6963:announceProvider", "custom(walletProvider)"]));
 check("Wallet bundle is explicitly versioned", page.includes('./app.js?v=signed-gas-1'));
 check("Canonical transaction is linked", page.includes(manifest.canonicalDemoTransaction));
+check("Browser-signed transaction is documented", finalSubmission.includes(manifest.interactiveDemo.transaction));
 check("Deployment uses Unichain Sepolia", manifest.chainId === 1301 && manifest.network === "unichain-sepolia");
 check("Deployment is explicitly research-only", manifest.researchOnly === true);
 check("README publishes the workload boundary", includesAll(readme, ["19.12% less gas", "0.98% more at 25k"]));
@@ -84,6 +85,7 @@ if (publicMode) {
     const servedManifest = validateManifest(JSON.parse(publicManifest));
     check("Public dashboard serves current wallet bundle", publicPage.includes("./app.js?v=signed-gas-1"));
     check("Public manifest matches canonical transaction", servedManifest.canonicalDemoTransaction === manifest.canonicalDemoTransaction);
+    check("Public manifest matches browser-signed transaction", servedManifest.interactiveDemo.transaction === manifest.interactiveDemo.transaction);
     check("Public repository serves current claim", includesAll(publicReadme, ["19.12% less gas", "0.98% more at 25k"]));
   } catch (error) {
     failures.push(`Public artifact verification: ${error.message}`);

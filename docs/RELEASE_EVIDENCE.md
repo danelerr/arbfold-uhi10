@@ -26,7 +26,7 @@ external artifact is marked pending rather than inferred or fabricated.
 - [Threat model](https://github.com/danelerr/arbfold-uhi10/blob/67ca1283b236e03775005b0ba3bf7451fec1ad34/docs/THREAT_MODEL.md)
 - [Public Unichain Sepolia deployment manifest](../deployments/unichain-sepolia-1301.json)
 - [Canonical public transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c)
-- [Independent signed-path transaction](https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927)
+- [Browser-executed signed-path transaction](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb)
 
 ## Result
 
@@ -72,7 +72,7 @@ the generated `lcov.info` and complete Slither JSON artifact:
 | PoolManager | Official v4 manager `0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95` |
 | Deployment manifest | [`deployments/unichain-sepolia-1301.json`](../deployments/unichain-sepolia-1301.json) — 28 successful deployment receipts |
 | Canonical transaction | [`0x6220…bf7c`](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c) — final |
-| Signed-path validation | [`0x78f325…e7927`](https://sepolia.uniscan.xyz/tx/0x78f32562596101d0ea3ca35dd3bf9c4fc0054bd788c2bfa1b96886c7bfce7927) — 1,000 Demo B, one fold round, zero residual |
+| Signed-path validation | [`0x87a940…5deceb`](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb) — browser-executed; 1,000 Demo B, one fold round, zero residual |
 | Explorer links | Manager, coordinator, router, three hooks and canonical transaction are encoded in the manifest |
 | Source verification | `not-available`; no explorer-verification claim is made |
 | Video | Pending recording |

@@ -31,4 +31,5 @@ test("live application verifies state and waits for signed receipts", () => {
   assert.match(app, /eth_chainId/);
   assert.match(app, /estimateContractGas/);
   assert.match(app, /gas: bufferedGasLimit\(estimatedGas\)/);
+  assert.match(app, /DEMO_ALLOWANCE/);
 });

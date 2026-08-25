@@ -24,6 +24,7 @@ const CHAIN_HEX = "0x515";
 const RPC_URL = "https://sepolia.unichain.org";
 const EXPLORER_URL = "https://sepolia.uniscan.xyz";
 const TOKEN_DECIMALS = 18;
+const DEMO_ALLOWANCE = 25_000n * 10n ** 18n;
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 const unichainSepolia = {
@@ -599,8 +600,8 @@ async function prepareDemo() {
     await sendContract("mint", tokenB, tokenAbi, [walletAccount, amount - balance]);
   }
   if (allowance < amount) {
-    setText("live-action-status", "Step 2/2: confirm the exact Demo USD-1 allowance…");
-    await sendContract("approve", tokenB, tokenAbi, [router, amount]);
+    setText("live-action-status", "Step 2/2: confirm the bounded Demo USD-1 allowance…");
+    await sendContract("approve", tokenB, tokenAbi, [router, DEMO_ALLOWANCE]);
   }
   setText("live-action-status", "Demo assets ready. You can now execute the Demo USD-1 → Demo ETH swap and fold.");
   await refreshWalletState();
