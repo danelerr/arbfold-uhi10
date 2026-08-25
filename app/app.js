@@ -104,9 +104,11 @@ function reserveLine(reserves) {
 
 function setExplorerLink(id, kind, value, label = abbreviated(value)) {
   const link = element(id);
+  if (!link) return;
   link.textContent = label;
   link.href = `${EXPLORER_URL}/${kind}/${value}`;
   link.target = "_blank";
+  link.rel = "noreferrer";
 }
 
 function describeError(error) {
@@ -182,7 +184,7 @@ function runReplay() {
     consolePanel.classList.add("is-complete");
     element("replay-result").classList.add("is-revealed");
     setText("replay-status", "Replay complete · same output · same reward · equivalent final reserves");
-    element("replay-demo").innerHTML = "<span aria-hidden=\"true\">↻</span> Run comparison again";
+    element("replay-demo").textContent = "Replay again";
     replayRunning = false;
     syncReplayAvailability();
   }, 1750 * speed));
@@ -222,11 +224,9 @@ async function loadBenchmark() {
     setText("selected-size", `${numberFormat.format(size / 1000)}k`);
     buttons.forEach((button) => button.classList.toggle("active", Number(button.dataset.size) === size));
     if (!replayRunning) {
-      element("replay-result")?.classList.remove("is-revealed");
+      element("replay-result")?.classList.add("is-revealed");
       element("replay-console")?.classList.remove("is-complete");
-      setText("replay-status", liveReady
-        ? `Ready to run the ${numberFormat.format(size / 1000)}k comparison`
-        : `Ready to run the ${numberFormat.format(size / 1000)}k benchmark · verifying onchain proof in parallel`);
+      setText("replay-status", `Selected ${numberFormat.format(size / 1000)}k benchmark`);
     }
   }
 
@@ -275,7 +275,7 @@ function renderManifestSnapshot(data) {
   setText("proof-manager-kind", official ? "Official Uniswap v4 PoolManager" : "Isolated research PoolManager");
   setText("proof-block", numberFormat.format(data.blockNumber));
   setText("proof-source", data.sourceVerification);
-  setExplorerLink("proof-transaction", "tx", data.canonicalDemoTransaction, "View canonical transaction ↗");
+  setExplorerLink("proof-transaction", "tx", data.canonicalDemoTransaction, "Onchain transaction");
   setExplorerLink("proof-manager", "address", data.poolManager);
   setExplorerLink("proof-coordinator", "address", data.coordinator);
   setExplorerLink("proof-router", "address", data.router);
@@ -293,10 +293,13 @@ function renderManifestSnapshot(data) {
   setText("proof-pre-reserves", reserveLine(data.demo.preReserves));
   setText("proof-post-reserves", reserveLine(data.demo.postReserves));
   const commitLink = element("proof-commit");
-  commitLink.textContent = data.gitCommit.slice(0, 12);
-  commitLink.href = `https://github.com/danelerr/arbfold-uhi10/commit/${data.gitCommit}`;
-  commitLink.target = "_blank";
-  element("proof-transaction").href = `${explorer}/tx/${data.canonicalDemoTransaction}`;
+  if (commitLink) {
+    commitLink.textContent = data.gitCommit.slice(0, 12);
+    commitLink.href = `https://github.com/danelerr/arbfold-uhi10/commit/${data.gitCommit}`;
+    commitLink.target = "_blank";
+  }
+  const proofTransaction = element("proof-transaction");
+  if (proofTransaction) proofTransaction.href = `${explorer}/tx/${data.canonicalDemoTransaction}`;
   if (data.interactiveDemo?.transaction) {
     setExplorerLink("live-validation-link", "tx", data.interactiveDemo.transaction);
     setText(
@@ -340,22 +343,24 @@ async function loadOnchainProof() {
     const state = await verifyLiveDeployment(manifest);
     renderLiveState(state);
     liveReady = true;
-    proofStatus.className = "proof-status ready";
-    proofStatus.textContent = "Live RPC verified";
-    element("live-rpc-status").className = "live-status ready";
+    proofStatus?.classList.remove("pending");
+    proofStatus?.classList.add("ready");
+    setText("proof-status", "Public deployment verified");
+    if (element("live-rpc-status")) element("live-rpc-status").className = "live-status ready";
     setText("live-rpc-status", "Connected to Unichain Sepolia");
-    setText("live-simulation-result", "Ready · deployed router verified through live RPC.");
+    setText("live-simulation-result", "Ready. Deployed router verified through live RPC.");
     setText("proof-pending-detail", "Verified now through RPC: chain ID, canonical receipt, deployed bytecode, live counters and current reserves.");
-    element("live-refresh").disabled = false;
-    element("live-simulate").disabled = false;
-    element("live-connect").disabled = false;
+    if (element("live-refresh")) element("live-refresh").disabled = false;
+    if (element("live-simulate")) element("live-simulate").disabled = false;
+    if (element("live-connect")) element("live-connect").disabled = false;
     element("wallet-step-connect")?.classList.add("is-ready");
     syncReplayAvailability();
   } catch (error) {
     liveReady = false;
-    proofStatus.className = "proof-status pending";
-    proofStatus.textContent = "Live verification failed";
-    element("live-rpc-status").className = "live-status error";
+    proofStatus?.classList.remove("ready");
+    proofStatus?.classList.add("pending");
+    setText("proof-status", "Live verification failed");
+    if (element("live-rpc-status")) element("live-rpc-status").className = "live-status error";
     setText("live-rpc-status", "RPC verification failed");
     setText("live-simulation-result", `Live simulation unavailable · ${describeError(error)}`);
     setText("proof-pending-detail", `Fail-closed: the page will not claim a live deployment. ${describeError(error)}`);
@@ -393,7 +398,7 @@ async function simulateLiveDemo() {
   ]);
   setText(
     "live-simulation-result",
-    `PASS · ${tokenAmount(amount)} Demo USD-1 → ${tokenAmount(simulation.result)} Demo ETH · estimated ${numberFormat.format(gas)} gas · no signature · no state change`,
+    `PASS · ${tokenAmount(amount)} Demo USD-1 to ${tokenAmount(simulation.result)} Demo ETH · estimated ${numberFormat.format(gas)} gas · no signature · no state change`,
   );
 }
 
@@ -578,26 +583,35 @@ async function executeDemo() {
 async function runAction(action) {
   if (actionBusy) return;
   actionBusy = true;
-  for (const id of ["live-connect", "live-refresh", "live-simulate", "live-prepare", "live-execute"]) element(id).disabled = true;
+  for (const id of ["live-connect", "live-refresh", "live-simulate", "live-prepare", "live-execute"]) {
+    if (element(id)) element(id).disabled = true;
+  }
   try {
     await action();
   } catch (error) {
     setText("live-action-status", describeError(error));
   } finally {
     actionBusy = false;
-    element("live-connect").disabled = !liveReady || Boolean(walletAccount);
-    element("live-refresh").disabled = !liveReady;
-    element("live-simulate").disabled = !liveReady;
+    if (element("live-connect")) element("live-connect").disabled = !liveReady || Boolean(walletAccount);
+    if (element("live-refresh")) element("live-refresh").disabled = !liveReady;
+    if (element("live-simulate")) element("live-simulate").disabled = !liveReady;
     if (walletAccount) await refreshWalletState();
   }
 }
 
-element("live-connect").addEventListener("click", () => runAction(connectWallet));
-element("replay-demo").addEventListener("click", runReplay);
-element("live-refresh").addEventListener("click", () => runAction(refreshLiveState));
-element("live-simulate").addEventListener("click", () => runAction(simulateLiveDemo));
-element("live-prepare").addEventListener("click", () => runAction(prepareDemo));
-element("live-execute").addEventListener("click", () => runAction(executeDemo));
+element("live-connect")?.addEventListener("click", () => runAction(connectWallet));
+element("replay-demo")?.addEventListener("click", runReplay);
+element("live-refresh")?.addEventListener("click", () => runAction(refreshLiveState));
+element("live-simulate")?.addEventListener("click", () => runAction(simulateLiveDemo));
+element("live-prepare")?.addEventListener("click", () => runAction(prepareDemo));
+element("live-execute")?.addEventListener("click", () => runAction(executeDemo));
+
+const testnetDialog = element("testnet-dialog");
+element("hero-execute")?.addEventListener("click", () => testnetDialog?.showModal());
+element("dialog-close")?.addEventListener("click", () => testnetDialog?.close());
+testnetDialog?.addEventListener("click", (event) => {
+  if (event.target === testnetDialog) testnetDialog.close();
+});
 element("live-amount").addEventListener("input", () => {
   try {
     parseDemoAmount(element("live-amount").value);

@@ -48,13 +48,13 @@ output.
 
 | Time | Screen | Action | Message |
 |---:|---|---|---|
-| 0:00–0:45 | Interactive benchmark | The page opens on the experiment. Click `Run the comparison` and let both lanes complete. | Conventional execution performs three arbitrage swaps plus reinjection; ARBFOLD applies one verified direct transition to the equivalent state. |
-| 0:45–1:20 | Deployed-code test | Click `Try live`, show the two visible paths, then `Run live simulation`; show its real quote/gas estimate and the adjacent signed wallet flow. | The RPC executes the deployed router path now without a wallet; `Connect → Get demo tokens → Run ARBFOLD` submits the same deployed path as a real testnet transaction. |
-| 1:20–1:50 | Workload controls | Return to the top, expand `Benchmark scope and workload grid`, then click 10k, 25k, 50k, 100k and 200k slowly. Stop at 25k, then return to 100k. | Same user swap, output and reward. The canonical result is 19.12% less gas, but 25k is 0.98% more expensive, so the claim is workload-dependent. |
-| 1:50–2:20 | Public proof and state trace | Scroll to onchain proof and show before/after reserves. | Official Unichain Sepolia PoolManager, live bytecode/counters/reserves, exact claims/backing and zero canonical residual profit. |
+| 0:00–0:45 | Interactive benchmark | The page opens on the experiment. Click `Replay demo` and let both lanes complete. | Conventional execution performs three arbitrage swaps plus reinjection; ARBFOLD applies one verified direct transition to the equivalent state. |
+| 0:45–1:20 | Deployed-code test | Click `Run on testnet`, show the three signed steps, then expand `Simulate deployed contracts` and run the no-wallet path. | The RPC executes the deployed router path now without a wallet; `Connect → Prepare → Execute` submits the same deployed path as a real testnet transaction. |
+| 1:20–1:50 | Workload controls | Close the panel, scroll to `Full benchmark`, then click 10k, 25k, 50k, 100k and 200k slowly. Stop at 25k, then return to 100k. | Same user swap, output and reward. The canonical result is 19.12% less gas, but 25k is 0.98% more expensive, so the claim is workload-dependent. |
+| 1:50–2:20 | Public proof | Use `Verify everything` to open the canonical transaction and benchmark report. | Official Unichain Sepolia PoolManager, exact claims/backing and zero canonical residual profit. |
 | 2:20–3:00 | Commit-pinned code tabs | Show the highlighted hook, coordinator and router functions. Do not scroll through whole files. | BaseCustomCurve computes the user output; the fixed coordinator transfers backed claims under conservation/invariant guards; the router settles every delta in one unlock. |
 | 3:00–3:25 | Terminal | Show the already completed `make video-proof` output and its final PASS line. | 61 core tests, all-six-path stateful invariants, exact backing, negative paths and the frozen five-size benchmark. |
-| 3:25–3:55 | Dashboard evidence cards / report | Show the rejected economic gate and the complete workload grid. | The 10% LP-value thesis failed. The historical 39.58%, earlier 18.86% and delivered 19.12% results remain separate rather than cherry-picked. |
+| 3:25–3:55 | Report | Show the rejected economic gate in the repository report and the complete workload grid in the demo. | The 10% LP-value thesis failed. The historical 39.58%, earlier 18.86% and delivered 19.12% results remain separate rather than cherry-picked. |
 | 3:55–4:15 | Interactive benchmark | Return to the first-screen result. | Three swaps become one verified transition; same user output, same solver reward and equivalent final reserves; 19.12% less gas at the canonical 100k workload. |
 
 Use the exact narration in [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md). The shorter

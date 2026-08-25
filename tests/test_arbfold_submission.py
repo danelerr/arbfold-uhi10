@@ -23,11 +23,14 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
         self.assertIn("benchmark/release-candidate-results/raw.json", build)
         self.assertIn("data/release-results.json", build)
 
-    def test_dashboard_discloses_failed_economic_gate(self) -> None:
+    def test_failed_economic_gate_remains_preserved_outside_demo_surface(self) -> None:
         page = (ROOT / "app/index.html").read_text()
-        self.assertIn("REJECTED CLAIM", page)
-        self.assertIn("0.000287%", page)
-        self.assertIn("KILL_ARBFOLD economic thesis", page)
+        readme = (ROOT / "README.md").read_text()
+        report = (ROOT / "benchmark/arbfold-results/REPORT.md").read_text()
+        self.assertNotIn("REJECTED CLAIM", page)
+        self.assertNotIn("KILL_ARBFOLD economic thesis", page)
+        self.assertIn("0.000287%", readme)
+        self.assertIn("0.000287% improvement", report)
 
     def test_frozen_artifact_hashes_remain_unchanged(self) -> None:
         expected = {
@@ -97,7 +100,7 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
     def test_dashboard_discloses_release_workload_regression(self) -> None:
         page = (ROOT / "app/index.html").read_text()
         self.assertIn("19.12% less gas", page)
-        self.assertIn("+0.98% at 25k", page)
+        self.assertRegex(page, r'data-size="25000"[^>]*>.*?<span>25k</span><strong class="regression">\+0\.98%</strong>')
         source = (ROOT / "app/app.js").read_text()
         validation = (ROOT / "app/live-core.js").read_text()
         self.assertIn("Live verification failed", source)

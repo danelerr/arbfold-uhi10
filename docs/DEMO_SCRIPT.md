@@ -6,8 +6,8 @@ Target length: **3:30–4:15**. Use a real human voice. Do not exceed five minut
 
 > A cyclic arbitrage normally reconciles three inconsistent pools by executing three full swaps. Even if a protocol reinjects the profit, the EVM still pays for that full path. ARBFOLD asks whether cooperating v4 pools can reach the same safe state more efficiently.
 
-The page opens directly on `3 swaps → 1 verified transition`. Click `Run the
-comparison`; let both execution paths finish before speaking over the
+The page opens directly on `3 swaps → 1 verified transition`. Click `Replay
+demo`; let both execution paths finish before speaking over the
 result.
 
 > The left side executes the conventional user swap, three-leg backrun and
@@ -17,14 +17,14 @@ result.
 
 ## 0:45–1:20 — Run the deployed code
 
-Click `Try live` and show the two visible paths: instant read-only simulation
-and real testnet execution. Click `Run live simulation`, then show the returned
-Demo USD-1 → Demo ETH quote and gas estimate before opening the live contract state.
+Click `Run on testnet` and show the three-step signed flow. For a recording that
+must not expose a wallet, expand `Simulate deployed contracts`, click `Run
+simulation`, then show the returned Demo USD-1 → Demo ETH quote and gas estimate.
 
 > This is not a pre-rendered animation. The page has verified the deployed
 > bytecode and is now executing the complete router call against current
-> Unichain Sepolia state. The dry-run needs no wallet and changes no state. A
-> The adjacent wallet flow makes the deployed protocol directly executable and
+> Unichain Sepolia state. The dry-run needs no wallet and changes no state.
+> The primary wallet flow makes the deployed protocol directly executable and
 > produces its own explorer receipt.
 
 Open the latest interactive validation transaction and show its `SwapAndFold`,
@@ -32,14 +32,14 @@ Open the latest interactive validation transaction and show its `SwapAndFold`,
 
 ## 1:20–1:50 — Workload honesty
 
-Return to the first screen and expand `Benchmark scope and workload grid`.
+Close the testnet panel and scroll to `Full benchmark`.
 
 Click 10k, 25k, 50k, 100k and 200k. Explicitly show that the direct path costs 0.98% more at 25k: the advantage is workload-dependent, not universal.
 
 ## 1:50–2:20 — Same result
 
-Show the public-proof panel, open the canonical Unichain Sepolia transaction,
-then show the before/after reserve section.
+Use `Verify everything` to open the canonical Unichain Sepolia transaction and
+the committed benchmark report.
 
 > This is not three numbers changed in memory. The public demo uses the official v4 PoolManager on Unichain Sepolia. All 28 deployment transactions and all three demo transactions finalized, and the post-deployment verifier passed. Each virtual reserve must exactly equal its ERC-6909 claim balance. Token totals are conserved except for the same capped solver reward, no invariant may decrease, and residual cyclic profit is zero in the canonical case.
 

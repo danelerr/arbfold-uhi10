@@ -13,19 +13,18 @@ The one-sentence claim is:
 
 > ARBFOLD compresses three arbitrage swaps plus profit reinjection into one verified reserve transition, with the same user output, solver reward and equivalent final reserves. It uses 19.12% less gas at the canonical 100k benchmark.
 
-Click `Run the comparison`. The first screen animates the conventional
+Click `Replay demo`. The first screen animates the conventional
 user swap + three arbitrage swaps + reinjection beside ARBFOLD's user swap +
 verification + direct transition, then reveals the measured gas and equivalence
 checks. No wallet is required.
 
-Expand `Benchmark scope and workload grid`, then change the five workload buttons.
+Scroll to `Full benchmark`, then change the five workload buttons.
 The result is workload-dependent:
 ARBFOLD is 19.12% cheaper at 50k–200k, 4.41% cheaper at 10k and 0.98% more
-expensive at 25k. Then open `Try live` and click `Run live simulation`.
-This executes the complete deployed router call against current Unichain
-Sepolia state. The adjacent `Execute on Unichain Sepolia` path exposes the
-signed `Connect → Get demo tokens → Run ARBFOLD` flow. Its result panel links
-the new transaction and shows reserves before and after.
+expensive at 25k. Then click `Run on testnet`. The panel exposes the signed
+`Connect → Prepare → Execute` flow. Its result links the new transaction and
+shows output, fold rounds, residual arbitrage and gas. The collapsed simulation
+fallback executes the same deployed router call without a wallet or state change.
 
 ## 0:45–2:00 — Inspect the v4-native path
 
@@ -36,7 +35,7 @@ the new transaction and shows reserves before and after.
 
 ## 2:00–3:15 — Check the evidence
 
-First inspect the dashboard's live RPC proof panel and the [canonical
+Use the compact `Verify everything` links and inspect the [canonical
 Unichain Sepolia transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c).
 The committed [deployment manifest](../deployments/unichain-sepolia-1301.json)
 records the official PoolManager, 28 deployment transactions, the three hooks,

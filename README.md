@@ -22,14 +22,14 @@ The release-candidate code under `contracts/src` measured **440,128 gas for ARBF
 The page opens directly on the experiment—there is no marketing flow to finish
 before the demo:
 
-1. **Run the comparison:** click `Run the comparison` to see the conventional three-leg backrun and ARBFOLD direct transition run side by side. The animation and gas comparison load immediately from the frozen equivalent-state Foundry benchmark while the public Unichain Sepolia deployment is verified independently in parallel.
-2. **Try ARBFOLD live without a wallet:** click `Try live`, then `Run live simulation`. The browser executes the complete deployed router call through Unichain Sepolia RPC, returns the real output and estimates gas without changing state.
-3. **Execute it yourself:** click `Execute on testnet` in the hero, connect a wallet, get valueless demo tokens and submit one atomic `Demo USD-1 → Demo ETH swap + fold`. The receipt panel links the new transaction and shows live reserves before and after.
+1. **Replay the comparison:** click `Replay demo` to see the conventional three-leg backrun and ARBFOLD direct transition run side by side. The comparison loads immediately from the frozen equivalent-state Foundry benchmark while the public Unichain Sepolia deployment is verified independently in parallel.
+2. **Execute it yourself:** click `Run on testnet`, connect a wallet, get valueless demo tokens and submit one atomic `Demo USD-1 → Demo ETH swap + fold`. The compact receipt links the new transaction and reports output, fold rounds, residual arbitrage and gas.
+3. **Use the no-wallet fallback:** inside the testnet panel, expand `Simulate deployed contracts` to execute the complete deployed router call through RPC, return the real output and estimate gas without changing state.
 
 The visual comparison remains usable if the public RPC is slow or unavailable.
-The live-proof and deployed-code controls still fail closed: they only report a
-verified deployment after checking chain ID 1301, both public receipts,
-deployed bytecode, current fold counters and all six reserves. The Foundry
+The testnet controls still fail closed: they only enable after checking chain
+ID 1301, both public receipts, deployed bytecode, current fold counters and all
+six reserves. The Foundry
 comparison comes from [`raw.json`](benchmark/release-candidate-results/raw.json)
 and is explicitly labeled as benchmark evidence—not as one public transaction
 that somehow executes both alternative histories.
