@@ -10,7 +10,7 @@ This matrix separates completed repository work from manual publication tasks. I
 | Public GitHub repository | Complete | [github.com/danelerr/arbfold-uhi10](https://github.com/danelerr/arbfold-uhi10) |
 | Public dashboard | Complete and verified | [danelerr.github.io/arbfold-uhi10](https://danelerr.github.io/arbfold-uhi10/) returns publicly and the 25k regression is interactive. |
 | Project thumbnail | Complete | [`assets/arbfold-uhi10-thumbnail.png`](../assets/arbfold-uhi10-thumbnail.png) |
-| Demo/explainer video ≤5 minutes | Pending recording | Use [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md); human voice only. |
+| Demo/explainer video ≤5 minutes | Pending recording | Use [`VIDEO_RECORDING_RUNBOOK.md`](VIDEO_RECORDING_RUNBOOK.md) and [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md); human voice only. |
 | Problem/background | Drafted | Root [`README.md`](../README.md) and [`JUDGE_GUIDE.md`](JUDGE_GUIDE.md) |
 | Impact and uniqueness | Drafted | Same-state execution comparison in README and dashboard; release 19.12%, earlier clean-core 18.86% and frozen v0 39.58% remain separated. |
 | Challenges | Drafted | [`LIMITATIONS.md`](LIMITATIONS.md) and [`THREAT_MODEL.md`](THREAT_MODEL.md) |

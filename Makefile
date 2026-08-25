@@ -1,4 +1,4 @@
-.PHONY: test test-core test-benchmark test-research test-deployment test-release-fuzz arithmetic coverage slither source-manifest source-manifest-check fmt lint snapshot verify-release serve
+.PHONY: test test-core test-benchmark test-research test-deployment test-release-fuzz arithmetic coverage slither source-manifest source-manifest-check fmt lint snapshot verify-release video-proof serve
 
 test: test-core test-benchmark test-research
 
@@ -56,6 +56,9 @@ verify-release: fmt
 	$(MAKE) slither
 	$(MAKE) coverage
 	$(MAKE) source-manifest-check
+
+video-proof:
+	bash scripts/video-proof.sh
 
 serve:
 	python3 -m http.server 8080

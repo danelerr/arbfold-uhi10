@@ -36,14 +36,16 @@ Open these exact symbols:
 
 ## 2:30–3:05 — Tests
 
-Run:
+Run the recording-safe proof command:
 
 ```bash
-cd contracts && forge test --offline -q
-cd ../benchmark/arbfold-foundry && forge test --offline -q
+make video-proof
 ```
 
-Mention fuzzing, stateful invariants, unauthorized calls, exact backing, slippage rollback and the five-size clean-core gas grid.
+It executes the 61-test core suite and prints a compact summary, the canonical
+benchmark and the committed public deployment facts. Mention fuzzing, stateful
+invariants, unauthorized calls, exact backing, slippage rollback and the
+five-size clean-core gas grid.
 
 ## 3:05–3:40 — Honest boundary
 
