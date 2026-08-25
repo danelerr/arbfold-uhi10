@@ -7,7 +7,7 @@ Target length: **3:30–4:15**. Use a real human voice. Do not exceed five minut
 > A cyclic arbitrage normally reconciles three inconsistent pools by executing three full swaps. Even if a protocol reinjects the profit, the EVM still pays for that full path. ARBFOLD asks whether cooperating v4 pools can reach the same safe state more efficiently.
 
 The page opens directly on `3 swaps → 1 verified transition`. Click `Run the
-comparison`; let both execution lanes finish before speaking over the
+comparison`; let both execution paths finish before speaking over the
 result.
 
 > The left side executes the conventional user swap, three-leg backrun and
@@ -30,7 +30,7 @@ Open the latest interactive validation transaction and show its `SwapAndFold`,
 
 ## 1:20–1:50 — Workload honesty
 
-Return to the first-screen workload controls.
+Return to the first screen and expand `Benchmark scope and workload grid`.
 
 Click 10k, 25k, 50k, 100k and 200k. Explicitly show that the direct path costs 0.98% more at 25k: the advantage is workload-dependent, not universal.
 

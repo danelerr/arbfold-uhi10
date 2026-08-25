@@ -6,7 +6,7 @@
     <meta name="description" content="Replay ARBFOLD: three arbitrage swaps compressed into one verified Uniswap v4 reserve transition." />
     <title>ARBFOLD — Interactive benchmark</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23c9ff5b'/%3E%3Cpath d='M18 47 29 17h7l11 30h-8l-2-7H27l-2 7Zm11-14h6l-3-10Z' fill='%23090a0d'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="./styles.css?v=interactive-demo-2" />
+    <link rel="stylesheet" href="./styles.css?v=interactive-demo-3" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to demo</a>
@@ -20,84 +20,73 @@
 
     <main id="main">
       <section id="top" class="demo-stage shell">
-        <div class="demo-heading">
-          <div>
-            <span class="eyebrow">Interactive benchmark · Uniswap v4</span>
-            <h1>3 arbitrage swaps <em>→</em> 1 verified transition</h1>
-            <p>Same user output · Same solver reward · Equivalent final reserves</p>
+        <div class="demo-layout">
+          <div class="demo-intro">
+            <span class="eyebrow">ARBFOLD · Uniswap v4</span>
+            <h1><span>3 arbitrage swaps</span><em>→ 1 verified transition</em></h1>
+            <p>Same user output. Same solver reward. Equivalent final reserves.</p>
+            <div class="demo-actions">
+              <button id="replay-demo" class="button primary replay-button" type="button" disabled><span aria-hidden="true">▶</span> Run the comparison</button>
+              <a id="proof-transaction" class="text-link" rel="noreferrer">View public transaction ↗</a>
+            </div>
           </div>
-          <div class="headline-result"><strong>−19.12%</strong><span>gas @ canonical 100k</span></div>
+
+          <div id="replay-console" class="comparison-stage" aria-label="ARBFOLD interactive benchmark">
+            <div class="comparison-context">
+              <span>Starting event</span>
+              <p>A user swap creates a 3-pool arbitrage cycle.</p>
+              <small id="replay-origin-detail">Loading canonical scenario…</small>
+            </div>
+
+            <article class="comparison-path conventional-path">
+              <header><span>Conventional backrun</span><strong><b id="backrun-gas">544,187</b> <small>gas</small></strong></header>
+              <div class="path-line">
+                <span data-replay-step="backrun-0">User swap</span><i>→</i>
+                <span data-replay-step="backrun-1">Swap A→B</span><i>→</i>
+                <span data-replay-step="backrun-2">Swap B→C</span><i>→</i>
+                <span data-replay-step="backrun-3">Swap C→A</span><i>→</i>
+                <span data-replay-step="backrun-4">Reinject</span>
+              </div>
+            </article>
+
+            <article class="comparison-path direct-path">
+              <header><span>ARBFOLD</span><strong><b id="direct-gas">440,128</b> <small>gas</small></strong></header>
+              <div class="path-line short-path">
+                <span data-replay-step="direct-0">Same user swap</span><i>→</i>
+                <span data-replay-step="direct-1">Verify cycle</span><i>→</i>
+                <span data-replay-step="direct-2">Apply final state</span>
+              </div>
+            </article>
+
+            <div id="replay-result" class="replay-result" aria-live="polite">
+              <div><span><b id="selected-size">100k</b> workload</span><strong id="gas-saving">19.12% less gas</strong><small id="gas-saved">104,059 gas avoided</small></div>
+              <ul>
+                <li>✓ Same output <b id="replay-user-output">—</b></li>
+                <li>✓ Same reward <b id="replay-solver-reward">—</b></li>
+                <li>✓ Same final state <b>±1 wei</b></li>
+                <li>✓ No remaining cycle <b id="replay-residual">—</b></li>
+              </ul>
+            </div>
+
+            <p id="replay-status" class="replay-status">Loading benchmark…</p>
+          </div>
         </div>
 
-        <div id="replay-console" class="demo-console" aria-label="ARBFOLD interactive benchmark">
-          <div class="console-bar">
-            <div class="console-status">
-              <span id="proof-status" class="proof-status">Verifying public proof…</span>
-              <strong id="proof-network">Unichain Sepolia · chain 1301</strong>
-              <small id="proof-manager-kind">Checking official PoolManager</small>
-            </div>
-            <a id="proof-transaction" class="console-link" rel="noreferrer">View canonical transaction ↗</a>
-          </div>
-
-          <div class="demo-origin">
-            <div class="cycle-signal" aria-hidden="true"><span>A</span><i>→</i><span>B</span><i>→</i><span>C</span><i>→</i><span>A</span></div>
-            <div>
-              <span class="metric-label">Starting event</span>
-              <strong>A user swap creates a 3-pool arbitrage cycle</strong>
-              <small id="replay-origin-detail">Loading canonical swap from the public deployment…</small>
-            </div>
-            <button id="replay-demo" class="button primary replay-button" type="button" disabled><span aria-hidden="true">▶</span> Run the comparison</button>
-          </div>
-
-          <div class="demo-paths">
-            <article class="execution-lane conventional-lane">
-              <div class="lane-heading"><div><span>REFERENCE PATH</span><h2>Conventional backrun</h2></div><b>Foundry benchmark</b></div>
-              <ol class="execution-steps">
-                <li data-replay-step="backrun-0"><span>01</span><b>User swap</b><small>creates the cycle</small></li>
-                <li data-replay-step="backrun-1"><span>02</span><b>Swap A → B</b><small>first arbitrage leg</small></li>
-                <li data-replay-step="backrun-2"><span>03</span><b>Swap B → C</b><small>second arbitrage leg</small></li>
-                <li data-replay-step="backrun-3"><span>04</span><b>Swap C → A</b><small>cycle closes</small></li>
-                <li data-replay-step="backrun-4"><span>05</span><b>Reinject</b><small>return remaining profit</small></li>
-              </ol>
-              <div class="lane-gas"><span>Total execution gas</span><strong id="backrun-gas">544,187</strong><div class="gas-track"><i id="backrun-bar"></i></div></div>
-            </article>
-
-            <article class="execution-lane arbfold-lane">
-              <div class="lane-heading"><div><span>DIRECT PATH</span><h2>ARBFOLD</h2></div><b>v4 transition</b></div>
-              <ol class="execution-steps compact-steps">
-                <li data-replay-step="direct-0"><span>01</span><b>Same user swap</b><small>output stays unchanged</small></li>
-                <li data-replay-step="direct-1"><span>02</span><b>Verify cycle</b><small>conservation + pool invariants</small></li>
-                <li data-replay-step="direct-2"><span>03</span><b>Apply final reserves</b><small>one PoolManager-backed transition</small></li>
-              </ol>
-              <div class="skip-trace" aria-label="Skipped conventional steps"><span>Swap A→B</span><span>Swap B→C</span><span>Swap C→A</span><span>Reinject</span></div>
-              <div class="lane-gas"><span>Total execution gas</span><strong id="direct-gas">440,128</strong><div class="gas-track"><i id="direct-bar"></i></div></div>
-            </article>
-          </div>
-
-          <div id="replay-result" class="replay-result" aria-live="polite">
-            <div><span>Same destination. Less execution.</span><strong id="gas-saving">19.12% less</strong><small id="gas-saved">104,059 gas avoided</small></div>
-            <ul>
-              <li><span>✓</span>Same user output <b id="replay-user-output">—</b></li>
-              <li><span>✓</span>Same solver reward <b id="replay-solver-reward">—</b></li>
-              <li><span>✓</span>Equivalent final state <b>six reserves · ±1 wei gate</b></li>
-              <li><span>✓</span>Remaining arbitrage <b id="replay-residual">—</b></li>
-            </ul>
-          </div>
-
-          <div class="console-footer">
+        <details class="benchmark-scope">
+          <summary>Benchmark scope and workload grid</summary>
+          <div>
             <div class="size-picker" role="group" aria-label="Origin trade size">
               <span>Workload</span>
               <button data-size="10000" disabled>10k</button><button data-size="25000" disabled>25k</button><button data-size="50000" disabled>50k</button><button class="active" data-size="100000" disabled>100k</button><button data-size="200000" disabled>200k</button>
             </div>
-            <p id="replay-status">Loading benchmark · verifying onchain proof in parallel…</p>
+            <p class="source-disclosure">The animation and gas comparison come from the frozen, equivalent-state Foundry benchmark; the public deployment is verified separately through live RPC. Result: −4.41% at 10k · <strong>+0.98% at 25k</strong> · −19.12% at 50k–200k. <a href="https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md">Inspect benchmark ↗</a></p>
+            <div class="proof-line benchmark-proof">
+              <span id="proof-status" class="proof-status">Verifying onchain proof…</span>
+              <span id="proof-network">Unichain Sepolia · chain 1301</span>
+              <small id="proof-manager-kind">Checking official PoolManager</small>
+            </div>
           </div>
-        </div>
-
-        <p class="source-disclosure">
-          <b>What is replayed:</b> the animation and gas comparison come from the frozen, equivalent-state Foundry benchmark; the public ARBFOLD deployment is verified separately through live RPC.
-          Result is workload-dependent: −4.41% at 10k · <strong>+0.98% at 25k</strong> · −19.12% at 50k–200k.
-          <a href="https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md">Inspect the benchmark ↗</a>
-        </p>
+        </details>
       </section>
 
       <section id="how" class="explanation shell">

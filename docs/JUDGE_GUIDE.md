@@ -18,7 +18,8 @@ user swap + three arbitrage swaps + reinjection beside ARBFOLD's user swap +
 verification + direct transition, then reveals the measured gas and equivalence
 checks. No wallet is required.
 
-Change the five workload buttons after the replay. The result is workload-dependent:
+Expand `Benchmark scope and workload grid`, then change the five workload buttons.
+The result is workload-dependent:
 ARBFOLD is 19.12% cheaper at 50k–200k, 4.41% cheaper at 10k and 0.98% more
 expensive at 25k. Then open `Try live` and click `Simulate live swap + fold`.
 This executes the complete deployed router call against current Unichain

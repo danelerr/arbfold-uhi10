@@ -152,7 +152,7 @@ function scheduleReplayStep(key, delay, speed) {
   replayTimers.push(window.setTimeout(() => {
     const step = document.querySelector(`[data-replay-step="${key}"]`);
     if (!step) return;
-    step.parentElement.querySelectorAll("li.is-active").forEach((active) => {
+    step.parentElement.querySelectorAll("[data-replay-step].is-active").forEach((active) => {
       active.classList.remove("is-active");
       active.classList.add("is-done");
     });
@@ -212,12 +212,9 @@ async function loadBenchmark() {
     const row = results.find((item) => item.size === size);
     if (!row) return;
     const reduction = reductionPercent(row.backrun, row.direct);
-    const maximum = Math.max(row.backrun, row.direct);
     setText("backrun-gas", numberFormat.format(row.backrun));
     setText("direct-gas", numberFormat.format(row.direct));
-    element("backrun-bar").style.width = `${(row.backrun / maximum) * 100}%`;
-    element("direct-bar").style.width = `${(row.direct / maximum) * 100}%`;
-    setText("gas-saving", reduction >= 0 ? `${reduction.toFixed(2)}% less` : `${Math.abs(reduction).toFixed(2)}% more`);
+    setText("gas-saving", reduction >= 0 ? `${reduction.toFixed(2)}% less gas` : `${Math.abs(reduction).toFixed(2)}% more gas`);
     const gasDelta = row.backrun - row.direct;
     setText("gas-saved", gasDelta >= 0
       ? `${numberFormat.format(gasDelta)} gas avoided`
