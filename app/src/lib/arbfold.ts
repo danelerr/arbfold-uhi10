@@ -31,11 +31,8 @@ export const unichainSepolia = {
   testnet: true,
 } as const;
 
-export const hookAbi = parseAbi([
-  "function reserves() view returns (uint256 reserve0, uint256 reserve1)",
-]);
-
 export const coordinatorAbi = parseAbi([
+  "function network() view returns (uint256 abA, uint256 abB, uint256 bcB, uint256 bcC, uint256 acA, uint256 acC)",
   "function totalFoldCalls() view returns (uint256)",
   "function totalFoldRounds() view returns (uint256)",
   "function lastResidualProfit() view returns (uint256)",
@@ -114,20 +111,17 @@ export async function readLiveState(
   manifest: DeploymentManifest,
   blockNumber?: bigint,
 ): Promise<LiveState> {
-  const hooks = [manifest.hooks.ab, manifest.hooks.bc, manifest.hooks.ac].map(canonicalAddress);
   const atBlock = blockNumber === undefined ? {} : { blockNumber };
   const coordinator = canonicalAddress(manifest.coordinator);
-  const [ab, bc, ac, calls, rounds, residual, observedBlock] = await Promise.all([
-    publicClient.readContract({ address: hooks[0], abi: hookAbi, functionName: "reserves", ...atBlock }),
-    publicClient.readContract({ address: hooks[1], abi: hookAbi, functionName: "reserves", ...atBlock }),
-    publicClient.readContract({ address: hooks[2], abi: hookAbi, functionName: "reserves", ...atBlock }),
+  const [network, calls, rounds, residual, observedBlock] = await Promise.all([
+    publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "network", ...atBlock }),
     publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "totalFoldCalls", ...atBlock }),
     publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "totalFoldRounds", ...atBlock }),
     publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "lastResidualProfit", ...atBlock }),
     blockNumber === undefined ? publicClient.getBlockNumber({ cacheTime: 0 }) : Promise.resolve(blockNumber),
   ]);
   return {
-    network: normalizeNetwork([ab[0], ab[1], bc[0], bc[1], ac[0], ac[1]]) as ReserveState,
+    network: normalizeNetwork(network) as ReserveState,
     calls,
     rounds,
     residual,
@@ -167,5 +161,8 @@ export function describeError(error: unknown): string {
   if (/User rejected|user rejected|denied transaction signature/i.test(message)) return "The wallet request was cancelled.";
   if (/insufficient funds/i.test(message)) return "Your wallet needs Unichain Sepolia test ETH for network gas.";
   if (/TooLittleReceived/i.test(message)) return "The pool price changed before confirmation. Request a new quote and try again.";
+  if (/returned no data|returned an invalid response/i.test(message)) {
+    return "The public Unichain RPC could not refresh the deployment. Retry in a moment; an already confirmed transaction remains valid.";
+  }
   return message.split("\n")[0].slice(0, 220);
 }

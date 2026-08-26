@@ -14,8 +14,8 @@ const chain = {
   rpcUrls: { default: { http: [rpcUrl] } },
 };
 const client = createPublicClient({ chain, transport: http(rpcUrl, { retryCount: 3 }) });
-const hookAbi = parseAbi(["function reserves() view returns (uint256 reserve0, uint256 reserve1)"]);
 const coordinatorAbi = parseAbi([
+  "function network() view returns (uint256 abA, uint256 abB, uint256 bcB, uint256 bcC, uint256 acA, uint256 acC)",
   "function totalFoldCalls() view returns (uint256)",
   "function totalFoldRounds() view returns (uint256)",
   "function lastResidualProfit() view returns (uint256)",
@@ -108,16 +108,14 @@ if (interactiveReceipt) {
   }
 }
 
-const [ab, bc, ac, calls, rounds, residual, block] = await Promise.all([
-  client.readContract({ address: getAddress(manifest.hooks.ab.toLowerCase()), abi: hookAbi, functionName: "reserves" }),
-  client.readContract({ address: getAddress(manifest.hooks.bc.toLowerCase()), abi: hookAbi, functionName: "reserves" }),
-  client.readContract({ address: getAddress(manifest.hooks.ac.toLowerCase()), abi: hookAbi, functionName: "reserves" }),
+const [network, calls, rounds, residual, block] = await Promise.all([
+  client.readContract({ address: getAddress(manifest.coordinator.toLowerCase()), abi: coordinatorAbi, functionName: "network" }),
   client.readContract({ address: getAddress(manifest.coordinator.toLowerCase()), abi: coordinatorAbi, functionName: "totalFoldCalls" }),
   client.readContract({ address: getAddress(manifest.coordinator.toLowerCase()), abi: coordinatorAbi, functionName: "totalFoldRounds" }),
   client.readContract({ address: getAddress(manifest.coordinator.toLowerCase()), abi: coordinatorAbi, functionName: "lastResidualProfit" }),
   client.getBlockNumber(),
 ]);
-const state = normalizeNetwork([ab[0], ab[1], bc[0], bc[1], ac[0], ac[1]]);
+const state = normalizeNetwork(network);
 const simulationAccount = getAddress(manifest.rpcSimulation.account.toLowerCase());
 const simulationAmount = 1_000n * 10n ** 18n;
 const maximumSimulationAmount = BigInt(manifest.rpcSimulation.maximumInput);

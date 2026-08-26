@@ -9,7 +9,7 @@ import {
   type Hash,
   type WalletClient,
 } from "viem";
-import { bufferedGasLimit, networkChanged, parseDemoAmount } from "../../live-core.js";
+import { bufferedGasLimit, parseDemoAmount } from "../../live-core.js";
 import {
   CHAIN_HEX,
   CHAIN_ID,
@@ -21,7 +21,6 @@ import {
   coordinatorAbi,
   describeError,
   publicClient,
-  readLiveState,
   routerAbi,
   tokenAbi,
   tokenAmount,
@@ -311,7 +310,6 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
     if (!prepared) throw new Error("Prepare the free ARFX test tokens first");
     const router = canonicalAddress(manifest.router);
     const originHook = canonicalAddress(manifest.hooks.ab);
-    const before = await readLiveState(manifest);
     const deadline = BigInt(Math.floor(Date.now() / 1_000) + 900);
     setStatus("Calculating the current deployed-pool quote…");
     const currentQuote = await publicClient.simulateContract({
@@ -339,8 +337,6 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
     setStatus(`Transaction ${abbreviated(hash)} submitted. Waiting for confirmation…`);
     const receipt = await publicClient.waitForTransactionReceipt({ hash, confirmations: 1 });
     if (receipt.status !== "success") throw new Error("The swap + ARBFOLD transaction reverted");
-    const after = await readLiveState(manifest, receipt.blockNumber);
-    if (!networkChanged(before.network, after.network)) throw new Error("Transaction succeeded but the pool reserves did not change");
 
     const decoded = receipt.logs.flatMap((log) => {
       for (const abi of [routerAbi, coordinatorAbi]) {
@@ -369,9 +365,11 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
       gasUsed: receipt.gasUsed,
       blockNumber: receipt.blockNumber,
     };
+    // The confirmed receipt is authoritative. A lagging public RPC must not turn
+    // a successful wallet transaction into an apparent failure in the demo.
     setResult(nextResult);
-    await Promise.all([refreshWalletState(account), onLiveStateChanged()]);
     setStatus("Confirmed. The swap and direct three-pool transition settled together.");
+    await Promise.allSettled([refreshWalletState(account), onLiveStateChanged()]);
   });
 
   const simulate = () => runAction("simulate", async () => {

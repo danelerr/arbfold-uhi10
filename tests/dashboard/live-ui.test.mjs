@@ -65,13 +65,12 @@ test("demo exposes a compact comparison and an understandable signed path", () =
   assert.doesNotMatch(dialog, /Router spending limit|Your Demo USD-1|Demo ETH/);
 });
 
-test("live application verifies state and waits for signed receipts", () => {
+test("live application treats the signed receipt as final and refreshes state best-effort", () => {
   assert.match(benchmark, /function replay\(\)/);
   assert.match(app, /verifyDeployment/);
   assert.match(dialog, /showModal\(\)/);
   assert.match(dialog, /\.close\(\)/);
   assert.match(hook, /waitForTransactionReceipt/);
-  assert.match(hook, /networkChanged/);
   assert.match(hook, /eip6963:requestProvider/);
   assert.match(hook, /eip6963:announceProvider/);
   assert.match(hook, /No browser wallet detected/);
@@ -82,5 +81,8 @@ test("live application verifies state and waits for signed receipts", () => {
   assert.match(hook, /DEMO_ALLOWANCE/);
   assert.match(live, /getBlockNumber\(\{ cacheTime: 0 \}\)/);
   assert.match(live, /blockNumber === undefined \? \{\} : \{ blockNumber \}/);
-  assert.match(hook, /readLiveState\(manifest, receipt\.blockNumber\)/);
+  assert.match(live, /functionName: "network"/);
+  assert.match(hook, /Promise\.allSettled/);
+  assert.ok(hook.indexOf("setResult(nextResult)") < hook.indexOf("Promise.allSettled"));
+  assert.doesNotMatch(hook, /readLiveState\(manifest, receipt\.blockNumber\)/);
 });
