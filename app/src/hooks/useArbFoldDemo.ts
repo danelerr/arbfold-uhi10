@@ -79,7 +79,6 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
   const announced = useRef<WalletCandidate[]>([]);
   const quoteSequence = useRef(0);
   const [candidate, setCandidate] = useState<WalletCandidate | null>(() => chooseCandidate(legacyCandidates()));
-  const [walletProvider, setWalletProvider] = useState<BrowserProvider | null>(null);
   const [walletClient, setWalletClient] = useState<WalletClient | null>(null);
   const [account, setAccount] = useState<Address | null>(null);
   const [amount, setAmount] = useState(DEFAULT_AMOUNT);
@@ -87,6 +86,7 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
   const [allowance, setAllowance] = useState(0n);
   const [gasBalance, setGasBalance] = useState(0n);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
   const [status, setStatus] = useState("Verifying the public deployment before enabling wallet actions.");
   const [quote, setQuote] = useState<bigint | null>(null);
   const [quoteLoading, setQuoteLoading] = useState(false);
@@ -120,7 +120,10 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
     }
   }, [simulationAmount]);
 
-  const prepared = Boolean(account && parsedAmount > 0n && balance >= parsedAmount && allowance >= parsedAmount);
+  const needsMint = Boolean(account && balance < DEMO_ALLOWANCE);
+  const needsApproval = Boolean(account && allowance < DEMO_ALLOWANCE);
+  const prepared = Boolean(account && !needsMint && !needsApproval);
+  const preparationTransactions = Number(needsMint) + Number(needsApproval);
 
   const scanWallets = useCallback(() => {
     setCandidate(chooseCandidate([...announced.current, ...legacyCandidates()]));
@@ -144,6 +147,7 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
 
   useEffect(() => {
     if (liveReady && !account) setStatus("Deployment verified. Connect a wallet or run the no-wallet preview.");
+    if (liveReady) setSimulationStatus("Ready. This preview will not sign or change blockchain state.");
   }, [account, liveReady]);
 
   const refreshWalletState = useCallback(async (selectedAccount = account) => {
@@ -215,10 +219,13 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
   const runAction = useCallback(async (action: () => Promise<void>) => {
     if (busy) return;
     setBusy(true);
+    setError("");
     try {
       await action();
     } catch (error) {
-      setStatus(describeError(error));
+      const message = describeError(error);
+      setError(message);
+      setStatus(message);
     } finally {
       setBusy(false);
     }
@@ -240,13 +247,12 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
       chain: unichainSepolia,
       transport: custom(provider),
     });
-    setWalletProvider(provider);
     setWalletClient(client);
     setAccount(selectedAccount);
     provider.on("accountsChanged", () => window.location.reload());
     provider.on("chainChanged", () => window.location.reload());
     await refreshWalletState(selectedAccount);
-    setStatus("Wallet connected. Review your test-token balance and continue.");
+    setStatus("Wallet connected. Checking whether your free test tokens are ready.");
   });
 
   const sendContract = useCallback(async (
@@ -273,24 +279,29 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
   }, [account, walletClient]);
 
   const prepare = () => runAction(async () => {
-    if (!account || !manifest || parsedAmount === 0n) throw new Error("Connect your wallet and enter a valid amount first");
+    if (!account || !manifest) throw new Error("Connect your wallet first");
     const token = canonicalAddress(manifest.tokens.b);
     const router = canonicalAddress(manifest.router);
-    if (balance < parsedAmount) {
-      setStatus("MetaMask step 1: create valueless Demo USD-1 in your testnet wallet.");
-      await sendContract("mint", token, [account, parsedAmount - balance]);
+    if (balance < DEMO_ALLOWANCE) {
+      setStatus("Confirm in MetaMask to create free ARFX test tokens.");
+      await sendContract("mint", token, [account, DEMO_ALLOWANCE - balance]);
     }
-    if (allowance < parsedAmount) {
-      setStatus("MetaMask step 2: allow only this demo router to spend up to 25,000 Demo USD-1.");
+    if (allowance < DEMO_ALLOWANCE) {
+      setStatus("Confirm in MetaMask to let this demo router use up to 25,000 ARFX.");
       await sendContract("approve", token, [router, DEMO_ALLOWANCE]);
     }
     await refreshWalletState(account);
-    setStatus("Demo tokens are ready. The next signature performs the swap + ARBFOLD transaction.");
+    setStatus("Test funds ready. You can now run one swap + ARBFOLD transaction.");
+  });
+
+  const refresh = () => runAction(async () => {
+    await refreshWalletState();
+    setStatus("Wallet balances refreshed from Unichain Sepolia.");
   });
 
   const execute = () => runAction(async () => {
     if (!account || !manifest || !walletClient || parsedAmount === 0n) throw new Error("Connect and prepare your test tokens first");
-    if (!prepared) throw new Error("Your Demo USD-1 balance or router spending limit is too low for this amount");
+    if (!prepared) throw new Error("Prepare the free ARFX test tokens first");
     const router = canonicalAddress(manifest.router);
     const originHook = canonicalAddress(manifest.hooks.ab);
     const before = await readLiveState(manifest);
@@ -305,7 +316,7 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
     });
     setQuote(currentQuote.result);
     const minimumOut = currentQuote.result * 995n / 1_000n;
-    setStatus(`MetaMask will request one transaction: spend ${tokenAmount(parsedAmount)} Demo USD-1 and receive about ${tokenAmount(currentQuote.result)} Demo ETH.`);
+    setStatus(`MetaMask will request one testnet transaction: spend ${tokenAmount(parsedAmount)} ARFX and receive about ${tokenAmount(currentQuote.result)} ARFY.`);
     const execution = await publicClient.simulateContract({
       account,
       address: router,
@@ -353,7 +364,7 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
     };
     setResult(nextResult);
     await Promise.all([refreshWalletState(account), onLiveStateChanged()]);
-    setStatus("Confirmed. Your swap and the ARBFOLD reserve transition settled atomically.");
+    setStatus("Confirmed. The swap and direct three-pool transition settled together.");
   });
 
   const simulate = () => runAction(async () => {
@@ -374,7 +385,7 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
       publicClient.simulateContract({ account: simulationAccount, address: canonicalAddress(manifest.router), abi: routerAbi, functionName: "swapExactInput", args }),
       publicClient.estimateContractGas({ account: simulationAccount, address: canonicalAddress(manifest.router), abi: routerAbi, functionName: "swapExactInput", args }),
     ]);
-    setSimulationStatus(`Preview passed: ${tokenAmount(input)} Demo USD-1 → ${tokenAmount(simulation.result)} Demo ETH · about ${gas.toLocaleString("en-US")} gas · no signature · no state change.`);
+    setSimulationStatus(`Preview passed: ${tokenAmount(input)} ARFX → ${tokenAmount(simulation.result)} ARFY · about ${gas.toLocaleString("en-US")} gas · no signature · no state change.`);
   });
 
   return {
@@ -388,11 +399,17 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
     candidateName: providerName(candidate),
     connect,
     execute,
+    error,
     gasBalance: `${Number(formatEther(gasBalance)).toFixed(5)} test ETH`,
+    hasGas: gasBalance > 0n,
+    needsApproval,
+    needsMint,
     prepared,
+    preparationTransactions,
     prepare,
     quote,
     quoteLoading,
+    refresh,
     result,
     setAmount,
     setSimulationAmount,
@@ -401,6 +418,7 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
     simulationError,
     simulationStatus,
     status,
-    walletProvider,
+    refreshWalletState,
+    resetResult: () => setResult(null),
   };
 }

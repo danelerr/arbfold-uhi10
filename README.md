@@ -23,8 +23,8 @@ The page opens directly on the experiment—there is no marketing flow to finish
 before the demo:
 
 1. **Replay the comparison:** click `Replay demo` to see the conventional three-leg backrun and ARBFOLD direct transition run side by side. The comparison loads immediately from the frozen equivalent-state Foundry benchmark while the public Unichain Sepolia deployment is verified independently in parallel.
-2. **Execute it yourself:** click `Run on testnet`, connect a wallet, get valueless demo tokens and submit one atomic `Demo USD-1 → Demo ETH swap + fold`. The compact receipt links the new transaction and reports output, fold rounds, residual arbitrage and gas.
-3. **Use the no-wallet fallback:** inside the testnet panel, expand `No wallet? Preview the deployed transaction without signing.` to execute the complete deployed router call through RPC, return the real output and estimate gas without changing state.
+2. **Execute it yourself:** click `Run on testnet` and follow one visible step at a time: connect a wallet, prepare valueless ARFX, then submit one atomic `ARFX → ARFY swap + fold`. The receipt links the new transaction and reports output, fold rounds, residual arbitrage and gas.
+3. **Use the no-wallet fallback:** inside the testnet panel, expand `Preview without a wallet` to execute the complete deployed router call through RPC, return the real output and estimate gas without changing state.
 
 The visual comparison remains usable if the public RPC is slow or unavailable.
 The testnet controls still fail closed: they only enable after checking chain
@@ -49,7 +49,7 @@ See the exact
 
 **Judge proof:** [public canonical transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c) · [deployment manifest](deployments/unichain-sepolia-1301.json) · [hook](contracts/src/ArbFoldHook.sol) · [coordinator](contracts/src/ArbFoldCoordinator.sol) · [router](contracts/src/ArbFoldRouter.sol) · [six-path invariants](contracts/test/ArbFoldInvariant.t.sol) · [release evidence](docs/RELEASE_EVIDENCE.md). Run the complete fail-closed gate with `make verify-release`.
 
-**Public-chain status:** the research network and canonical demo are live on **Unichain Sepolia (chain 1301)** using the official v4 `PoolManager`. The latest browser-executed signed-path validation is [`0x87a940…5deceb`](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb): 1,000 Demo USD-1 entered, 0.290519 Demo ETH reached the user, one fold round ran and residual cyclic profit was zero. Demo assets are freely mintable and have no value.
+**Public-chain status:** the research network and canonical demo are live on **Unichain Sepolia (chain 1301)** using the official v4 `PoolManager`. The latest browser-executed signed-path validation is [`0x87a940…5deceb`](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb): 1,000 ARFX entered, 0.290519 ARFY reached the user, one fold round ran and residual cyclic profit was zero. ARFX and ARFY are freely mintable test assets with no value.
 
 ## What happens in one transaction
 

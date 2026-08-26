@@ -53,7 +53,11 @@ test("demo exposes a compact comparison and an understandable signed path", () =
   assert.match(dialog, /Estimated receive/);
   assert.match(dialog, /No real assets are involved/);
   assert.match(dialog, /one transaction/i);
+  assert.match(dialog, /const stage: DemoStage/);
+  assert.match(dialog, /ARFX/);
+  assert.match(dialog, /ARFY/);
   assert.doesNotMatch(`${app}\n${benchmark}\n${dialog}`, /Live network state|Wallet balances and allowance|REJECTED CLAIM/);
+  assert.doesNotMatch(dialog, /Router spending limit|Your Demo USD-1|Demo ETH/);
 });
 
 test("live application verifies state and waits for signed receipts", () => {

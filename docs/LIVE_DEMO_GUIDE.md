@@ -19,14 +19,14 @@ a separate frozen Foundry artifact and is never represented as live chain data.
 
 1. Open <https://danelerr.github.io/arbfold-uhi10/>.
 2. Click `Run on testnet`.
-3. Confirm the green `Public deployment verified` state.
-4. Expand `No wallet? Preview the deployed transaction without signing.`
-5. Change the Demo USD-1 input if desired; the public range is 100–25,000.
-6. Click `Preview output + gas`.
+3. Confirm the green `Deployment verified` state.
+4. Expand `Preview without a wallet`.
+5. Change the ARFX input if desired; the public range is 100–25,000.
+6. Click `Preview transaction`.
 7. Expect a result shaped like:
 
 ```text
-Preview passed: 1,000 Demo USD-1 → <live output> Demo ETH
+Preview passed: 1,000 ARFX → <live output> ARFY
 · about <live gas> gas · no signature · no state change
 ```
 
@@ -49,13 +49,13 @@ and offers an installation/open-in-wallet link.
 
 Steps:
 
-1. Click `Run on testnet` and confirm that the detected wallet name appears.
-2. Click `Connect wallet` and approve account access.
-3. Leave the default 1,000 Demo USD-1 input for the clearest demo.
-4. Click `Get tokens + approve`. Demo USD-1 is permissionlessly mintable and
-   valueless. Depending on existing balance/allowance, the wallet asks for zero,
-   one or two preparation transactions.
-5. Click `Swap + run ARBFOLD` and confirm one atomic transaction.
+1. Click `Run on testnet`.
+2. In step 1, click `Connect MetaMask` and approve account access.
+3. In step 2, click `Prepare test tokens`. ARFX is permissionlessly mintable and
+   valueless. The page states whether the wallet will ask for one or two
+   preparation confirmations before you click.
+4. In step 3, leave the default 1,000 ARFX input for the clearest demo.
+5. Click `Swap ARFX and run ARBFOLD` and confirm one atomic transaction.
 6. Wait for the receipt panel. It must show:
    - an explorer link for the wallet's transaction;
    - gas used;
@@ -79,8 +79,8 @@ The same signed contract path was executed from the public browser UI with the
 dedicated testnet wallet on 2026-08-25:
 
 - transaction: [`0x87a940…5deceb`](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb);
-- input: 1,000 Demo USD-1;
-- output: 0.290518911748886010 Demo ETH;
+- input: 1,000 ARFX;
+- output: 0.290518911748886010 ARFY;
 - fold rounds: 1;
 - residual cyclic profit: 0 wei A.
 

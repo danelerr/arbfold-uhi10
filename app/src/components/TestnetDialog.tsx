@@ -1,6 +1,4 @@
-import { useEffect, useRef } from "react";
-import { parseUnits } from "viem";
-import { parseDemoAmount } from "../../live-core.js";
+import { useEffect, useRef, useState } from "react";
 import { EXPLORER_URL, abbreviated, tokenAmount } from "../lib/arbfold";
 import type { DeploymentManifest } from "../types";
 import { useArbFoldDemo } from "../hooks/useArbFoldDemo";
@@ -14,13 +12,7 @@ interface TestnetDialogProps {
   onLiveStateChanged: () => Promise<void>;
 }
 
-function inputSummary(value: string): string {
-  try {
-    return `${tokenAmount(parseUnits(parseDemoAmount(value), 18))} Demo USD-1`;
-  } catch {
-    return "Enter a valid amount";
-  }
-}
+type DemoStage = "verify" | "connect" | "prepare" | "gas" | "execute" | "complete";
 
 export function TestnetDialog({
   open,
@@ -31,6 +23,8 @@ export function TestnetDialog({
   onLiveStateChanged,
 }: TestnetDialogProps) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const [retryingVerification, setRetryingVerification] = useState(false);
+  const [verificationError, setVerificationError] = useState("");
   const demo = useArbFoldDemo({ manifest, liveReady, onLiveStateChanged });
 
   useEffect(() => {
@@ -48,16 +42,42 @@ export function TestnetDialog({
     return () => node.removeEventListener("close", handleClose);
   }, [onClose]);
 
-  const walletStatus = demo.account
-    ? abbreviated(demo.account)
-    : demo.candidate
-      ? `${demo.candidateName} detected`
-      : "No browser wallet detected";
+  const stage: DemoStage = !liveReady
+    ? "verify"
+    : !demo.account
+      ? "connect"
+      : demo.result
+        ? "complete"
+        : !demo.prepared
+          ? "prepare"
+          : !demo.hasGas
+            ? "gas"
+            : "execute";
+
   const quoteLabel = demo.quoteLoading
-    ? "Calculating…"
+    ? "Updating quote"
     : demo.quote !== null
-      ? `${tokenAmount(demo.quote)} Demo ETH`
-      : "Quote unavailable";
+      ? `${tokenAmount(demo.quote)} ARFY`
+      : "Calculated before signing";
+
+  const retryVerification = async () => {
+    setRetryingVerification(true);
+    setVerificationError("");
+    try {
+      await onLiveStateChanged();
+    } catch {
+      setVerificationError("The public RPC did not respond. The deployment is unchanged; try again in a moment.");
+    } finally {
+      setRetryingVerification(false);
+    }
+  };
+
+  const preparationDescription = demo.preparationTransactions === 2
+    ? "Your wallet will ask for two testnet confirmations: create free ARFX, then authorize only this demo router to use it."
+    : demo.needsMint
+      ? "Your wallet will ask for one testnet confirmation to create free ARFX."
+      : "Your wallet will ask for one testnet confirmation to authorize only this demo router to use ARFX.";
+  const verificationUnavailable = proofLabel.toLowerCase().includes("unavailable");
 
   return (
     <dialog
@@ -71,103 +91,184 @@ export function TestnetDialog({
         <header className="dialog-header">
           <div>
             <p className="eyebrow">Unichain Sepolia · testnet only</p>
-            <h2 id="testnet-title">Run one real swap + fold</h2>
-            <p className="dialog-intro">Swap valueless test tokens through the deployed ARBFOLD router. Your swap and the three-pool reserve transition settle together in one transaction.</p>
+            <h2 id="testnet-title">Try ARBFOLD live</h2>
+            <p className="dialog-intro">Run one test-token swap and the direct three-pool transition in the same transaction.</p>
           </div>
           <button id="dialog-close" className="close-button" type="button" onClick={onClose}>Close</button>
         </header>
 
-        <section className="trade-receipt" aria-label="Testnet transaction summary">
-          <div className="trade-asset">
-            <span>You spend</span>
-            <strong>{inputSummary(demo.amount)}</strong>
-            <small>Free test token · no market value</small>
-          </div>
-          <div className="trade-route" aria-hidden="true"><span>User swap</span><b>+</b><span>ARBFOLD</span></div>
-          <div className="trade-asset receive-asset">
-            <span>Estimated receive</span>
-            <strong>{quoteLabel}</strong>
-            <small>Demo ETH · no market value</small>
-          </div>
-        </section>
-        <p className="demo-safety"><strong>No real assets are involved.</strong> The only wallet balance used is Unichain Sepolia test ETH for network gas.</p>
+        <p className="asset-notice"><strong>No real assets are involved.</strong> ARFX and ARFY are free test tokens with no market value. Your wallet uses test ETH only for network gas.</p>
 
-        <div id="execute-live" className="wallet-flow">
-          <div id="wallet-step-connect" className={`wallet-step ${demo.account ? "is-complete" : liveReady && demo.candidate ? "is-ready" : ""}`}>
-            <span className="step-number">1</span>
-            <div className="step-copy">
-              <strong>Connect your testnet wallet</strong>
-              <small>Reads your address and switches MetaMask to Unichain Sepolia. This step does not spend or approve anything.</small>
-              <span className={`live-status ${demo.account ? "ready" : !demo.candidate ? "error" : ""}`}>{walletStatus}</span>
-              {demo.account && <dl className="wallet-balances"><div><dt>Network gas balance</dt><dd>{demo.gasBalance}</dd></div></dl>}
-              {!demo.candidate && <a id="wallet-provider-help" className="wallet-provider-help" href="https://metamask.io/download/" target="_blank" rel="noreferrer">Install a browser wallet</a>}
-            </div>
-            <button id="live-connect" className="button secondary" type="button" disabled={demo.busy || !liveReady || !demo.candidate || Boolean(demo.account)} onClick={demo.connect}>
-              {demo.account ? "Connected" : liveReady ? "Connect wallet" : "Verifying"}
-            </button>
-          </div>
+        {liveReady && (
+          <ol className="demo-progress" aria-label="Testnet demo progress">
+            <li data-state={demo.account ? "complete" : stage === "connect" ? "active" : "pending"}>
+              <span>1</span><b>Wallet</b>
+            </li>
+            <li data-state={demo.prepared || demo.result ? "complete" : stage === "prepare" || stage === "gas" ? "active" : "pending"}>
+              <span>2</span><b>Test funds</b>
+            </li>
+            <li data-state={demo.result ? "complete" : stage === "execute" ? "active" : "pending"}>
+              <span>3</span><b>Run swap</b>
+            </li>
+          </ol>
+        )}
 
-          <div id="wallet-step-prepare" className={`wallet-step ${demo.prepared ? "is-complete" : demo.account ? "is-ready" : ""}`}>
-            <span className="step-number">2</span>
-            <div className="step-copy">
-              <strong>Create free Demo USD-1</strong>
-              <small>Mints the test token to your wallet and grants only this demo router a capped 25,000-token spending limit. MetaMask may ask for two confirmations.</small>
-              <dl className="wallet-balances">
-                <div><dt>Your Demo USD-1</dt><dd>{demo.account ? tokenAmount(demo.balance) : "Not connected"}</dd></div>
-                <div><dt>Router spending limit</dt><dd>{demo.account ? tokenAmount(demo.allowance) : "Not connected"}</dd></div>
-              </dl>
-            </div>
-            <button id="live-prepare" className="button secondary" type="button" disabled={demo.busy || !demo.account || demo.prepared || Boolean(demo.amountError)} onClick={demo.prepare}>
-              {demo.prepared ? "Tokens ready" : "Get tokens + approve"}
-            </button>
+        {demo.account && stage !== "complete" && (
+          <div className="session-strip" aria-label="Connected testnet session">
+            <span>Connected</span>
+            <strong>{abbreviated(demo.account)}</strong>
+            <span>{demo.gasBalance}</span>
           </div>
+        )}
 
-          <div id="wallet-step-execute" className={`wallet-step execute-step ${demo.prepared ? "is-ready" : ""}`}>
-            <span className="step-number">3</span>
-            <div className="execute-content">
-              <div className="step-copy">
-                <strong>Choose your test-token swap</strong>
-                <small>This amount is taken from your Demo USD-1 balance. The router sends Demo ETH and applies ARBFOLD in the same transaction.</small>
+        <div id="execute-live" className="demo-stage">
+          {stage === "verify" && (
+            <section className="stage-card" aria-labelledby="verify-stage-title">
+              <p className="stage-kicker">Before you begin</p>
+              <h3 id="verify-stage-title">Checking the public deployment</h3>
+              <p>Wallet actions stay unavailable until the page confirms that the deployed router and pools match the published manifest.</p>
+              {verificationUnavailable ? (
+                <div className="stage-actions">
+                  <button className="button secondary" type="button" disabled={retryingVerification} onClick={retryVerification}>
+                    {retryingVerification ? "Checking deployment" : "Retry verification"}
+                  </button>
+                  <span className="action-explanation">{retryingVerification ? "Reading Unichain Sepolia now." : "The public RPC did not answer the first request."}</span>
+                </div>
+              ) : <p className="busy-status" role="status">{proofLabel}</p>}
+              {verificationError && <p className="form-error" role="alert">{verificationError}</p>}
+            </section>
+          )}
+
+          {stage === "connect" && (
+            <section className="stage-card" aria-labelledby="connect-stage-title">
+              <p className="stage-kicker">Step 1 of 3</p>
+              <h3 id="connect-stage-title">Connect a testnet wallet</h3>
+              <p>ARBFOLD reads your address and asks the wallet to switch to Unichain Sepolia. Connecting does not sign a transaction, approve tokens or spend anything.</p>
+              {demo.candidate ? (
+                <div className="stage-actions">
+                  <button id="live-connect" className="button primary" type="button" disabled={demo.busy} onClick={demo.connect}>
+                    {demo.busy ? "Opening wallet" : `Connect ${demo.candidateName}`}
+                  </button>
+                  <span className="action-explanation">One wallet prompt to connect and select the test network.</span>
+                </div>
+              ) : (
+                <div className="stage-actions">
+                  <a id="wallet-provider-help" className="button secondary" href="https://metamask.io/download/" target="_blank" rel="noreferrer">Install MetaMask</a>
+                  <span className="action-explanation">No compatible browser wallet was detected.</span>
+                </div>
+              )}
+              {(demo.busy || demo.error) && <p id="live-action-status" className={demo.error ? "form-error" : "busy-status"} role="status" aria-live="polite">{demo.status}</p>}
+            </section>
+          )}
+
+          {stage === "prepare" && (
+            <section className="stage-card" aria-labelledby="prepare-stage-title">
+              <p className="stage-kicker">Step 2 of 3</p>
+              <h3 id="prepare-stage-title">Prepare free test tokens</h3>
+              <p>ARFX is the token you will spend. ARFY is the token you will receive. Neither token has market value.</p>
+              <div className="confirmation-summary">
+                <strong>{demo.preparationTransactions} wallet confirmation{demo.preparationTransactions === 1 ? "" : "s"}</strong>
+                <span>{preparationDescription}</span>
               </div>
-              <div className="execution-controls">
-                <label htmlFor="wallet-amount">
+              <div className="stage-actions">
+                <button id="live-prepare" className="button primary" type="button" disabled={demo.busy} onClick={demo.prepare}>
+                  {demo.busy ? "Waiting for wallet" : "Prepare test tokens"}
+                </button>
+                <span className="action-explanation">Creates up to 25,000 ARFX and caps this router at the same amount.</span>
+              </div>
+              {(demo.busy || demo.error) && <p id="live-action-status" className={demo.error ? "form-error" : "busy-status"} role="status" aria-live="polite">{demo.status}</p>}
+            </section>
+          )}
+
+          {stage === "gas" && (
+            <section className="stage-card" aria-labelledby="gas-stage-title">
+              <p className="stage-kicker">Test ETH needed</p>
+              <h3 id="gas-stage-title">Add testnet gas to continue</h3>
+              <p>Your ARFX is ready, but this wallet has no Unichain Sepolia test ETH. Test ETH has no market value and is used only to pay network gas.</p>
+              <div className="stage-actions">
+                <button className="button secondary" type="button" disabled={demo.busy} onClick={demo.refresh}>
+                  {demo.busy ? "Checking balance" : "Check balance again"}
+                </button>
+                <span className="action-explanation">Current balance: {demo.gasBalance}</span>
+              </div>
+              {(demo.busy || demo.error) && <p className={demo.error ? "form-error" : "busy-status"} role="status" aria-live="polite">{demo.status}</p>}
+            </section>
+          )}
+
+          {stage === "execute" && (
+            <section className="stage-card execute-card" aria-labelledby="execute-stage-title">
+              <p className="stage-kicker">Step 3 of 3</p>
+              <h3 id="execute-stage-title">Choose how much ARFX to swap</h3>
+              <p>You will sign one transaction. It swaps ARFX for ARFY and applies ARBFOLD's direct reserve transition before the transaction ends.</p>
+
+              <div className="trade-form">
+                <label className="trade-field" htmlFor="wallet-amount">
                   <span>You spend</span>
-                  <div className="wallet-amount"><input id="wallet-amount" inputMode="decimal" value={demo.amount} onChange={(event) => demo.setAmount(event.target.value)} aria-describedby="wallet-amount-error" /><b>Demo USD-1</b></div>
-                  <small id="wallet-amount-error" className={`input-help ${demo.amountError ? "error" : ""}`}>{demo.amountError || "Choose 100–25,000 test tokens · up to 6 decimals"}</small>
+                  <div>
+                    <input id="wallet-amount" inputMode="decimal" value={demo.amount} onChange={(event) => demo.setAmount(event.target.value)} aria-describedby="wallet-amount-help" />
+                    <b>ARFX</b>
+                  </div>
+                  <small id="wallet-amount-help" className={demo.amountError ? "form-error" : ""}>{demo.amountError || "Free test token · choose 100–25,000"}</small>
                 </label>
-                <button id="live-execute" className="button primary" type="button" disabled={demo.busy || !demo.prepared || Boolean(demo.amountError)} onClick={demo.execute}>Swap + run ARBFOLD</button>
+
+                <span className="trade-direction" aria-hidden="true">to</span>
+
+                <div className="trade-field trade-output" aria-live="polite">
+                  <span>Estimated receive</span>
+                  <output>{quoteLabel}</output>
+                  <small>Free ARFY test token · final quote is checked before signing</small>
+                </div>
               </div>
-              <dl className="execution-preview">
-                <div><dt>Route</dt><dd>Demo USD-1 → Demo ETH</dd></div>
-                <div><dt>ARBFOLD action</dt><dd>Verify and apply the three-pool final state</dd></div>
-                <div><dt>You sign</dt><dd>One atomic transaction</dd></div>
+
+              <div className="stage-actions execute-actions">
+                <button id="live-execute" className="button primary" type="button" disabled={demo.busy || Boolean(demo.amountError)} onClick={demo.execute}>
+                  {demo.busy ? "Transaction in progress" : "Swap ARFX and run ARBFOLD"}
+                </button>
+                <span className="action-explanation">MetaMask asks for one transaction. Only ARFX and test ETH for gas are used.</span>
+              </div>
+              {(demo.busy || demo.error) && <p id="live-action-status" className={demo.error ? "form-error" : "busy-status"} role="status" aria-live="polite">{demo.status}</p>}
+            </section>
+          )}
+
+          {stage === "complete" && demo.result && (
+            <section id="live-result" className="stage-card success-card" aria-labelledby="complete-stage-title">
+              <p className="stage-kicker">Confirmed on Unichain Sepolia</p>
+              <h3 id="complete-stage-title">Swap and ARBFOLD completed</h3>
+              <p>Your ARFX-to-ARFY swap and the direct three-pool transition settled together.</p>
+              <dl className="result-summary">
+                <div><dt>You received</dt><dd>{tokenAmount(demo.result.output)} ARFY</dd></div>
+                <div><dt>Direct transitions</dt><dd>{demo.result.rounds.toString()}</dd></div>
+                <div><dt>Remaining arbitrage</dt><dd>{demo.result.residual.toString()} wei</dd></div>
+                <div><dt>Gas used</dt><dd>{demo.result.gasUsed.toLocaleString("en-US")}</dd></div>
               </dl>
-            </div>
-          </div>
-          <p id="live-action-status" className="action-status" role="status" aria-live="polite">{demo.status}</p>
+              <div className="stage-actions">
+                <a id="live-result-tx" className="button primary" href={`${EXPLORER_URL}/tx/${demo.result.hash}`} target="_blank" rel="noreferrer">View transaction</a>
+                <button className="button quiet" type="button" onClick={demo.resetResult}>Run another test</button>
+              </div>
+            </section>
+          )}
         </div>
 
-        {demo.result && <article id="live-result" className="transaction-result">
-          <header><div><span>Transaction confirmed on Unichain Sepolia</span><strong>Swap + ARBFOLD completed</strong></div><a id="live-result-tx" className="inline-link" href={`${EXPLORER_URL}/tx/${demo.result.hash}`} target="_blank" rel="noreferrer">View transaction</a></header>
-          <dl>
-            <div><dt>You received</dt><dd>{tokenAmount(demo.result.output)} Demo ETH</dd></div>
-            <div><dt>Direct transitions</dt><dd>{demo.result.rounds.toString()} ({demo.result.roundEvents} event{demo.result.roundEvents === 1 ? "" : "s"})</dd></div>
-            <div><dt>Remaining cycle</dt><dd>{demo.result.residual.toString()} wei</dd></div>
-            <div><dt>Gas used</dt><dd>{demo.result.gasUsed.toLocaleString("en-US")}</dd></div>
-          </dl>
-        </article>}
-
         <details className="simulation-fallback">
-          <summary>No wallet? Preview the deployed transaction without signing.</summary>
-          <p className="simulation-explainer">This performs an RPC dry-run against the same deployed router. It estimates output and gas, but does not use your wallet, spend tokens or change blockchain state.</p>
+          <summary>Preview without a wallet</summary>
+          <p className="simulation-explainer">Run a read-only call against the same deployed contracts. It estimates the ARFX-to-ARFY output and gas without signing or changing blockchain state.</p>
           <div className="simulation-form">
-            <label htmlFor="live-amount"><span>Test tokens to simulate</span><div><input id="live-amount" inputMode="decimal" value={demo.simulationAmount} onChange={(event) => demo.setSimulationAmount(event.target.value)} /><b>Demo USD-1</b></div><small className={demo.simulationError ? "error" : ""}>{demo.simulationError || "Choose 100–25,000 test tokens · up to 6 decimals"}</small></label>
-            <button id="live-simulate" className="button secondary" type="button" disabled={demo.busy || !liveReady || Boolean(demo.simulationError)} onClick={demo.simulate}>Preview output + gas</button>
+            <label htmlFor="live-amount">
+              <span>ARFX to simulate</span>
+              <div><input id="live-amount" inputMode="decimal" value={demo.simulationAmount} onChange={(event) => demo.setSimulationAmount(event.target.value)} /><b>ARFX</b></div>
+              <small className={demo.simulationError ? "error" : ""}>{demo.simulationError || "Choose 100–25,000"}</small>
+            </label>
+            <button id="live-simulate" className="button secondary" type="button" disabled={demo.busy || !liveReady || Boolean(demo.simulationError)} onClick={demo.simulate}>
+              {demo.busy ? "Running preview" : "Preview transaction"}
+            </button>
           </div>
           <p className="simulation-result" role="status" aria-live="polite">{demo.simulationStatus}</p>
         </details>
 
-        <footer className="dialog-footer"><span className={`proof-status ${liveReady ? "ready" : "pending"}`}>{proofLabel}</span><span>Official v4 PoolManager · demo assets only · not audited</span></footer>
+        <footer className="dialog-footer">
+          <span className={`proof-status ${liveReady ? "ready" : "pending"}`}>{liveReady ? "Deployment verified" : proofLabel}</span>
+          <span>Test tokens only · not audited</span>
+        </footer>
       </div>
     </dialog>
   );

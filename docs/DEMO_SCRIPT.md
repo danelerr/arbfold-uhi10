@@ -18,8 +18,8 @@ result.
 ## 0:45–1:20 — Run the deployed code
 
 Click `Run on testnet` and show the three-step signed flow. For a recording that
-must not expose a wallet, expand `Simulate deployed contracts`, click `Run
-simulation`, then show the returned Demo USD-1 → Demo ETH quote and gas estimate.
+must not expose a wallet, expand `Preview without a wallet`, click `Preview
+transaction`, then show the returned ARFX → ARFY quote and gas estimate.
 
 > This is not a pre-rendered animation. The page has verified the deployed
 > bytecode and is now executing the complete router call against current

@@ -43,7 +43,7 @@ the demo state transition and its zero residual profit.
 
 The browser-executed signed contract path is
 [`0x87a940…5deceb`](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb).
-It moved 1,000 Demo USD-1 through the deployed router, returned 0.290519 Demo ETH,
+It moved 1,000 ARFX through the deployed router, returned 0.290519 ARFY,
 executed one fold round and ended with zero residual. The [live-demo
 guide](LIVE_DEMO_GUIDE.md) separates the no-wallet `eth_call`, signed transaction
 and frozen benchmark evidence.
