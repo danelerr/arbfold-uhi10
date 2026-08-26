@@ -25,7 +25,7 @@ the first pool and opening the cycle that ARBFOLD folds directly.
 2. Click `Run on testnet`.
 3. Confirm the green `Deployment verified` state.
 4. Expand `Preview without a wallet`.
-5. Change the ARFX input if desired; the public range is 100–25,000.
+5. Change the ARFX input if desired; the public range is 1,000–25,000 so the demo remains above the validated fold threshold.
 6. Click `Preview transaction`.
 7. Expect a result shaped like:
 

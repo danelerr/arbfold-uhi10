@@ -227,7 +227,7 @@ export function TestnetDialog({
                     <input id="wallet-amount" inputMode="decimal" value={demo.amount} onChange={(event) => demo.setAmount(event.target.value)} aria-describedby="wallet-amount-help" />
                     <b>ARFX</b>
                   </div>
-                  <small id="wallet-amount-help" className={demo.amountError ? "form-error" : ""}>{demo.amountError || "Free test token · choose 100–25,000"}</small>
+                  <small id="wallet-amount-help" className={demo.amountError ? "form-error" : ""}>{demo.amountError || "Free test token · choose 1,000–25,000"}</small>
                 </label>
 
                 <span className="trade-direction" aria-hidden="true">to</span>
@@ -252,8 +252,10 @@ export function TestnetDialog({
           {stage === "complete" && demo.result && (
             <section id="live-result" className="stage-card success-card" aria-labelledby="complete-stage-title">
               <p className="stage-kicker">Confirmed on Unichain Sepolia</p>
-              <h3 id="complete-stage-title">ARBFOLD folded the cycle</h3>
-              <p>Your swap moved ARFX / ARFY. ARBFOLD then replaced the three-swap backrun with a direct, verified reserve transition.</p>
+              <h3 id="complete-stage-title">{demo.result.rounds > 0n ? "ARBFOLD folded the cycle" : "Swap confirmed; no fold was needed"}</h3>
+              <p>{demo.result.rounds > 0n
+                ? "Your swap moved ARFX / ARFY. ARBFOLD then replaced the three-swap backrun with a direct, verified reserve transition."
+                : "Your swap completed, but the remaining cycle was already below ARBFOLD's transition threshold."}</p>
               <dl className="result-summary">
                 <div><dt>You received</dt><dd>{tokenAmount(demo.result.output)} ARFY</dd></div>
                 <div><dt>Fold rounds</dt><dd>{demo.result.rounds.toString()}</dd></div>
@@ -275,7 +277,7 @@ export function TestnetDialog({
             <label htmlFor="live-amount">
               <span>ARFX to simulate</span>
               <div><input id="live-amount" inputMode="decimal" value={demo.simulationAmount} onChange={(event) => demo.setSimulationAmount(event.target.value)} /><b>ARFX</b></div>
-              <small className={demo.simulationError ? "error" : ""}>{demo.simulationError || "Choose 100–25,000"}</small>
+              <small className={demo.simulationError ? "error" : ""}>{demo.simulationError || "Choose 1,000–25,000"}</small>
             </label>
             <button id="live-simulate" className="button secondary" type="button" disabled={demo.busy || !liveReady || Boolean(demo.simulationError)} onClick={demo.simulate}>
               {demo.activeAction === "simulate" ? "Running preview" : "Preview transaction"}

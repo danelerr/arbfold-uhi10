@@ -1,6 +1,6 @@
 const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/;
 const MAX_DEMO_AMOUNT = 25_000;
-const MIN_DEMO_AMOUNT = 100;
+const MIN_DEMO_AMOUNT = 1_000;
 
 export function validateManifest(manifest) {
   if (!manifest || manifest.researchOnly !== true || manifest.chainId !== 1301 || !manifest.demo) {

@@ -64,8 +64,8 @@ test("validateManifest rejects the wrong chain and malformed addresses", () => {
 
 test("parseDemoAmount enforces the public-demo range", () => {
   assert.equal(parseDemoAmount("10000"), "10000");
-  assert.equal(parseDemoAmount("100.25"), "100.25");
-  assert.throws(() => parseDemoAmount("99"), /between/);
+  assert.equal(parseDemoAmount("1000.25"), "1000.25");
+  assert.throws(() => parseDemoAmount("999"), /between/);
   assert.throws(() => parseDemoAmount("25001"), /between/);
   assert.throws(() => parseDemoAmount("1e4"), /plain token amount/);
 });
