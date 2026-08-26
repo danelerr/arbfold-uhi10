@@ -67,9 +67,9 @@ export function BenchmarkDemo({ rows, onOpenTestnet }: BenchmarkDemoProps) {
   return <>
     <section id="top" className="hero shell">
       <div className="hero-copy">
-        <p className="eyebrow">Uniswap v4 execution compression</p>
+        <p className="eyebrow">Cyclic arbitrage, compressed</p>
         <h1><span>3 arbitrage swaps.</span><em>1 verified transition.</em></h1>
-        <p className="hero-summary">ARBFOLD reaches the equivalent post-arbitrage state without replaying every intermediate swap.</p>
+        <p className="hero-summary">ARBFOLD reaches the same result without replaying three arbitrage swaps.</p>
         <div className="hero-actions">
           <button id="replay-demo" className="button primary" type="button" disabled={!selected || running} onClick={replay}>
             {running ? "Replaying…" : complete ? "Replay again" : "Replay demo"}
@@ -82,7 +82,7 @@ export function BenchmarkDemo({ rows, onOpenTestnet }: BenchmarkDemoProps) {
       <div id="replay-console" className={`comparison ${running ? "is-replaying" : ""}`} aria-label="ARBFOLD interactive benchmark">
           <div className="paths">
             <article className="execution-path conventional-path">
-              <header><span>Conventional</span><strong><b>{selected?.backrun.toLocaleString("en-US") ?? "—"}</b><small>gas</small></strong></header>
+              <header><span>3-swap backrun</span><strong><b>{selected?.backrun.toLocaleString("en-US") ?? "—"}</b><small>gas</small></strong></header>
               <div className="steps conventional-steps">
                 {['User swap', 'Swap A/B', 'Swap B/C', 'Swap C/A', 'Reinject'].map((label, index) => (
                   <span className={stepClass(`backrun-${index}`)} key={label}>{label}</span>

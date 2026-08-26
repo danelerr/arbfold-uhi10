@@ -73,10 +73,15 @@ export function TestnetDialog({
   };
 
   const preparationDescription = demo.preparationTransactions === 2
-    ? "Your wallet will ask for two testnet confirmations: create free ARFX, then authorize only this demo router to use it."
+    ? "First get free ARFX. Then allow this demo router to use it for your swap."
     : demo.needsMint
-      ? "Your wallet will ask for one testnet confirmation to create free ARFX."
-      : "Your wallet will ask for one testnet confirmation to authorize only this demo router to use ARFX.";
+      ? "Get free ARFX for your test swap."
+      : "Allow this demo router to use ARFX for your test swap.";
+  const prepareButtonLabel = demo.preparationTransactions === 2
+    ? "Get ARFX and allow demo swap"
+    : demo.needsMint
+      ? "Get free ARFX"
+      : "Allow demo swap";
   const verificationUnavailable = proofLabel.toLowerCase().includes("unavailable");
 
   return (
@@ -92,12 +97,10 @@ export function TestnetDialog({
           <div>
             <p className="eyebrow">Unichain Sepolia · testnet only</p>
             <h2 id="testnet-title">Try ARBFOLD live</h2>
-            <p className="dialog-intro">Run one test-token swap and the direct three-pool transition in the same transaction.</p>
+            <p className="dialog-intro">Create a three-pool arbitrage cycle with valueless test tokens, then fold it directly.</p>
           </div>
           <button id="dialog-close" className="close-button" type="button" onClick={onClose}>Close</button>
         </header>
-
-        <p className="asset-notice"><strong>No real assets are involved.</strong> ARFX and ARFY are free test tokens with no market value. Your wallet uses test ETH only for network gas.</p>
 
         {liveReady && (
           <ol className="demo-progress" aria-label="Testnet demo progress">
@@ -105,7 +108,7 @@ export function TestnetDialog({
               <span>1</span><b>Wallet</b>
             </li>
             <li data-state={demo.prepared || demo.result ? "complete" : stage === "prepare" || stage === "gas" ? "active" : "pending"}>
-              <span>2</span><b>Test funds</b>
+              <span>2</span><b>Prepare demo</b>
             </li>
             <li data-state={demo.result ? "complete" : stage === "execute" ? "active" : "pending"}>
               <span>3</span><b>Run swap</b>
@@ -143,13 +146,24 @@ export function TestnetDialog({
             <section className="stage-card" aria-labelledby="connect-stage-title">
               <p className="stage-kicker">Step 1 of 3</p>
               <h3 id="connect-stage-title">Connect a testnet wallet</h3>
-              <p>ARBFOLD reads your address and asks the wallet to switch to Unichain Sepolia. Connecting does not sign a transaction, approve tokens or spend anything.</p>
+              <p>Connect to Unichain Sepolia. No transaction is signed yet.</p>
+              <div className="demo-scenario" aria-label="Three-pool test scenario">
+                <div className="scenario-assets">
+                  <div><b>ARFX</b><span>You spend</span></div>
+                  <i>ARFX / ARFY</i>
+                  <div><b>ARFY</b><span>You receive</span></div>
+                  <i>ARFY / ARFZ</i>
+                  <div><b>ARFZ</b><span>Closes the cycle</span></div>
+                </div>
+                <span className="scenario-return">Third pool: ARFZ / ARFX</span>
+                <p><strong>Your ARFX-to-ARFY swap moves the first pool.</strong> That opens a cycle across three pools. A normal backrun uses three swaps; ARBFOLD applies the verified end state directly.</p>
+                <small><strong>No real assets are involved.</strong> These tokens have no market value. Test ETH is used only for gas.</small>
+              </div>
               {demo.candidate ? (
                 <div className="stage-actions">
                   <button id="live-connect" className="button primary" type="button" disabled={demo.busy} onClick={demo.connect}>
                     {demo.busy ? "Opening wallet" : `Connect ${demo.candidateName}`}
                   </button>
-                  <span className="action-explanation">One wallet prompt to connect and select the test network.</span>
                 </div>
               ) : (
                 <div className="stage-actions">
@@ -164,17 +178,16 @@ export function TestnetDialog({
           {stage === "prepare" && (
             <section className="stage-card" aria-labelledby="prepare-stage-title">
               <p className="stage-kicker">Step 2 of 3</p>
-              <h3 id="prepare-stage-title">Prepare free test tokens</h3>
-              <p>ARFX is the token you will spend. ARFY is the token you will receive. Neither token has market value.</p>
+              <h3 id="prepare-stage-title">Prepare the demo</h3>
+              <p>Get free ARFX for your swap and allow the demo router to use it.</p>
               <div className="confirmation-summary">
                 <strong>{demo.preparationTransactions} wallet confirmation{demo.preparationTransactions === 1 ? "" : "s"}</strong>
                 <span>{preparationDescription}</span>
               </div>
               <div className="stage-actions">
                 <button id="live-prepare" className="button primary" type="button" disabled={demo.busy} onClick={demo.prepare}>
-                  {demo.busy ? "Waiting for wallet" : "Prepare test tokens"}
+                  {demo.busy ? "Waiting for wallet" : prepareButtonLabel}
                 </button>
-                <span className="action-explanation">Creates up to 25,000 ARFX and caps this router at the same amount.</span>
               </div>
               {(demo.busy || demo.error) && <p id="live-action-status" className={demo.error ? "form-error" : "busy-status"} role="status" aria-live="polite">{demo.status}</p>}
             </section>
@@ -198,8 +211,14 @@ export function TestnetDialog({
           {stage === "execute" && (
             <section className="stage-card execute-card" aria-labelledby="execute-stage-title">
               <p className="stage-kicker">Step 3 of 3</p>
-              <h3 id="execute-stage-title">Choose how much ARFX to swap</h3>
-              <p>You will sign one transaction. It swaps ARFX for ARFY and applies ARBFOLD's direct reserve transition before the transaction ends.</p>
+              <h3 id="execute-stage-title">Create the cycle and run ARBFOLD</h3>
+              <p>Swap ARFX for ARFY. This moves the first pool, opens the three-pool cycle and folds it before the transaction ends.</p>
+
+              <ol className="execution-story" aria-label="What happens in this transaction">
+                <li><span>1</span><b>Your swap moves ARFX / ARFY</b></li>
+                <li><span>2</span><b>The three-pool cycle opens</b></li>
+                <li><span>3</span><b>ARBFOLD applies the final state</b></li>
+              </ol>
 
               <div className="trade-form">
                 <label className="trade-field" htmlFor="wallet-amount">
@@ -224,7 +243,7 @@ export function TestnetDialog({
                 <button id="live-execute" className="button primary" type="button" disabled={demo.busy || Boolean(demo.amountError)} onClick={demo.execute}>
                   {demo.busy ? "Transaction in progress" : "Swap ARFX and run ARBFOLD"}
                 </button>
-                <span className="action-explanation">MetaMask asks for one transaction. Only ARFX and test ETH for gas are used.</span>
+                <span className="action-explanation">One transaction on testnet.</span>
               </div>
               {(demo.busy || demo.error) && <p id="live-action-status" className={demo.error ? "form-error" : "busy-status"} role="status" aria-live="polite">{demo.status}</p>}
             </section>
@@ -233,12 +252,12 @@ export function TestnetDialog({
           {stage === "complete" && demo.result && (
             <section id="live-result" className="stage-card success-card" aria-labelledby="complete-stage-title">
               <p className="stage-kicker">Confirmed on Unichain Sepolia</p>
-              <h3 id="complete-stage-title">Swap and ARBFOLD completed</h3>
-              <p>Your ARFX-to-ARFY swap and the direct three-pool transition settled together.</p>
+              <h3 id="complete-stage-title">ARBFOLD folded the cycle</h3>
+              <p>Your swap moved ARFX / ARFY. ARBFOLD then replaced the three-swap backrun with a direct, verified reserve transition.</p>
               <dl className="result-summary">
                 <div><dt>You received</dt><dd>{tokenAmount(demo.result.output)} ARFY</dd></div>
-                <div><dt>Direct transitions</dt><dd>{demo.result.rounds.toString()}</dd></div>
-                <div><dt>Remaining arbitrage</dt><dd>{demo.result.residual.toString()} wei</dd></div>
+                <div><dt>Fold rounds</dt><dd>{demo.result.rounds.toString()}</dd></div>
+                <div><dt>Remaining cycle</dt><dd>{demo.result.residual.toString()} wei</dd></div>
                 <div><dt>Gas used</dt><dd>{demo.result.gasUsed.toLocaleString("en-US")}</dd></div>
               </dl>
               <div className="stage-actions">

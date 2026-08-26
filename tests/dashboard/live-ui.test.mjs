@@ -56,6 +56,11 @@ test("demo exposes a compact comparison and an understandable signed path", () =
   assert.match(dialog, /const stage: DemoStage/);
   assert.match(dialog, /ARFX/);
   assert.match(dialog, /ARFY/);
+  assert.match(dialog, /ARFZ/);
+  assert.match(dialog, /Your ARFX-to-ARFY swap moves the first pool/);
+  assert.match(dialog, /Create the cycle and run ARBFOLD/);
+  assert.match(benchmark, /Cyclic arbitrage, compressed/);
+  assert.match(benchmark, /3-swap backrun/);
   assert.doesNotMatch(`${app}\n${benchmark}\n${dialog}`, /Live network state|Wallet balances and allowance|REJECTED CLAIM/);
   assert.doesNotMatch(dialog, /Router spending limit|Your Demo USD-1|Demo ETH/);
 });

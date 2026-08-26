@@ -15,6 +15,10 @@ The dashboard connects directly to Unichain Sepolia and verifies:
 If any check fails, execution remains disabled. The five-size gas comparison is
 a separate frozen Foundry artifact and is never represented as live chain data.
 
+The interactive scenario uses three valueless assets across three pools:
+`ARFX/ARFY`, `ARFY/ARFZ` and `ARFZ/ARFX`. The user swaps ARFX for ARFY, moving
+the first pool and opening the cycle that ARBFOLD folds directly.
+
 ## Test without a wallet
 
 1. Open <https://danelerr.github.io/arbfold-uhi10/>.
@@ -51,7 +55,7 @@ Steps:
 
 1. Click `Run on testnet`.
 2. In step 1, click `Connect MetaMask` and approve account access.
-3. In step 2, click `Prepare test tokens`. ARFX is permissionlessly mintable and
+3. In step 2, click `Get ARFX and allow demo swap`. ARFX is permissionlessly mintable and
    valueless. The page states whether the wallet will ask for one or two
    preparation confirmations before you click.
 4. In step 3, leave the default 1,000 ARFX input for the clearest demo.

@@ -291,7 +291,7 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
       await sendContract("approve", token, [router, DEMO_ALLOWANCE]);
     }
     await refreshWalletState(account);
-    setStatus("Test funds ready. You can now run one swap + ARBFOLD transaction.");
+    setStatus("Demo ready. You can now create the cycle and run ARBFOLD.");
   });
 
   const refresh = () => runAction(async () => {

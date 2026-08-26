@@ -23,7 +23,7 @@ The page opens directly on the experiment—there is no marketing flow to finish
 before the demo:
 
 1. **Replay the comparison:** click `Replay demo` to see the conventional three-leg backrun and ARBFOLD direct transition run side by side. The comparison loads immediately from the frozen equivalent-state Foundry benchmark while the public Unichain Sepolia deployment is verified independently in parallel.
-2. **Execute it yourself:** click `Run on testnet` and follow one visible step at a time: connect a wallet, prepare valueless ARFX, then submit one atomic `ARFX → ARFY swap + fold`. The receipt links the new transaction and reports output, fold rounds, residual arbitrage and gas.
+2. **Execute it yourself:** click `Run on testnet` and follow one visible step at a time: connect a wallet, prepare valueless ARFX, then submit one atomic `ARFX → ARFY swap + fold`. ARFX, ARFY and ARFZ form the three-pool demo cycle. The receipt links the new transaction and reports output, fold rounds, residual arbitrage and gas.
 3. **Use the no-wallet fallback:** inside the testnet panel, expand `Preview without a wallet` to execute the complete deployed router call through RPC, return the real output and estimate gas without changing state.
 
 The visual comparison remains usable if the public RPC is slow or unavailable.
