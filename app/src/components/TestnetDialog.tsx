@@ -162,7 +162,7 @@ export function TestnetDialog({
               {demo.candidate ? (
                 <div className="stage-actions">
                   <button id="live-connect" className="button primary" type="button" disabled={demo.busy} onClick={demo.connect}>
-                    {demo.busy ? "Opening wallet" : `Connect ${demo.candidateName}`}
+                    {demo.activeAction === "connect" ? "Opening wallet" : `Connect ${demo.candidateName}`}
                   </button>
                 </div>
               ) : (
@@ -171,7 +171,7 @@ export function TestnetDialog({
                   <span className="action-explanation">No compatible browser wallet was detected.</span>
                 </div>
               )}
-              {(demo.busy || demo.error) && <p id="live-action-status" className={demo.error ? "form-error" : "busy-status"} role="status" aria-live="polite">{demo.status}</p>}
+              {(demo.activeAction === "connect" || demo.error) && <p id="live-action-status" className={demo.error ? "form-error" : "busy-status"} role="status" aria-live="polite">{demo.status}</p>}
             </section>
           )}
 
@@ -186,10 +186,10 @@ export function TestnetDialog({
               </div>
               <div className="stage-actions">
                 <button id="live-prepare" className="button primary" type="button" disabled={demo.busy} onClick={demo.prepare}>
-                  {demo.busy ? "Waiting for wallet" : prepareButtonLabel}
+                  {demo.activeAction === "prepare" ? "Waiting for wallet" : prepareButtonLabel}
                 </button>
               </div>
-              {(demo.busy || demo.error) && <p id="live-action-status" className={demo.error ? "form-error" : "busy-status"} role="status" aria-live="polite">{demo.status}</p>}
+              {(demo.activeAction === "prepare" || demo.error) && <p id="live-action-status" className={demo.error ? "form-error" : "busy-status"} role="status" aria-live="polite">{demo.status}</p>}
             </section>
           )}
 
@@ -200,11 +200,11 @@ export function TestnetDialog({
               <p>Your ARFX is ready, but this wallet has no Unichain Sepolia test ETH. Test ETH has no market value and is used only to pay network gas.</p>
               <div className="stage-actions">
                 <button className="button secondary" type="button" disabled={demo.busy} onClick={demo.refresh}>
-                  {demo.busy ? "Checking balance" : "Check balance again"}
+                  {demo.activeAction === "refresh" ? "Checking balance" : "Check balance again"}
                 </button>
                 <span className="action-explanation">Current balance: {demo.gasBalance}</span>
               </div>
-              {(demo.busy || demo.error) && <p className={demo.error ? "form-error" : "busy-status"} role="status" aria-live="polite">{demo.status}</p>}
+              {(demo.activeAction === "refresh" || demo.error) && <p className={demo.error ? "form-error" : "busy-status"} role="status" aria-live="polite">{demo.status}</p>}
             </section>
           )}
 
@@ -241,11 +241,11 @@ export function TestnetDialog({
 
               <div className="stage-actions execute-actions">
                 <button id="live-execute" className="button primary" type="button" disabled={demo.busy || Boolean(demo.amountError)} onClick={demo.execute}>
-                  {demo.busy ? "Transaction in progress" : "Swap ARFX and run ARBFOLD"}
+                  {demo.activeAction === "execute" ? "Transaction in progress" : "Swap ARFX and run ARBFOLD"}
                 </button>
                 <span className="action-explanation">One transaction on testnet.</span>
               </div>
-              {(demo.busy || demo.error) && <p id="live-action-status" className={demo.error ? "form-error" : "busy-status"} role="status" aria-live="polite">{demo.status}</p>}
+              {(demo.activeAction === "execute" || demo.error) && <p id="live-action-status" className={demo.error ? "form-error" : "busy-status"} role="status" aria-live="polite">{demo.status}</p>}
             </section>
           )}
 
@@ -278,7 +278,7 @@ export function TestnetDialog({
               <small className={demo.simulationError ? "error" : ""}>{demo.simulationError || "Choose 100–25,000"}</small>
             </label>
             <button id="live-simulate" className="button secondary" type="button" disabled={demo.busy || !liveReady || Boolean(demo.simulationError)} onClick={demo.simulate}>
-              {demo.busy ? "Running preview" : "Preview transaction"}
+              {demo.activeAction === "simulate" ? "Running preview" : "Preview transaction"}
             </button>
           </div>
           <p className="simulation-result" role="status" aria-live="polite">{demo.simulationStatus}</p>

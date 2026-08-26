@@ -49,6 +49,7 @@ interface DecodedArgs {
 }
 
 const DEFAULT_AMOUNT = "1000";
+type DemoAction = "connect" | "prepare" | "refresh" | "execute" | "simulate";
 
 function providerName(candidate: WalletCandidate | null): string {
   if (candidate?.info.name) return candidate.info.name;
@@ -85,7 +86,7 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
   const [balance, setBalance] = useState(0n);
   const [allowance, setAllowance] = useState(0n);
   const [gasBalance, setGasBalance] = useState(0n);
-  const [busy, setBusy] = useState(false);
+  const [activeAction, setActiveAction] = useState<DemoAction | null>(null);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("Verifying the public deployment before enabling wallet actions.");
   const [quote, setQuote] = useState<bigint | null>(null);
@@ -216,22 +217,28 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
     }
   }
 
-  const runAction = useCallback(async (action: () => Promise<void>) => {
-    if (busy) return;
-    setBusy(true);
+  const busy = activeAction !== null;
+
+  const runAction = useCallback(async (actionName: DemoAction, action: () => Promise<void>) => {
+    if (activeAction) return;
+    setActiveAction(actionName);
     setError("");
     try {
       await action();
     } catch (error) {
       const message = describeError(error);
-      setError(message);
-      setStatus(message);
+      if (actionName === "simulate") {
+        setSimulationStatus(`Preview failed: ${message}`);
+      } else {
+        setError(message);
+        setStatus(message);
+      }
     } finally {
-      setBusy(false);
+      setActiveAction(null);
     }
-  }, [busy]);
+  }, [activeAction]);
 
-  const connect = () => runAction(async () => {
+  const connect = () => runAction("connect", async () => {
     if (!liveReady) throw new Error("Wait for public deployment verification first");
     if (!candidate) throw new Error("No browser wallet detected. Install MetaMask or use the no-wallet preview.");
     const provider = candidate.provider;
@@ -278,7 +285,7 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
     if (receipt.status !== "success") throw new Error(`${functionName} transaction reverted`);
   }, [account, walletClient]);
 
-  const prepare = () => runAction(async () => {
+  const prepare = () => runAction("prepare", async () => {
     if (!account || !manifest) throw new Error("Connect your wallet first");
     const token = canonicalAddress(manifest.tokens.b);
     const router = canonicalAddress(manifest.router);
@@ -294,12 +301,12 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
     setStatus("Demo ready. You can now create the cycle and run ARBFOLD.");
   });
 
-  const refresh = () => runAction(async () => {
+  const refresh = () => runAction("refresh", async () => {
     await refreshWalletState();
     setStatus("Wallet balances refreshed from Unichain Sepolia.");
   });
 
-  const execute = () => runAction(async () => {
+  const execute = () => runAction("execute", async () => {
     if (!account || !manifest || !walletClient || parsedAmount === 0n) throw new Error("Connect and prepare your test tokens first");
     if (!prepared) throw new Error("Prepare the free ARFX test tokens first");
     const router = canonicalAddress(manifest.router);
@@ -367,7 +374,7 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
     setStatus("Confirmed. The swap and direct three-pool transition settled together.");
   });
 
-  const simulate = () => runAction(async () => {
+  const simulate = () => runAction("simulate", async () => {
     if (!manifest) throw new Error("Deployment manifest is not loaded");
     const input = parseUnits(parseDemoAmount(simulationAmount), 18);
     if (input > BigInt(manifest.rpcSimulation.maximumInput)) throw new Error("Input exceeds the prepared no-wallet preview limit");
@@ -390,6 +397,7 @@ export function useArbFoldDemo({ manifest, liveReady, onLiveStateChanged }: UseA
 
   return {
     account,
+    activeAction,
     allowance,
     amount,
     amountError,
