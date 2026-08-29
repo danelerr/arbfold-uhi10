@@ -184,7 +184,7 @@ flowchart LR
 | `contracts/test/ArbFoldInvariant.t.sol` | Executable backing and monotonicity security properties | TM-001, TM-003 |
 | `benchmark/arbfold-foundry/src/BenchmarkHarnesses.sol` | Correctness of the public execution comparator | TM-007 |
 | `benchmark/arbfold-results/` | Integrity of measured and rejected claims | TM-007 |
-| `app/src/App.tsx`, `app/src/hooks/useArbFoldDemo.ts` | Public RPC verification, dry-run and signed demo transaction construction | TM-007, TM-009 |
+| `app/src/App.tsx`, `app/src/hooks/useSwapLab.ts` | Public RPC verification, contextual exact approvals and signed demo transaction construction | TM-007, TM-009 |
 
 ## Notes on use
 

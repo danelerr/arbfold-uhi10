@@ -21,10 +21,11 @@ checks. No wallet is required.
 Scroll to `Full benchmark`, then change the five workload buttons.
 The result is workload-dependent:
 ARBFOLD is 19.12% cheaper at 50k–200k, 4.41% cheaper at 10k and 0.98% more
-expensive at 25k. Then click `Run on testnet`. The panel exposes the signed
-`Connect → Prepare → Execute` flow. Its result links the new transaction and
-shows output, fold rounds, residual arbitrage and gas. The collapsed simulation
-fallback executes the same deployed router call without a wallet or state change.
+expensive at 25k. Then click `Open Swap Lab`. The lab first explains the three
+valueless tokens, three pools, selected swap and checked cycle. Its single
+contextual action advances through connect, network switch, exact token deficit,
+exact approval and execution. The confirmed receipt links the transaction and
+shows output, fold rounds, solver reward, residual arbitrage and gas.
 
 ## 0:45–2:00 — Inspect the v4-native path
 

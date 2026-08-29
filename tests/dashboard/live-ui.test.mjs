@@ -6,15 +6,18 @@ async function read(path) {
   return readFile(new URL(path, import.meta.url), "utf8");
 }
 
-const [html, packageText, main, app, benchmark, dialog, hook, live] = await Promise.all([
+const [html, packageText, main, app, benchmark, dialog, composer, result, hook, live, labCore] = await Promise.all([
   read("../../app/index.html"),
   read("../../package.json"),
   read("../../app/src/main.tsx"),
   read("../../app/src/App.tsx"),
   read("../../app/src/components/BenchmarkDemo.tsx"),
-  read("../../app/src/components/TestnetDialog.tsx"),
-  read("../../app/src/hooks/useArbFoldDemo.ts"),
+  read("../../app/src/components/SwapLabDialog.tsx"),
+  read("../../app/src/components/SwapComposer.tsx"),
+  read("../../app/src/components/SwapResult.tsx"),
+  read("../../app/src/hooks/useSwapLab.ts"),
   read("../../app/src/lib/arbfold.ts"),
+  read("../../app/swap-lab-core.js"),
 ]);
 const pkg = JSON.parse(packageText);
 
@@ -30,39 +33,37 @@ test("dashboard is a React, Vite and TypeScript application", () => {
   assert.doesNotMatch(html, /app\.js/);
 });
 
-test("demo exposes a compact comparison and an understandable signed path", () => {
+test("Swap Lab explains the tokens, pools, cycle and contextual signed path", () => {
   for (const id of [
     "replay-demo",
     "replay-result",
     "hero-execute",
-    "testnet-dialog",
-    "dialog-close",
-    "live-simulate",
-    "execute-live",
-    "live-connect",
-    "wallet-provider-help",
-    "live-prepare",
-    "wallet-amount",
-    "live-execute",
-    "live-result-tx",
+    "swap-lab-dialog",
+    "swap-lab-close",
+    "lab-amount",
+    "lab-primary-action",
+    "swap-lab-result",
   ]) {
-    assert.match(`${benchmark}\n${dialog}`, new RegExp(`id=["']${id}["']`));
+    assert.match(`${benchmark}\n${dialog}\n${composer}\n${result}`, new RegExp(`id=["']${id}["']`));
   }
   assert.match(dialog, /<dialog/);
-  assert.match(dialog, /You spend/);
-  assert.match(dialog, /Estimated receive/);
-  assert.match(dialog, /No real assets are involved/);
-  assert.match(dialog, /one transaction/i);
-  assert.match(dialog, /const stage: DemoStage/);
-  assert.match(dialog, /ARFX/);
-  assert.match(dialog, /ARFY/);
-  assert.match(dialog, /ARFZ/);
-  assert.match(dialog, /Your ARFX-to-ARFY swap moves the first pool/);
-  assert.match(dialog, /Create the cycle and run ARBFOLD/);
-  assert.match(benchmark, /Cyclic arbitrage, compressed/);
+  assert.match(dialog, /Estos son tres tokens de prueba sin valor/);
+  assert.match(dialog, /ARFX \/ ARFY/);
+  assert.match(dialog, /ARFX \/ ARFZ/);
+  assert.match(dialog, /ARFY \/ ARFZ/);
+  assert.match(composer, /Después de tu swap, ARBFOLD revisa este ciclo/);
+  assert.match(composer, /Si recorrer este ciclo devolviera más/);
+  assert.match(composer, /Tu swap mueve un pool/);
+  assert.match(composer, /ARBFOLD revisa el ciclo de tres pools/);
+  assert.match(composer, /En lugar de reproducir tres swaps de arbitraje/);
+  assert.match(composer, /Explorar otra ruta/);
+  assert.match(composer, /Permitir este swap/);
+  assert.match(composer, /Ejecutar swap \+ ARBFOLD/);
+  assert.match(benchmark, /Controlled Foundry Benchmark/);
   assert.match(benchmark, /3-swap backrun/);
-  assert.doesNotMatch(`${app}\n${benchmark}\n${dialog}`, /Live network state|Wallet balances and allowance|REJECTED CLAIM/);
-  assert.doesNotMatch(dialog, /Router spending limit|Your Demo USD-1|Demo ETH/);
+  assert.match(benchmark, /La testnet pública es mutable/);
+  assert.doesNotMatch(`${app}\n${benchmark}\n${dialog}\n${composer}\n${result}`, /Demo A|Demo B|Demo C|Normal swap|swapExactInputPlain|Live network state|Wallet balances and allowance|REJECTED CLAIM/);
+  assert.doesNotMatch(`${dialog}\n${composer}`, /allowance|uint256\.max|progress|session-strip/);
 });
 
 test("live application treats the signed receipt as final and refreshes state best-effort", () => {
@@ -73,15 +74,23 @@ test("live application treats the signed receipt as final and refreshes state be
   assert.match(hook, /waitForTransactionReceipt/);
   assert.match(hook, /eip6963:requestProvider/);
   assert.match(hook, /eip6963:announceProvider/);
-  assert.match(hook, /No browser wallet detected/);
+  assert.match(hook, /No se detectó una wallet compatible/);
   assert.match(hook, /custom\(provider\)/);
   assert.match(hook, /eth_chainId/);
   assert.match(hook, /estimateContractGas/);
   assert.match(hook, /gas: bufferedGasLimit\(estimatedGas\)/);
-  assert.match(hook, /DEMO_ALLOWANCE/);
+  assert.match(hook, /sendTokenTransaction\("approve", inputToken, \[router, parsedAmount\]\)/);
+  assert.match(hook, /parsedAmount - balances\[inputRole\]/);
+  assert.doesNotMatch(hook, /uint256\.max|MaxUint256|DEMO_ALLOWANCE/);
+  assert.match(labCore, /a: "ARFY"/);
+  assert.match(labCore, /b: "ARFX"/);
+  assert.match(labCore, /c: "ARFZ"/);
   assert.match(live, /getBlockNumber\(\{ cacheTime: 0 \}\)/);
   assert.match(live, /blockNumber === undefined \? \{\} : \{ blockNumber \}/);
   assert.match(live, /functionName: "network"/);
+  assert.match(live, /functionName: "tokenA"/);
+  assert.match(live, /functionName: "hookAB"/);
+  assert.match(live, /token and hook roles do not match/);
   assert.match(hook, /Promise\.allSettled/);
   assert.ok(hook.indexOf("setResult(nextResult)") < hook.indexOf("Promise.allSettled"));
   assert.doesNotMatch(hook, /readLiveState\(manifest, receipt\.blockNumber\)/);

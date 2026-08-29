@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { BenchmarkDemo } from "./components/BenchmarkDemo";
-import { TestnetDialog } from "./components/TestnetDialog";
+import { SwapLabDialog } from "./components/SwapLabDialog";
 import {
   EXPLORER_URL,
   loadBenchmark,
@@ -89,7 +89,7 @@ export default function App() {
         </section>
       </main>
 
-      <TestnetDialog
+      <SwapLabDialog
         open={dialogOpen}
         onClose={closeDialog}
         manifest={manifest}

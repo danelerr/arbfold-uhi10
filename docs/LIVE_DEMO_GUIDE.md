@@ -16,27 +16,19 @@ If any check fails, execution remains disabled. The five-size gas comparison is
 a separate frozen Foundry artifact and is never represented as live chain data.
 
 The interactive scenario uses three valueless assets across three pools:
-`ARFX/ARFY`, `ARFY/ARFZ` and `ARFZ/ARFX`. The user swaps ARFX for ARFY, moving
-the first pool and opening the cycle that ARBFOLD folds directly.
+`ARFX/ARFY`, `ARFX/ARFZ` and `ARFY/ARFZ`. The default user swap is 10,000 ARFX
+for ARFY. It moves the first pool and makes the resulting
+`ARFX → ARFY → ARFZ → ARFX` cycle visible before any wallet action.
 
-## Test without a wallet
+## Understand it without a wallet
 
 1. Open <https://danelerr.github.io/arbfold-uhi10/>.
-2. Click `Run on testnet`.
-3. Confirm the green `Deployment verified` state.
-4. Expand `Preview without a wallet`.
-5. Change the ARFX input if desired; the public range is 1,000–25,000 so the demo remains above the validated fold threshold.
-6. Click `Preview transaction`.
-7. Expect a result shaped like:
-
-```text
-Preview passed: 1,000 ARFX → <live output> ARFY
-· about <live gas> gas · no signature · no state change
-```
-
-This is an `eth_call` through the deployed `ArbFoldRouter`; it executes the
-complete contract path against current state. It is not a transaction and does
-not claim to change reserves.
+2. Click `Open Swap Lab`.
+3. Confirm that the first view identifies all three valueless tokens and pools.
+4. Inspect the current ARFX → ARFY quote and the cycle explanation. This quote
+   is calculated from public reserves and requires no signature or state change.
+5. Expand `Explorar otra ruta` only if you want to inspect one of the six
+   supported directions. The default stays ARFX → ARFY for the clearest demo.
 
 ## Execute a persistent testnet transaction
 
@@ -53,21 +45,23 @@ and offers an installation/open-in-wallet link.
 
 Steps:
 
-1. Click `Run on testnet`.
-2. In step 1, click `Connect MetaMask` and approve account access.
-3. In step 2, click `Get ARFX and allow demo swap`. ARFX is permissionlessly mintable and
-   valueless. The page states whether the wallet will ask for one or two
-   preparation confirmations before you click.
-4. In step 3, leave the default 1,000 ARFX input for the clearest demo.
-5. Click `Swap ARFX and run ARBFOLD` and confirm one atomic transaction.
-6. Wait for the receipt panel. It must show:
+1. Click `Open Swap Lab`.
+2. Click the single `Conectar wallet` action. Network switching is a separate
+   contextual action when required.
+3. Leave the default 10,000 ARFX input for the clearest demo.
+4. If tokens are missing, confirm `Obtener … ARFX de prueba`. It mints only the
+   deficit. Return to the lab and click `Permitir este swap`; this second prompt
+   approves exactly the selected amount and is never opened automatically.
+5. Click `Ejecutar swap + ARBFOLD` and confirm one atomic transaction.
+6. Wait for the receipt-driven result. It must show:
    - an explorer link for the wallet's transaction;
    - gas used;
    - user output;
    - `FoldRound` count;
    - `FoldCompleted` residual.
 
-The UI quotes first and applies a 0.5% minimum-output guard. It never requests a
+The UI re-quotes immediately before signing, applies a 0.5% minimum-output guard
+and uses a 15-minute deadline. It never requests a
 private key. Contracts are research-only, testnet assets have no value and the
 deployment is not authorized for production deposits.
 

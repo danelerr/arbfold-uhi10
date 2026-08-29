@@ -88,15 +88,42 @@ export interface WalletCandidate {
   info: { name?: string; rdns?: string };
 }
 
-export interface WalletResult {
+export type TokenRole = "a" | "b" | "c";
+export type TokenSymbol = "ARFX" | "ARFY" | "ARFZ";
+export type HookKey = "ab" | "bc" | "ac";
+
+export interface TokenMeta {
+  role: TokenRole;
+  address: Address;
+  symbol: TokenSymbol;
+  decimals: number;
+}
+
+export interface SwapRoute {
+  input: TokenRole;
+  output: TokenRole;
+  hook: HookKey;
+  zeroForOne: boolean;
+}
+
+export type LabActionKind = "verify" | "install" | "connect" | "switch" | "gas" | "invalid" | "mint" | "approve" | "quote" | "execute";
+export type LabBusyAction = "connect" | "switch" | "mint" | "approve" | "quote" | "execute" | "refresh" | "preview";
+
+export interface SwapLabResult {
   hash: Hash;
-  output: bigint;
-  rounds: bigint;
+  input: bigint;
+  output: bigint | null;
+  rounds: bigint | null;
   roundEvents: number;
-  residual: bigint;
-  reward: bigint;
+  residual: bigint | null;
+  reward: bigint | null;
   gasUsed: bigint;
   blockNumber: bigint;
+  inputRole: TokenRole;
+  outputRole: TokenRole;
+  hook: HookKey;
+  zeroForOne: boolean;
+  decodeWarning?: string;
 }
 
 declare global {

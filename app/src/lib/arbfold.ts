@@ -7,12 +7,15 @@ import {
   type Address,
 } from "viem";
 import { normalizeNetwork, reductionPercent, validateManifest } from "../../live-core.js";
+import { TOKEN_SYMBOLS } from "../../swap-lab-core.js";
 import type {
   BenchmarkPayload,
   BenchmarkRow,
   DeploymentManifest,
   LiveState,
   ReserveState,
+  TokenMeta,
+  TokenRole,
 } from "../types";
 
 export const CHAIN_ID = 1301;
@@ -20,7 +23,6 @@ export const CHAIN_HEX = "0x515";
 export const RPC_URL = "https://sepolia.unichain.org";
 export const EXPLORER_URL = "https://sepolia.uniscan.xyz";
 export const TOKEN_DECIMALS = 18;
-export const DEMO_ALLOWANCE = 25_000n * 10n ** 18n;
 
 export const unichainSepolia = {
   id: CHAIN_ID,
@@ -32,6 +34,12 @@ export const unichainSepolia = {
 } as const;
 
 export const coordinatorAbi = parseAbi([
+  "function tokenA() view returns (address)",
+  "function tokenB() view returns (address)",
+  "function tokenC() view returns (address)",
+  "function hookAB() view returns (address)",
+  "function hookBC() view returns (address)",
+  "function hookAC() view returns (address)",
   "function network() view returns (uint256 abA, uint256 abB, uint256 bcB, uint256 bcC, uint256 acA, uint256 acC)",
   "function totalFoldCalls() view returns (uint256)",
   "function totalFoldRounds() view returns (uint256)",
@@ -50,6 +58,8 @@ export const tokenAbi = parseAbi([
   "function approve(address spender, uint256 amount) returns (bool)",
   "function balanceOf(address account) view returns (uint256)",
   "function allowance(address owner, address spender) view returns (uint256)",
+  "function symbol() view returns (string)",
+  "function decimals() view returns (uint8)",
 ]);
 
 export const publicClient = createPublicClient({
@@ -65,13 +75,30 @@ export function abbreviated(value?: string): string {
   return value?.startsWith("0x") ? `${value.slice(0, 8)}…${value.slice(-6)}` : value ?? "—";
 }
 
-export function tokenAmount(value?: bigint | string, precision = 6): string {
+export function tokenAmount(value?: bigint | string, precision = 6, decimals = TOKEN_DECIMALS): string {
   if (value === undefined) return "—";
-  const rendered = formatUnits(BigInt(value), TOKEN_DECIMALS);
+  const rendered = formatUnits(BigInt(value), decimals);
   const [whole, fraction = ""] = rendered.split(".");
   const shortFraction = fraction.slice(0, precision).replace(/0+$/, "");
   const grouped = BigInt(whole).toLocaleString("en-US");
   return shortFraction ? `${grouped}.${shortFraction}` : grouped;
+}
+
+export async function readTokenMetadata(manifest: DeploymentManifest): Promise<Record<TokenRole, TokenMeta>> {
+  const roles: TokenRole[] = ["a", "b", "c"];
+  const entries = await Promise.all(roles.map(async (role) => {
+    const address = canonicalAddress(manifest.tokens[role]);
+    const [symbol, decimals] = await Promise.all([
+      publicClient.readContract({ address, abi: tokenAbi, functionName: "symbol" }),
+      publicClient.readContract({ address, abi: tokenAbi, functionName: "decimals" }),
+    ]);
+    const expected = TOKEN_SYMBOLS[role];
+    if (symbol !== expected) {
+      throw new Error(`El token interno ${role} reporta ${symbol}; el deployment publicado requiere ${expected}.`);
+    }
+    return [role, { role, address, symbol: expected, decimals: Number(decimals) }] as const;
+  }));
+  return Object.fromEntries(entries) as Record<TokenRole, TokenMeta>;
 }
 
 export function reserveLine(reserves: ReserveState): string {
@@ -152,17 +179,32 @@ export async function verifyDeployment(manifest: DeploymentManifest): Promise<Li
     throw new Error("Browser-signed validation transaction did not succeed");
   }
   if (codes.some((code) => !code || code === "0x")) throw new Error("A deployed contract has no bytecode");
+  const coordinator = canonicalAddress(manifest.coordinator);
+  const [tokenA, tokenB, tokenC, hookAB, hookBC, hookAC] = await Promise.all([
+    publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "tokenA" }),
+    publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "tokenB" }),
+    publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "tokenC" }),
+    publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "hookAB" }),
+    publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "hookBC" }),
+    publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "hookAC" }),
+  ]);
+  const expected = [manifest.tokens.a, manifest.tokens.b, manifest.tokens.c, manifest.hooks.ab, manifest.hooks.bc, manifest.hooks.ac].map(canonicalAddress);
+  const observed = [tokenA, tokenB, tokenC, hookAB, hookBC, hookAC].map(canonicalAddress);
+  if (observed.some((address, index) => address !== expected[index])) {
+    throw new Error("The coordinator token and hook roles do not match the published deployment manifest");
+  }
   return readLiveState(manifest);
 }
 
 export function describeError(error: unknown): string {
   const candidate = error as { shortMessage?: string; details?: string; message?: string; cause?: { code?: number }; code?: number };
   const message = candidate.shortMessage || candidate.details || candidate.message || String(error);
-  if (/User rejected|user rejected|denied transaction signature/i.test(message)) return "The wallet request was cancelled.";
-  if (/insufficient funds/i.test(message)) return "Your wallet needs Unichain Sepolia test ETH for network gas.";
-  if (/TooLittleReceived/i.test(message)) return "The pool price changed before confirmation. Request a new quote and try again.";
+  if (/User rejected|user rejected|denied transaction signature/i.test(message)) return "Cancelaste la solicitud en tu wallet. No se realizó ninguna acción.";
+  if (/insufficient funds/i.test(message)) return "Tu wallet necesita ETH de prueba en Unichain Sepolia para pagar el gas.";
+  if (/TooLittleReceived|slippage/i.test(message)) return "La cotización cambió antes de confirmar. Actualiza la cotización e inténtalo de nuevo.";
+  if (/chain|network/i.test(message) && /wrong|switch|expected|mismatch/i.test(message)) return "Cambia tu wallet a Unichain Sepolia para continuar.";
   if (/returned no data|returned an invalid response/i.test(message)) {
-    return "The public Unichain RPC could not refresh the deployment. Retry in a moment; an already confirmed transaction remains valid.";
+    return "El RPC público no pudo actualizar los datos. Reintenta en un momento; una transacción ya confirmada sigue siendo válida.";
   }
   return message.split("\n")[0].slice(0, 220);
 }

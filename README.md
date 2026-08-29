@@ -23,13 +23,13 @@ The page opens directly on the experiment—there is no marketing flow to finish
 before the demo:
 
 1. **Replay the comparison:** click `Replay demo` to see the conventional three-leg backrun and ARBFOLD direct transition run side by side. The comparison loads immediately from the frozen equivalent-state Foundry benchmark while the public Unichain Sepolia deployment is verified independently in parallel.
-2. **Execute it yourself:** click `Run on testnet` and follow one visible step at a time: connect a wallet, prepare valueless ARFX, then submit one atomic `ARFX → ARFY swap + fold`. ARFX, ARFY and ARFZ form the three-pool demo cycle. The receipt links the new transaction and reports output, fold rounds, residual arbitrage and gas.
-3. **Use the no-wallet fallback:** inside the testnet panel, expand `Preview without a wallet` to execute the complete deployed router call through RPC, return the real output and estimate gas without changing state.
+2. **Execute it yourself:** click `Open Swap Lab`. Before connecting, the lab identifies ARFX, ARFY and ARFZ as valueless test assets, shows the three pools and explains the cycle checked after the swap. One contextual action then connects the wallet, switches network if needed, mints only a token deficit, approves only the selected amount and submits one atomic `ARFX → ARFY swap + fold`.
+3. **Inspect the confirmed result:** the transaction receipt—not a later RPC refresh—drives the displayed output, fold rounds, solver reward, residual arbitrage and gas. The default 10,000 ARFX route is chosen to make the fold visible, while zero-fold receipts remain valid results on mutable public testnet state.
 
 The visual comparison remains usable if the public RPC is slow or unavailable.
 The testnet controls still fail closed: they only enable after checking chain
-ID 1301, both public receipts, deployed bytecode, current fold counters and all
-six reserves. The Foundry
+ID 1301, both public receipts, deployed bytecode, coordinator token/hook roles,
+onchain token symbols and the current three-pool state. The Foundry
 comparison comes from [`raw.json`](benchmark/release-candidate-results/raw.json)
 and is explicitly labeled as benchmark evidence—not as one public transaction
 that somehow executes both alternative histories.

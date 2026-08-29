@@ -17,15 +17,15 @@ result.
 
 ## 0:45–1:20 — Run the deployed code
 
-Click `Run on testnet` and show the three-step signed flow. For a recording that
-must not expose a wallet, expand `Preview without a wallet`, click `Preview
-transaction`, then show the returned ARFX → ARFY quote and gas estimate.
+Click `Open Swap Lab`. Before touching the wallet, show that ARFX, ARFY and ARFZ
+are valueless test tokens, identify the three pools, and point to the dynamic
+`ARFX → ARFY → ARFZ → ARFX` cycle. The visible quote is read from the deployed
+pool state without signing or changing state.
 
 > This is not a pre-rendered animation. The page has verified the deployed
-> bytecode and is now executing the complete router call against current
-> Unichain Sepolia state. The dry-run needs no wallet and changes no state.
-> The primary wallet flow makes the deployed protocol directly executable and
-> produces its own explorer receipt.
+> bytecode and token/hook roles. The primary action advances one operation at a
+> time: connect, obtain only missing valueless test tokens, approve only this
+> swap, then submit the deployed protocol path and produce an explorer receipt.
 
 Open the latest interactive validation transaction and show its `SwapAndFold`,
 `FoldRound` and `FoldCompleted` evidence.

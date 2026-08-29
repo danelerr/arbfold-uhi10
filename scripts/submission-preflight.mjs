@@ -31,14 +31,15 @@ async function fetchText(url) {
   return response.text();
 }
 
-const [readme, page, packageText, reactApp, benchmarkDemo, testnetDialog, walletHook, finalSubmission, checklist, rawText, manifestText] = await Promise.all([
+const [readme, page, packageText, reactApp, benchmarkDemo, swapLabDialog, swapComposer, walletHook, finalSubmission, checklist, rawText, manifestText] = await Promise.all([
   read("README.md"),
   read("app/index.html"),
   read("package.json"),
   read("app/src/App.tsx"),
   read("app/src/components/BenchmarkDemo.tsx"),
-  read("app/src/components/TestnetDialog.tsx"),
-  read("app/src/hooks/useArbFoldDemo.ts"),
+  read("app/src/components/SwapLabDialog.tsx"),
+  read("app/src/components/SwapComposer.tsx"),
+  read("app/src/hooks/useSwapLab.ts"),
   read("docs/FINAL_SUBMISSION.md"),
   read("docs/SUBMISSION_CHECKLIST.md"),
   read("benchmark/release-candidate-results/raw.json"),
@@ -67,13 +68,19 @@ check("Canonical benchmark row is unchanged", canonical?.backrun === 544_187 && 
 check("Canonical claim matches raw evidence", canonicalReduction.toFixed(2) === "19.12" && finalSubmission.includes("19.12% less"));
 check("25k regression remains disclosed", regressionIncrease.toFixed(2) === "0.98" && finalSubmission.includes("0.98% more"));
 check("Complete five-size grid is displayed", rows.length === 5 && includesAll(benchmarkDemo, ["rows.map", "data-size={row.size}"]));
-check("Interactive demo remains the first claim", includesAll(benchmarkDemo, ["3 arbitrage swaps.", "1 verified transition.", "Replay demo", "Run on testnet"]));
+check("Interactive demo remains the first claim", includesAll(benchmarkDemo, ["3 arbitrage swaps.", "1 verified transition.", "Replay demo", "Open Swap Lab"]));
 check("Dashboard uses React, Vite and TypeScript", includesAll(page, ["id=\"root\"", "/src/main.tsx"])
   && Boolean(packageJson.dependencies?.react)
   && Boolean(packageJson.devDependencies?.vite)
   && Boolean(packageJson.devDependencies?.typescript));
 check("Wallet integration uses EIP-6963", includesAll(walletHook, ["eip6963:requestProvider", "eip6963:announceProvider", "custom(provider)"]));
-check("Testnet receipt explains the assets", includesAll(testnetDialog, ["You spend", "Estimated receive", "No real assets are involved."]));
+check("Swap Lab explains the valueless assets and cycle", includesAll(`${swapLabDialog}\n${swapComposer}`, [
+  "Estos son tres tokens de prueba sin valor",
+  "ARFX / ARFY",
+  "ARFX / ARFZ",
+  "ARFY / ARFZ",
+  "Después de tu swap, ARBFOLD revisa este ciclo",
+]));
 check("Canonical transaction is linked from the manifest", reactApp.includes("manifest.canonicalDemoTransaction"));
 check("Browser-signed transaction is documented", finalSubmission.includes(manifest.interactiveDemo.transaction));
 check("Deployment uses Unichain Sepolia", manifest.chainId === 1301 && manifest.network === "unichain-sepolia");

@@ -67,14 +67,14 @@ export function BenchmarkDemo({ rows, onOpenTestnet }: BenchmarkDemoProps) {
   return <>
     <section id="top" className="hero shell">
       <div className="hero-copy">
-        <p className="eyebrow">Cyclic arbitrage, compressed</p>
+        <p className="eyebrow">Controlled Foundry Benchmark</p>
         <h1><span>3 arbitrage swaps.</span><em>1 verified transition.</em></h1>
         <p className="hero-summary">ARBFOLD reaches the same result without replaying three arbitrage swaps.</p>
         <div className="hero-actions">
           <button id="replay-demo" className="button primary" type="button" disabled={!selected || running} onClick={replay}>
             {running ? "Replaying…" : complete ? "Replay again" : "Replay demo"}
           </button>
-          <button id="hero-execute" className="button secondary" type="button" onClick={onOpenTestnet}>Run on testnet</button>
+          <button id="hero-execute" className="button secondary" type="button" onClick={onOpenTestnet}>Open Swap Lab</button>
           <a className="button quiet" href="https://github.com/danelerr/arbfold-uhi10">GitHub</a>
         </div>
       </div>
@@ -138,6 +138,7 @@ export function BenchmarkDemo({ rows, onOpenTestnet }: BenchmarkDemoProps) {
             </button>
           ))}
       </div>
+      <p className="benchmark-boundary">La testnet pública es mutable. Las transacciones live son exploratorias y no se utilizan como benchmark de gas apples-to-apples.</p>
       <a className="inline-link" href="https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md">View methodology</a>
     </section>
   </>;
