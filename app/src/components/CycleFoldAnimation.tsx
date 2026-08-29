@@ -17,7 +17,7 @@ export function CycleFoldAnimation({ cycle, folded = false }: CycleFoldAnimation
           </span>
         ))}
       </div>
-      {folded && <span className="fold-outcome">Transición aplicada · arbitraje restante 0</span>}
+      {folded && <span className="fold-outcome">Transition applied · remaining arbitrage 0</span>}
     </div>
   );
 }

@@ -75,11 +75,11 @@ check("Dashboard uses React, Vite and TypeScript", includesAll(page, ["id=\"root
   && Boolean(packageJson.devDependencies?.typescript));
 check("Wallet integration uses EIP-6963", includesAll(walletHook, ["eip6963:requestProvider", "eip6963:announceProvider", "custom(provider)"]));
 check("Swap Lab explains the valueless assets and cycle", includesAll(`${swapLabDialog}\n${swapComposer}`, [
-  "Estos son tres tokens de prueba sin valor",
+  "Three valueless test tokens",
   "ARFX / ARFY",
   "ARFX / ARFZ",
   "ARFY / ARFZ",
-  "Después de tu swap, ARBFOLD revisa este ciclo",
+  "After your swap, ARBFOLD checks this cycle",
 ]));
 check("Canonical transaction is linked from the manifest", reactApp.includes("manifest.canonicalDemoTransaction"));
 check("Browser-signed transaction is documented", finalSubmission.includes(manifest.interactiveDemo.transaction));

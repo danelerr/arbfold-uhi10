@@ -27,7 +27,7 @@ for ARFY. It moves the first pool and makes the resulting
 3. Confirm that the first view identifies all three valueless tokens and pools.
 4. Inspect the current ARFX → ARFY quote and the cycle explanation. This quote
    is calculated from public reserves and requires no signature or state change.
-5. Expand `Explorar otra ruta` only if you want to inspect one of the six
+5. Expand `Explore another route` only if you want to inspect one of the six
    supported directions. The default stays ARFX → ARFY for the clearest demo.
 
 ## Execute a persistent testnet transaction
@@ -46,13 +46,13 @@ and offers an installation/open-in-wallet link.
 Steps:
 
 1. Click `Open Swap Lab`.
-2. Click the single `Conectar wallet` action. Network switching is a separate
+2. Click the single `Connect wallet` action. Network switching is a separate
    contextual action when required.
 3. Leave the default 10,000 ARFX input for the clearest demo.
-4. If tokens are missing, confirm `Obtener … ARFX de prueba`. It mints only the
-   deficit. Return to the lab and click `Permitir este swap`; this second prompt
+4. If tokens are missing, confirm `Get … test ARFX`. It mints only the
+   deficit. Return to the lab and click `Allow this demo swap`; this second prompt
    approves exactly the selected amount and is never opened automatically.
-5. Click `Ejecutar swap + ARBFOLD` and confirm one atomic transaction.
+5. Click `Run swap + ARBFOLD` and confirm one atomic transaction.
 6. Wait for the receipt-driven result. It must show:
    - an explorer link for the wallet's transaction;
    - gas used;

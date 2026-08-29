@@ -94,7 +94,7 @@ export async function readTokenMetadata(manifest: DeploymentManifest): Promise<R
     ]);
     const expected = TOKEN_SYMBOLS[role];
     if (symbol !== expected) {
-      throw new Error(`El token interno ${role} reporta ${symbol}; el deployment publicado requiere ${expected}.`);
+      throw new Error(`Internal token role ${role} reports ${symbol}; the published deployment requires ${expected}.`);
     }
     return [role, { role, address, symbol: expected, decimals: Number(decimals) }] as const;
   }));
@@ -199,12 +199,12 @@ export async function verifyDeployment(manifest: DeploymentManifest): Promise<Li
 export function describeError(error: unknown): string {
   const candidate = error as { shortMessage?: string; details?: string; message?: string; cause?: { code?: number }; code?: number };
   const message = candidate.shortMessage || candidate.details || candidate.message || String(error);
-  if (/User rejected|user rejected|denied transaction signature/i.test(message)) return "Cancelaste la solicitud en tu wallet. No se realizó ninguna acción.";
-  if (/insufficient funds/i.test(message)) return "Tu wallet necesita ETH de prueba en Unichain Sepolia para pagar el gas.";
-  if (/TooLittleReceived|slippage/i.test(message)) return "La cotización cambió antes de confirmar. Actualiza la cotización e inténtalo de nuevo.";
-  if (/chain|network/i.test(message) && /wrong|switch|expected|mismatch/i.test(message)) return "Cambia tu wallet a Unichain Sepolia para continuar.";
+  if (/User rejected|user rejected|denied transaction signature/i.test(message)) return "You rejected the wallet request. No action was taken.";
+  if (/insufficient funds/i.test(message)) return "Your wallet needs Unichain Sepolia test ETH to pay for gas.";
+  if (/TooLittleReceived|slippage/i.test(message)) return "The quote changed before confirmation. Refresh the quote and try again.";
+  if (/chain|network/i.test(message) && /wrong|switch|expected|mismatch/i.test(message)) return "Switch your wallet to Unichain Sepolia to continue.";
   if (/returned no data|returned an invalid response/i.test(message)) {
-    return "El RPC público no pudo actualizar los datos. Reintenta en un momento; una transacción ya confirmada sigue siendo válida.";
+    return "The public RPC could not refresh the data. Try again shortly; a confirmed transaction remains valid.";
   }
   return message.split("\n")[0].slice(0, 220);
 }

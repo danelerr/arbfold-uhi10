@@ -22,50 +22,50 @@ function actionCopy(lab: SwapLab, liveReady: boolean) {
   const symbol = lab.inputToken.symbol;
   if (lab.busy) {
     const labels = {
-      connect: "Abriendo wallet…",
-      switch: "Cambiando red…",
-      mint: "Esperando confirmación…",
-      approve: "Esperando confirmación…",
-      quote: "Actualizando cotización…",
-      execute: "Ejecutando swap + ARBFOLD…",
-      refresh: "Comprobando gas…",
-      preview: "Preparando vista…",
+      connect: "Opening wallet…",
+      switch: "Switching network…",
+      mint: "Waiting for confirmation…",
+      approve: "Waiting for confirmation…",
+      quote: "Refreshing quote…",
+      execute: "Running swap + ARBFOLD…",
+      refresh: "Checking gas…",
+      preview: "Preparing preview…",
     } as const;
     return { label: labels[lab.activeAction ?? "quote"], explanation: lab.status, disabled: true };
   }
   switch (lab.actionKind) {
     case "verify":
       return {
-        label: !liveReady || lab.error ? "Reintentar verificación" : "Verificando deployment…",
-        explanation: lab.error || (liveReady ? "Comprobando los símbolos y decimales de los tres tokens." : "El RPC público no pudo confirmar todavía el router y los pools publicados."),
+        label: !liveReady || lab.error ? "Retry verification" : "Verifying deployment…",
+        explanation: lab.error || (liveReady ? "Checking the symbols and decimals of all three tokens." : "The public RPC has not confirmed the deployed router and pools yet."),
         disabled: liveReady && !lab.error,
       };
     case "install":
-      return { label: "Instalar una wallet", explanation: "No se detectó una wallet compatible en este navegador.", disabled: false };
+      return { label: "Install a wallet", explanation: "No compatible browser wallet was detected.", disabled: false };
     case "connect":
-      return { label: "Conectar wallet", explanation: `Conecta ${lab.candidateName}. Este paso no firma ni gasta nada.`, disabled: false };
+      return { label: "Connect wallet", explanation: `Connect ${lab.candidateName}. This step does not sign or spend anything.`, disabled: false };
     case "switch":
-      return { label: "Cambiar a Unichain Sepolia", explanation: "Cambia únicamente la red activa de tu wallet.", disabled: false };
+      return { label: "Switch to Unichain Sepolia", explanation: "This only changes the active network in your wallet.", disabled: false };
     case "gas":
-      return { label: "Volver a comprobar el gas", explanation: "Necesitas una pequeña cantidad de ETH de prueba en Unichain Sepolia para enviar transacciones.", disabled: false };
+      return { label: "Check gas balance again", explanation: "You need a small amount of Unichain Sepolia test ETH to send transactions.", disabled: false };
     case "invalid":
-      return { label: "Revisa la cantidad", explanation: lab.amountError, disabled: true };
+      return { label: "Check the amount", explanation: lab.amountError, disabled: true };
     case "mint":
       return {
-        label: `Obtener ${tokenAmount(lab.missingAmount, 6, lab.inputToken.decimals)} ${symbol} de prueba`,
-        explanation: `Crea únicamente los ${symbol} de prueba sin valor que faltan para ejecutar este swap en testnet.`,
+        label: `Get ${tokenAmount(lab.missingAmount, 6, lab.inputToken.decimals)} test ${symbol}`,
+        explanation: `Create only the missing valueless ${symbol} needed for this testnet swap.`,
         disabled: false,
       };
     case "approve":
       return {
-        label: "Permitir este swap",
-        explanation: `Permite que el router desplegado de ARBFOLD utilice exactamente ${tokenAmount(lab.parsedAmount, 6, lab.inputToken.decimals)} ${symbol} para esta transacción.`,
+        label: "Allow this demo swap",
+        explanation: `Allow the deployed ARBFOLD router to use exactly ${tokenAmount(lab.parsedAmount, 6, lab.inputToken.decimals)} ${symbol} for this transaction.`,
         disabled: false,
       };
     case "quote":
-      return { label: "Actualizar cotización", explanation: "Lee nuevamente las reservas públicas antes de preparar la transacción.", disabled: lab.quoteLoading };
+      return { label: "Refresh quote", explanation: "Read the current public reserves again before preparing the transaction.", disabled: lab.quoteLoading };
     case "execute":
-      return { label: "Ejecutar swap + ARBFOLD", explanation: "Firmas una sola transacción en Unichain Sepolia.", disabled: false };
+      return { label: "Run swap + ARBFOLD", explanation: "You sign one transaction on Unichain Sepolia.", disabled: false };
   }
 }
 
@@ -88,7 +88,7 @@ export function SwapComposer({ lab, liveReady }: SwapComposerProps) {
     <>
       <div className="swap-composer" aria-label="ARBFOLD Swap Lab">
         <div className="swap-field">
-          <label htmlFor="lab-amount">Envías</label>
+          <label htmlFor="lab-amount">You pay</label>
           <div className="asset-input">
             <input
               id="lab-amount"
@@ -100,32 +100,32 @@ export function SwapComposer({ lab, liveReady }: SwapComposerProps) {
             <strong>{lab.inputToken.symbol}</strong>
           </div>
           <small id="lab-amount-help" className={lab.amountError ? "form-error" : ""}>
-            {lab.amountError || "Token de prueba sin valor · 1,000–25,000"}
+            {lab.amountError || "Valueless test token · 1,000–25,000"}
           </small>
         </div>
 
         <div className="swap-direction" aria-hidden="true">→</div>
 
         <div className="swap-field output-field">
-          <span>Recibes</span>
-          <output>{lab.quoteLoading ? "Actualizando…" : lab.quote === null ? "—" : tokenAmount(lab.quote, 6, lab.outputToken.decimals)}</output>
+          <span>You receive</span>
+          <output>{lab.quoteLoading ? "Updating…" : lab.quote === null ? "—" : tokenAmount(lab.quote, 6, lab.outputToken.decimals)}</output>
           <strong>{lab.outputToken.symbol}</strong>
-          <small>Cotización actual · se valida otra vez antes de firmar</small>
+          <small>Current quote · checked again before you sign</small>
         </div>
       </div>
 
       <details className="route-explorer">
-        <summary>Explorar otra ruta</summary>
+        <summary>Explore another route</summary>
         <div className="route-controls">
           <label>
-            Token de entrada
+            Input token
             <select value={lab.inputRole} onChange={(event) => lab.setInputRole(event.target.value as TokenRole)}>
               {inputOptions.map((role) => <option value={role} key={role}>{TOKEN_SYMBOLS[role]}</option>)}
             </select>
           </label>
-          <button className="invert-route" type="button" onClick={lab.invertRoute} aria-label="Invertir ruta">⇄</button>
+          <button className="invert-route" type="button" onClick={lab.invertRoute} aria-label="Reverse route">⇄</button>
           <label>
-            Token de salida
+            Output token
             <select value={lab.outputRole} onChange={(event) => lab.setOutputRole(event.target.value as TokenRole)}>
               {outputOptions.map((role) => <option value={role} key={role}>{TOKEN_SYMBOLS[role]}</option>)}
             </select>
@@ -135,23 +135,23 @@ export function SwapComposer({ lab, liveReady }: SwapComposerProps) {
 
       <section className="cycle-explanation" aria-labelledby="cycle-title">
         <div>
-          <p id="cycle-title">Después de tu swap, ARBFOLD revisa este ciclo</p>
+          <p id="cycle-title">After your swap, ARBFOLD checks this cycle</p>
           <CycleFoldAnimation cycle={lab.cycle} />
         </div>
-        <p>Si recorrer este ciclo devolviera más {lab.inputToken.symbol} de los que se utilizaron al comenzar, existe una oportunidad de arbitraje cíclico.</p>
+        <p>If completing this cycle returns more {lab.inputToken.symbol} than it started with, a cyclic arbitrage opportunity exists.</p>
       </section>
 
       <section className="what-happens" aria-labelledby="happens-title">
-        <h3 id="happens-title">Qué ocurrirá</h3>
+        <h3 id="happens-title">What happens</h3>
         <ol>
-          <li><b>Tu swap mueve un pool</b><span>Intercambias {currentAmount} {lab.inputToken.symbol} → {lab.outputToken.symbol}.</span></li>
-          <li><b>ARBFOLD revisa el ciclo de tres pools</b><span>{cycleText}</span></li>
-          <li><b>Si existe arbitraje, ARBFOLD lo pliega</b><span>En lugar de reproducir tres swaps de arbitraje, los pools aplican directamente la transición verificada equivalente.</span></li>
+          <li><b>Your swap moves one pool</b><span>You swap {currentAmount} {lab.inputToken.symbol} → {lab.outputToken.symbol}.</span></li>
+          <li><b>ARBFOLD checks all three pools</b><span>{cycleText}</span></li>
+          <li><b>If arbitrage exists, ARBFOLD folds it</b><span>Instead of replaying three arbitrage swaps, the pools apply the equivalent verified transition directly.</span></li>
         </ol>
       </section>
 
       {lab.confirmationCount === 2 && lab.actionKind === "mint" && (
-        <p className="confirmation-note">Se requieren 2 confirmaciones en tu wallet: obtener los tokens de prueba y luego permitir el swap. Se solicitarán una por una.</p>
+        <p className="confirmation-note">Two wallet confirmations are required: get the test tokens, then allow the swap. They are requested one at a time.</p>
       )}
 
       <div className="primary-action-area">

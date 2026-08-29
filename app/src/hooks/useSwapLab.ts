@@ -130,7 +130,7 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
   const [quote, setQuote] = useState<bigint | null>(null);
   const [quoteLoading, setQuoteLoading] = useState(false);
   const [activeAction, setActiveAction] = useState<LabBusyAction | null>(null);
-  const [status, setStatus] = useState("Verificando el deployment público.");
+  const [status, setStatus] = useState("Verifying the public deployment.");
   const [error, setError] = useState("");
   const [result, setResult] = useState<SwapLabResult | null>(null);
 
@@ -164,7 +164,7 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
       parseDemoAmount(amount);
       return "";
     } catch {
-      return "Ingresa una cantidad entre 1,000 y 25,000 con un máximo de 6 decimales.";
+      return "Enter an amount from 1,000 to 25,000 with up to 6 decimals.";
     }
   }, [amount]);
 
@@ -199,7 +199,7 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
       .then((nextMetadata) => {
         if (!active) return;
         setMetadata(nextMetadata);
-        setStatus("Deployment y tokens de prueba verificados.");
+        setStatus("Deployment and test tokens verified.");
       })
       .catch((caught) => {
         if (!active) return;
@@ -305,11 +305,11 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
   }, [activeAction]);
 
   const connect = () => runAction("connect", async () => {
-    if (!liveReady || !metadata) throw new Error("Espera a que el deployment termine de verificarse.");
-    if (!candidate) throw new Error("No se detectó una wallet compatible en este navegador.");
+    if (!liveReady || !metadata) throw new Error("Wait for the deployment verification to finish.");
+    if (!candidate) throw new Error("No compatible wallet was detected in this browser.");
     const provider = candidate.provider;
     const accounts = await provider.request({ method: "eth_requestAccounts" }) as string[];
-    if (!accounts.length) throw new Error("La wallet no devolvió una cuenta.");
+    if (!accounts.length) throw new Error("The wallet did not return an account.");
     const selected = canonicalAddress(accounts[0]);
     const chainHex = await provider.request({ method: "eth_chainId" }) as string;
     const nextChainId = Number.parseInt(chainHex, 16);
@@ -317,7 +317,7 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
     setAccount(selected);
     setWalletClient(createWalletClient({ account: selected, chain: unichainSepolia, transport: custom(provider) }));
     await refreshWalletState(selected);
-    setStatus(nextChainId === CHAIN_ID ? "Wallet conectada. Revisa el siguiente paso." : "Wallet conectada. Cambia a Unichain Sepolia para continuar.");
+    setStatus(nextChainId === CHAIN_ID ? "Wallet connected. Continue with the next step." : "Wallet connected. Switch to Unichain Sepolia to continue.");
   });
 
   async function switchToUnichain(provider: BrowserProvider) {
@@ -340,14 +340,14 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
   }
 
   const switchNetwork = () => runAction("switch", async () => {
-    if (!candidate) throw new Error("Conecta una wallet primero.");
+    if (!candidate) throw new Error("Connect a wallet first.");
     await switchToUnichain(candidate.provider);
     const chainHex = await candidate.provider.request({ method: "eth_chainId" }) as string;
     const nextChainId = Number.parseInt(chainHex, 16);
-    if (nextChainId !== CHAIN_ID) throw new Error("La wallet no cambió a Unichain Sepolia.");
+    if (nextChainId !== CHAIN_ID) throw new Error("The wallet did not switch to Unichain Sepolia.");
     setWalletChainId(nextChainId);
     await refreshWalletState();
-    setStatus("Wallet conectada a Unichain Sepolia.");
+    setStatus("Wallet connected to Unichain Sepolia.");
   });
 
   const sendTokenTransaction = useCallback(async (
@@ -355,7 +355,7 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
     token: TokenMeta,
     args: readonly [Address, bigint],
   ) => {
-    if (!account || !walletClient) throw new Error("Conecta una wallet primero.");
+    if (!account || !walletClient) throw new Error("Connect a wallet first.");
     const simulation = await publicClient.simulateContract({
       account,
       address: token.address,
@@ -365,50 +365,50 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
     });
     const estimatedGas = await publicClient.estimateContractGas(simulation.request);
     const hash = await walletClient.writeContract({ ...simulation.request, gas: bufferedGasLimit(estimatedGas) });
-    setStatus(`Transacción ${abbreviated(hash)} enviada. Esperando confirmación…`);
+    setStatus(`Transaction ${abbreviated(hash)} submitted. Waiting for confirmation…`);
     const receipt = await publicClient.waitForTransactionReceipt({ hash, confirmations: 1 });
-    if (receipt.status !== "success") throw new Error(`La transacción ${name} revirtió.`);
+    if (receipt.status !== "success") throw new Error(`The ${name} transaction reverted.`);
   }, [account, walletClient]);
 
   const mintMissing = () => runAction("mint", async () => {
-    if (!account || !manifest || !metadata || parsedAmount <= 0n) throw new Error("Selecciona una cantidad válida primero.");
+    if (!account || !manifest || !metadata || parsedAmount <= 0n) throw new Error("Select a valid amount first.");
     const deficit = parsedAmount > balances[inputRole] ? parsedAmount - balances[inputRole] : 0n;
     if (deficit === 0n) return;
-    setStatus(`Confirma en tu wallet la creación de ${tokenAmount(deficit, 6, inputToken.decimals)} ${inputToken.symbol} de prueba sin valor.`);
+    setStatus(`Confirm the creation of ${tokenAmount(deficit, 6, inputToken.decimals)} valueless test ${inputToken.symbol} in your wallet.`);
     await sendTokenTransaction("mint", inputToken, [account, deficit]);
     await refreshWalletState(account);
-    setStatus(`${inputToken.symbol} de prueba recibido. El permiso se solicita por separado.`);
+    setStatus(`Test ${inputToken.symbol} received. The swap permission is requested separately.`);
   });
 
   const approveSelected = () => runAction("approve", async () => {
-    if (!manifest || !metadata || parsedAmount <= 0n) throw new Error("Selecciona una cantidad válida primero.");
+    if (!manifest || !metadata || parsedAmount <= 0n) throw new Error("Select a valid amount first.");
     const router = canonicalAddress(manifest.router);
-    setStatus(`Confirma el permiso exacto de ${tokenAmount(parsedAmount, 6, inputToken.decimals)} ${inputToken.symbol}.`);
+    setStatus(`Confirm the exact permission for ${tokenAmount(parsedAmount, 6, inputToken.decimals)} ${inputToken.symbol}.`);
     await sendTokenTransaction("approve", inputToken, [router, parsedAmount]);
     await refreshWalletState();
-    setStatus("Permiso confirmado. El swap está listo.");
+    setStatus("Permission confirmed. The swap is ready.");
   });
 
   const refreshGas = () => runAction("refresh", async () => {
     await refreshWalletState();
-    setStatus("Saldo de gas actualizado.");
+    setStatus("Gas balance refreshed.");
   });
 
   const refreshQuote = () => runAction("quote", async () => {
     await updateQuote();
-    setStatus("Cotización actualizada con las reservas públicas.");
+    setStatus("Quote refreshed from the public reserves.");
   });
 
   const execute = () => runAction("execute", async () => {
     if (!account || !manifest || !metadata || !walletClient || parsedAmount <= 0n) {
-      throw new Error("Completa la preparación del swap primero.");
+      throw new Error("Complete the swap preparation first.");
     }
-    if (walletChainId !== CHAIN_ID) throw new Error("Cambia tu wallet a Unichain Sepolia para continuar.");
+    if (walletChainId !== CHAIN_ID) throw new Error("Switch your wallet to Unichain Sepolia to continue.");
     const routerAddress = canonicalAddress(manifest.router);
     const coordinatorAddress = canonicalAddress(manifest.coordinator);
     const hookAddress = canonicalAddress(manifest.hooks[route.hook]);
     const deadline = BigInt(Math.floor(Date.now() / 1_000) + 900);
-    setStatus("Actualizando la cotización antes de firmar…");
+    setStatus("Refreshing the quote before you sign…");
     const freshQuote = await publicClient.simulateContract({
       account,
       address: routerAddress,
@@ -418,7 +418,7 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
     });
     setQuote(freshQuote.result);
     const minimumOut = freshQuote.result * 995n / 1_000n;
-    setStatus(`Confirma un swap de ${tokenAmount(parsedAmount, 6, inputToken.decimals)} ${inputToken.symbol} por aproximadamente ${tokenAmount(freshQuote.result, 6, outputToken.decimals)} ${outputToken.symbol}.`);
+    setStatus(`Confirm a swap of ${tokenAmount(parsedAmount, 6, inputToken.decimals)} ${inputToken.symbol} for approximately ${tokenAmount(freshQuote.result, 6, outputToken.decimals)} ${outputToken.symbol}.`);
     const execution = await publicClient.simulateContract({
       account,
       address: routerAddress,
@@ -428,9 +428,9 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
     });
     const estimatedGas = await publicClient.estimateContractGas(execution.request);
     const hash = await walletClient.writeContract({ ...execution.request, gas: bufferedGasLimit(estimatedGas) });
-    setStatus(`Transacción ${abbreviated(hash)} enviada. Esperando confirmación…`);
+    setStatus(`Transaction ${abbreviated(hash)} submitted. Waiting for confirmation…`);
     const receipt = await publicClient.waitForTransactionReceipt({ hash, confirmations: 1 });
-    if (receipt.status !== "success") throw new Error("La transacción swap + ARBFOLD revirtió.");
+    if (receipt.status !== "success") throw new Error("The swap + ARBFOLD transaction reverted.");
 
     let nextResult: SwapLabResult = {
       hash,
@@ -464,30 +464,30 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
       const swap = routerEvents.find((event) => event.eventName === "SwapAndFold");
       const rounds = coordinatorEvents.filter((event) => event.eventName === "FoldRound");
       const completed = coordinatorEvents.find((event) => event.eventName === "FoldCompleted");
-      if (!swap) throw new Error("Falta el evento SwapAndFold en el receipt confirmado.");
+      if (!swap) throw new Error("The confirmed receipt is missing the SwapAndFold event.");
       const swapArgs = swap.args as SwapEventArgs;
       if (!sameAddress(swapArgs.payer, account)
         || !sameAddress(swapArgs.hook, hookAddress)
         || !sameAddress(swapArgs.solver, account)
         || swapArgs.zeroForOne !== route.zeroForOne
         || swapArgs.amountIn !== parsedAmount) {
-        throw new Error("Los eventos confirmados no coinciden con la ruta firmada.");
+        throw new Error("The confirmed events do not match the signed route.");
       }
       nextResult = { ...nextResult, output: swapArgs.amountOut ?? null };
-      if (!completed) throw new Error("Falta el evento FoldCompleted en el receipt confirmado.");
+      if (!completed) throw new Error("The confirmed receipt is missing the FoldCompleted event.");
       const completedArgs = completed.args as CompletedEventArgs;
       if (!sameAddress(completedArgs.originHook, hookAddress) || !sameAddress(completedArgs.solver, account)) {
-        throw new Error("FoldCompleted no coincide con la ruta firmada.");
+        throw new Error("FoldCompleted does not match the signed route.");
       }
       const reward = rounds.reduce((sum, event) => {
         const args = event.args as RoundEventArgs;
         if (!sameAddress(args.originHook, hookAddress) || !sameAddress(args.solver, account)) {
-          throw new Error("Una ronda pertenece a otra ruta o solver.");
+          throw new Error("A fold round belongs to a different route or solver.");
         }
         return sum + (args.solverReward ?? 0n);
       }, 0n);
       if (completedArgs.rounds !== undefined && completedArgs.rounds !== BigInt(rounds.length)) {
-        throw new Error("El número de rondas no coincide con los eventos FoldRound.");
+        throw new Error("The round count does not match the FoldRound events.");
       }
       nextResult = {
         ...nextResult,
@@ -503,8 +503,8 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
     // The confirmed receipt is authoritative. Refreshes are best-effort only.
     setResult(nextResult);
     setStatus(nextResult.decodeWarning
-      ? "Transacción confirmada. Algunos detalles del receipt no pudieron decodificarse."
-      : "Swap y ARBFOLD confirmados en Unichain Sepolia.");
+      ? "Transaction confirmed. Some receipt details could not be decoded."
+      : "Swap and ARBFOLD confirmed on Unichain Sepolia.");
     await Promise.allSettled([
       refreshWalletState(account),
       onLiveStateChanged(),

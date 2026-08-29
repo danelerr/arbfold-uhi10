@@ -138,7 +138,7 @@ export function BenchmarkDemo({ rows, onOpenTestnet }: BenchmarkDemoProps) {
             </button>
           ))}
       </div>
-      <p className="benchmark-boundary">La testnet pública es mutable. Las transacciones live son exploratorias y no se utilizan como benchmark de gas apples-to-apples.</p>
+      <p className="benchmark-boundary">The public testnet is mutable. Live transactions are exploratory and are not used as an apples-to-apples gas benchmark.</p>
       <a className="inline-link" href="https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md">View methodology</a>
     </section>
   </>;
