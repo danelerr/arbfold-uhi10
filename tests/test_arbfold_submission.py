@@ -151,7 +151,7 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
         self.assertNotIn("Solver reward", (ROOT / "app/src/components/SwapResult.tsx").read_text())
         self.assertIn('row.reduction >= 0 ? "−" : "+"', component)
         self.assertIn("Public RPC verification unavailable", app)
-        self.assertIn('"deployments/unichain-sepolia-1301.json"', source)
+        self.assertIn('"deployments/unichain-sepolia-1301-v0.1.json"', source)
         self.assertIn("manifest.researchOnly !== true", validation)
         self.assertIn("manifest.chainId !== 1301", validation)
 

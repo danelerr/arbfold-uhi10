@@ -40,7 +40,7 @@ export function SwapResult({ result, onReset }: SwapResultProps) {
                 {index < roundCount - 1 && <li>Residual remained above the threshold, so ARBFOLD continued</li>}
               </Fragment>
             ))}
-            <li>Final remaining arbitrage: {result.residual === null ? "—" : tokenAmount(result.residual)} ARFY</li>
+            <li>Final remaining arbitrage: {result.residual === null ? "—" : tokenAmount(result.residual)} ARFX</li>
           </ol>
           <CycleFoldAnimation cycle={cycle} folded />
         </div>
@@ -57,8 +57,8 @@ export function SwapResult({ result, onReset }: SwapResultProps) {
       <dl className="lab-metrics">
         <div><dt>Gas</dt><dd>{result.gasUsed.toLocaleString("en-US")}</dd></div>
         <div><dt>Fold rounds</dt><dd>{result.rounds?.toString() ?? "—"}</dd></div>
-        <div><dt>Fixed execution reward</dt><dd>{result.reward === null ? "—" : `${tokenAmount(result.reward)} ARFY`}</dd></div>
-        <div><dt>Remaining arbitrage</dt><dd>{result.residual === null ? "—" : `${tokenAmount(result.residual)} ARFY`}</dd></div>
+        <div><dt>Fixed execution reward</dt><dd>{result.reward === null ? "—" : `${tokenAmount(result.reward)} ARFX`}</dd></div>
+        <div><dt>Remaining arbitrage</dt><dd>{result.residual === null ? "—" : `${tokenAmount(result.residual)} ARFX`}</dd></div>
       </dl>
 
       <div className="result-actions">

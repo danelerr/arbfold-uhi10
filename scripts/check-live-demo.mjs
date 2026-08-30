@@ -4,7 +4,7 @@ import { bufferedGasLimit, normalizeNetwork, validateManifest } from "../app/liv
 
 const rpcUrl = process.env.UNICHAIN_SEPOLIA_RPC_URL || "https://sepolia.unichain.org";
 const manifest = validateManifest(JSON.parse(await readFile(
-  new URL("../deployments/unichain-sepolia-1301.json", import.meta.url),
+  new URL("../deployments/unichain-sepolia-1301-v0.1.json", import.meta.url),
   "utf8",
 )));
 const chain = {
@@ -170,7 +170,7 @@ const signedGasEstimate = await client.estimateContractGas(signedSimulation.requ
 if (signedSimulation.result < signedMinimumOut) throw new Error("signed path violates its minimum output");
 if (bufferedGasLimit(signedGasEstimate) <= signedGasEstimate) throw new Error("signed path gas buffer was not applied");
 
-console.log("PASS: ARBFOLD live demo deployment verified");
+console.log("PASS: ARBFOLD v0.1 live demo deployment verified");
 console.log(`chain=${chainId} block=${block} canonicalTx=${manifest.canonicalDemoTransaction}`);
 console.log(`foldCalls=${calls} foldRounds=${rounds} residualWeiA=${residual}`);
 console.log(`AB=${state.abA}/${state.abB} BC=${state.bcB}/${state.bcC} AC=${state.acA}/${state.acC}`);

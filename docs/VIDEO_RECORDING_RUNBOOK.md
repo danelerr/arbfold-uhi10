@@ -35,11 +35,11 @@ volume before recording the actual take.
 ## 2. Open these tabs in this order
 
 1. Dashboard hero: https://danelerr.github.io/arbfold-uhi10/
-2. Signed-path validation transaction: https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb
-3. Hook callback: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldHook.sol#L72
-4. Direct transition: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldCoordinator.sol#L144
-5. Atomic settlement: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldRouter.sol#L93
-6. v0.1 report: https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/optimized-release-candidate-results/REPORT.md
+2. Canonical v0.1 transaction: https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022
+3. Hook callback: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldHook.sol#L72
+4. Direct transition: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldCoordinator.sol#L144
+5. Atomic settlement: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldRouter.sol#L93
+6. v0.1 report: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/benchmark/optimized-release-candidate-results/REPORT.md
 
 Set the browser zoom so the complete benchmark cards fit without horizontal
 scrolling. Keep one terminal window ready with the completed `make video-proof`
@@ -52,7 +52,7 @@ output.
 | 0:00–0:45 | Interactive benchmark | The page opens on the experiment. Click `Replay demo` and let both lanes complete. | The canonical reference executes two rounds—six swaps and two reinjections. One `fold()` call applies two runtime-checked direct settlement rounds. |
 | 0:45–1:20 | Swap Lab | Click `Open Swap Lab`, identify the three valueless tokens and pools, trace the default cycle, then show the single contextual action. | The public quote needs no signature. Wallet preparation mints only the deficit, approves only the selected amount, and the final action submits one real swap + fold. |
 | 1:20–1:50 | Workload controls | Close the panel, scroll to `Full benchmark`, then click 10k, 25k, 50k, 100k and 200k slowly. Stop at 25k, then return to 100k. | v0.1 is cheaper at all five frozen actionable workloads; the report discloses the 1k–4k zero-round regressions. |
-| 1:50–2:20 | Public proof | Use `Verify everything` to open the canonical transaction and benchmark report. | The controlled benchmark is v0.1 local evidence; the Unichain Sepolia transaction is the immutable v0 live demo. Do not conflate them. |
+| 1:50–2:20 | Public proof | Use `Verify everything` to open the canonical transaction and benchmark report. | Both artifacts are v0.1. The transaction proves live execution; the controlled benchmark alone compares identical starting states. |
 | 2:20–3:00 | Commit-pinned code tabs | Show the highlighted hook, coordinator and router functions. Do not scroll through whole files. | BaseCustomCurve computes the user output; the fixed coordinator transfers backed claims under conservation/invariant guards; the router settles every delta in one unlock. |
 | 3:00–3:25 | Terminal | Show the already completed proof output and its final PASS line. | 82 Solidity tests in both profiles, all-six-path stateful invariants, exact backing, negative paths and the frozen five-size benchmark. |
 | 3:25–3:55 | Report | Show the rejected economic gate and both versioned result directories. | The 10% LP-value thesis failed. Historical v0 evidence remains immutable; v0.1 is a separate optimization result. |
@@ -102,7 +102,8 @@ Recommended description:
 > can process multiple runtime-checked direct settlement rounds. The controlled
 > v0.1 benchmark measures 31.06% less total gas at canonical 100k and discloses
 > that zero-round 1k–4k calls remain more expensive. The public Unichain Sepolia
-> demo is the immutable v0 deployment, not v0.1 deployment evidence.
+> demo executes the public v0.1 deployment; live transactions remain exploratory
+> and are not used as the apples-to-apples gas benchmark.
 
 Once the upload passes this gate, place its public URL in
 [`FINAL_SUBMISSION.md`](FINAL_SUBMISSION.md) and the final Hookathon form.

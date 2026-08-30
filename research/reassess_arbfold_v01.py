@@ -33,12 +33,12 @@ TOP_LEVEL_FIELDS = {
 }
 FROZEN_INPUTS = [10_000, 25_000, 50_000, 100_000, 200_000]
 PATH_LABELS = {
-    0: "ARFY -> ARFX (internal A -> B)",
-    1: "ARFX -> ARFY (internal B -> A)",
-    2: "ARFX -> ARFZ (internal B -> C)",
-    3: "ARFZ -> ARFX (internal C -> B)",
-    4: "ARFY -> ARFZ (internal A -> C)",
-    5: "ARFZ -> ARFY (internal C -> A)",
+    0: "ARFX -> ARFY (internal A -> B)",
+    1: "ARFY -> ARFX (internal B -> A)",
+    2: "ARFY -> ARFZ (internal B -> C)",
+    3: "ARFZ -> ARFY (internal C -> B)",
+    4: "ARFX -> ARFZ (internal A -> C)",
+    5: "ARFZ -> ARFX (internal C -> A)",
 }
 SIX_PATH_INPUTS = [2, 5_000, 5_000, 5_000, 2, 5_000]
 PAIRED_FIELDS = (

@@ -4,14 +4,15 @@
 
 /** @type {Readonly<Record<TokenRole, TokenSymbol>>} */
 export const TOKEN_SYMBOLS = Object.freeze({
-  a: "ARFY",
-  b: "ARFX",
+  a: "ARFX",
+  b: "ARFY",
   c: "ARFZ",
 });
 
 /**
  * The deployment uses internal roles a/b/c. These are deliberately kept
- * separate from the user-facing symbols because a=ARFY and b=ARFX.
+ * separate from the user-facing symbols because routing is expressed in the
+ * deployment's internal reserve roles.
  * @type {ReadonlyArray<Readonly<{ input: TokenRole, output: TokenRole, hook: HookKey, zeroForOne: boolean }>>}
  */
 export const SWAP_ROUTES = Object.freeze([
@@ -47,8 +48,8 @@ export function cycleRoles(input, output) {
 /** @param {HookKey} hook */
 export function poolSymbols(hook) {
   if (hook === "ab") return ["ARFX", "ARFY"];
-  if (hook === "bc") return ["ARFX", "ARFZ"];
-  return ["ARFY", "ARFZ"];
+  if (hook === "bc") return ["ARFY", "ARFZ"];
+  return ["ARFX", "ARFZ"];
 }
 
 /**

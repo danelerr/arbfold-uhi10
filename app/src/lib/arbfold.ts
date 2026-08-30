@@ -104,9 +104,9 @@ export async function readTokenMetadata(manifest: DeploymentManifest): Promise<R
 
 export function reserveLine(reserves: ReserveState): string {
   return [
-    `ETH / USD-1   ${tokenAmount(reserves.abA)} ETH / ${tokenAmount(reserves.abB)} USD-1`,
-    `USD-1 / USD-2 ${tokenAmount(reserves.bcB)} USD-1 / ${tokenAmount(reserves.bcC)} USD-2`,
-    `ETH / USD-2   ${tokenAmount(reserves.acA)} ETH / ${tokenAmount(reserves.acC)} USD-2`,
+    `ARFX / ARFY ${tokenAmount(reserves.abA)} ARFX / ${tokenAmount(reserves.abB)} ARFY`,
+    `ARFY / ARFZ ${tokenAmount(reserves.bcB)} ARFY / ${tokenAmount(reserves.bcC)} ARFZ`,
+    `ARFX / ARFZ ${tokenAmount(reserves.acA)} ARFX / ${tokenAmount(reserves.acC)} ARFZ`,
   ].join("\n");
 }
 
@@ -117,7 +117,7 @@ async function fetchJson<T>(path: string): Promise<T> {
 }
 
 export async function loadManifest(): Promise<DeploymentManifest> {
-  const raw = await fetchJson<DeploymentManifest>("deployments/unichain-sepolia-1301.json");
+  const raw = await fetchJson<DeploymentManifest>("deployments/unichain-sepolia-1301-v0.1.json");
   return validateManifest(raw) as DeploymentManifest;
 }
 

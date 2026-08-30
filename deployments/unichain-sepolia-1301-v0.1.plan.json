@@ -1,6 +1,6 @@
 {
   "schema": "arbfold-v0.1-deployment-plan-v1",
-  "status": "not-broadcast",
+  "status": "deployed",
   "researchOnly": true,
   "network": "unichain-sepolia",
   "chainId": 1301,
@@ -18,8 +18,14 @@
     "manifest": "benchmark/optimized-release-candidate-results/source-manifest.sha256",
     "rawBenchmark": "benchmark/optimized-release-candidate-results/raw.json"
   },
-  "expectedPublicAddresses": null,
-  "expectedPublicAddressesReason": "The CREATE and CREATE2 addresses depend on the explicitly selected signer and its nonce at authorized broadcast time. Re-simulate immediately before broadcast and bind the finalized addresses to the source manifest.",
+  "expectedPublicAddresses": {
+    "coordinator": "0x59e52300560ceDb4FC452e6D629c852a9C6fae30",
+    "hookAB": "0x6FED95b6c021f55796f79Ba9574b4f116A9dEA88",
+    "hookBC": "0x5d02c25278b324E97e9fbaDE04eB81679990eA88",
+    "hookAC": "0x852c2480537DaE76a62Aa6f09f7cBC510b3CAa88",
+    "router": "0xe817DFB3d1F7cd07f165cb5FDa83CD63179996aE"
+  },
+  "expectedPublicAddressesReason": "The funded-signer preflight predicted these addresses immediately before broadcast; the finalized deployment manifest records the matching onchain contracts.",
   "localDryRun": {
     "chainId": 31337,
     "privateKey": "deterministic Foundry key 1; local simulation only",
@@ -37,7 +43,12 @@
     "fundedSignerPreflight": "ARBFOLD_MANIFEST_PATH=deployments/unichain-sepolia-1301-v0.1.json scripts/deploy-unichain-sepolia.sh --preflight",
     "authorizedBroadcastOnly": "ARBFOLD_MANIFEST_PATH=deployments/unichain-sepolia-1301-v0.1.json scripts/deploy-unichain-sepolia.sh"
   },
-  "broadcastPerformed": false,
-  "transactions": [],
-  "canonicalDemoTransaction": null
+  "broadcastPerformed": true,
+  "transactions": [
+    "0xbc4e8bf41ab2ff0eec9a165e67491ca8709b7d03343508f26c6019b664582cbf",
+    "0x4962d343c9efa615f1766164ddad1ad62499c9599b5779304b73629807f7d6eb",
+    "0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022",
+    "0x2c00de48d7c8d70f0f9935ee91ace8023f5e2f6c816a07fc79bbcc41e5c5955c"
+  ],
+  "canonicalDemoTransaction": "0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022"
 }

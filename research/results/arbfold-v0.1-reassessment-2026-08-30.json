@@ -58,8 +58,8 @@
     "digests": {
       "historical_v0_frozen_raw_sha256": "81e9ee474809b9a9e2852e4573383dea9ccc8d40092ceab81cb91d3f550cb00e",
       "historical_v0_release_raw_sha256": "222a5adaeefa510b489708883488bc232c7f5d3b40d328e05fa39b4a1e9c420d",
-      "optimized_environment_sha256": "e2c953b2d89b6959fcc90037b039e85dbe48ae8ca4cf433a7db99bd995e3b7be",
-      "optimized_raw_sha256": "1c184e301a07f80116f9e79d8cfeeee2a83cea4215d291213c0c4dbe19a74860"
+      "optimized_environment_sha256": "ac20f1dda60d3c8949a19e1add4afdea1bfdf05c966ecfb235bcf290108c69f2",
+      "optimized_raw_sha256": "8487473e15436fc7670ac6a5e54adbee4780b9c31704e357a01d3fbe68017c5a"
     },
     "recomputed_publication_gates": {
       "all_five_cheaper": true,
@@ -78,9 +78,9 @@
         "raw_tree_digest_matches_manifest": true
       },
       "entries": 19,
-      "manifest_sha256": "d41622745ff2b64fc807bc8ee5070981bbe029813b1debfc889301dc9a836618",
+      "manifest_sha256": "9e643942e0cb19716875297847e6c3d73be810f882cac59abb04b0c57bf6c772",
       "mismatches": [],
-      "source_tree_sha256": "d41622745ff2b64fc807bc8ee5070981bbe029813b1debfc889301dc9a836618"
+      "source_tree_sha256": "9e643942e0cb19716875297847e6c3d73be810f882cac59abb04b0c57bf6c772"
     },
     "validated_compiler_configurations": [
       "no-ir-runs-200",

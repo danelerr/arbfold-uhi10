@@ -51,7 +51,7 @@ export function SwapLabDialog({
       <div className="lab-shell">
         <header className="lab-header">
           <div>
-            <p className="eyebrow">Unichain Sepolia · Immutable v0 live deployment</p>
+            <p className="eyebrow">Unichain Sepolia · ARBFOLD v0.1</p>
             <h2 id="swap-lab-title">Try ARBFOLD on testnet</h2>
             <p>Make one real test-token swap. ARBFOLD then checks the three-pool cycle and folds any profitable arbitrage before the transaction ends.</p>
           </div>
@@ -87,7 +87,7 @@ export function SwapLabDialog({
         <details className="lab-details">
           <summary>Demo details</summary>
           <dl>
-            <div><dt>Deployment</dt><dd>{liveReady ? "Public v0 deployment checked" : proofLabel}</dd></div>
+            <div><dt>Deployment</dt><dd>{liveReady ? "Public v0.1 deployment checked" : proofLabel}</dd></div>
             <div><dt>Wallet</dt><dd>{lab.account ? abbreviated(lab.account) : "Not connected"}</dd></div>
             <div><dt>Gas</dt><dd>{lab.account ? lab.gasBalanceLabel : "—"}</dd></div>
             <div><dt>Selected route</dt><dd>{lab.inputToken.symbol} → {lab.outputToken.symbol} · hook {lab.route.hook} · zeroForOne {String(lab.route.zeroForOne)}</dd></div>

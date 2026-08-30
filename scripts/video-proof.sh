@@ -54,17 +54,16 @@ forge test --offline --summary > "$summary_file"
 printf '\nARBFOLD CORE TEST SUMMARY\n\n'
 tail -n 20 "$summary_file"
 
-printf '\nPUBLIC IMMUTABLE V0 UNICHAIN SEPOLIA EVIDENCE\n\n'
+printf '\nPUBLIC ARBFOLD V0.1 UNICHAIN SEPOLIA EVIDENCE\n\n'
 jq -r '
   "Chain ID:         \(.chainId)",
   "PoolManager:      \(.poolManager)",
   "Canonical tx:     \(.canonicalDemoTransaction)",
-  "Interactive tx:   \(.interactiveDemo.transaction)",
-  "Interactive swap: \(.interactiveDemo.amountIn) B wei -> \(.interactiveDemo.amountOut) A wei",
-  "Live demo rounds: \(.interactiveDemo.foldRounds)",
+  "Canonical swap:   \(.demo.amountIn) B wei -> \(.demo.amountOut) A wei",
+  "Canonical rounds: \(.demo.foldRounds)",
   "Fold rounds:      \(.demo.foldRounds)",
   "Residual profit:  \(.demo.residualProfit)",
   "Research only:    \(.researchOnly)"
-' "$repo_dir/deployments/unichain-sepolia-1301.json"
+' "$repo_dir/deployments/unichain-sepolia-1301-v0.1.json"
 
-printf '\nPASS — v0.1 schema v4 evidence, release provenance, compiler matrix and consumer-recomputable claims validated; exact reserve equivalence remains Forge/source-manifest/Python-backed, and public onchain evidence remains the immutable v0 deployment.\n'
+printf '\nPASS — v0.1 schema v4 evidence, release provenance, compiler matrix and consumer-recomputable claims validated; exact reserve equivalence remains Forge/source-manifest/Python-backed, and the public onchain evidence is the v0.1 deployment.\n'

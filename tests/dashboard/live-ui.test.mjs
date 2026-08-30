@@ -96,8 +96,8 @@ test("live application treats the signed receipt as final and refreshes state be
   assert.match(hook, /sendTokenTransaction\("approve", inputToken, \[router, parsedAmount\]\)/);
   assert.match(hook, /parsedAmount - balances\[inputRole\]/);
   assert.doesNotMatch(hook, /uint256\.max|MaxUint256|DEMO_ALLOWANCE/);
-  assert.match(labCore, /a: "ARFY"/);
-  assert.match(labCore, /b: "ARFX"/);
+  assert.match(labCore, /a: "ARFX"/);
+  assert.match(labCore, /b: "ARFY"/);
   assert.match(labCore, /c: "ARFZ"/);
   assert.match(live, /getBlockNumber\(\{ cacheTime: 0 \}\)/);
   assert.match(live, /blockNumber === undefined \? \{\} : \{ blockNumber \}/);
@@ -130,7 +130,7 @@ test("active release copy cannot regress to stale counts, rewards, or v0 headlin
   assert.match(subtitles, /196 of 196 actionable/);
   assert.match(subtitles, /tested canonical path/);
   assert.match(subtitles, /fixed external-recipient reward/);
-  assert.match(subtitles, /immutable public v0 deployment/);
-  assert.match(subtitles, /local v0.1 release candidate/);
+  assert.match(subtitles, /public v0.1 deployment/);
+  assert.match(subtitles, /historical v0 research deployment/);
   assert.doesNotMatch(subtitles, /ARBFOLD uses 19\.12% less|At 25k, ARBFOLD uses 0\.98% more/);
 });

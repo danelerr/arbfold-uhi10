@@ -83,13 +83,13 @@ not a universal claim that ARBFOLD is always cheaper.
 
 18
 00:02:15,000 --> 00:02:23,550
-The public Unichain Sepolia demo remains the
-immutable public v0 deployment.
+The public Unichain Sepolia demo executes the
+public v0.1 deployment.
 
 19
 00:02:23,550 --> 00:02:32,100
-The optimized local v0.1 release candidate and
-its benchmark have not been deployed.
+The historical v0 research deployment remains
+archived and is not a primary submission link.
 
 20
 00:02:32,100 --> 00:02:39,750

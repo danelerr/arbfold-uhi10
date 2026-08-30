@@ -21,10 +21,10 @@ result.
 
 Click `Open Swap Lab`. Before touching the wallet, show that ARFX, ARFY and ARFZ
 are valueless test tokens, identify the three pools, and point to the dynamic
-`ARFX → ARFY → ARFZ → ARFX` cycle. The visible quote is read from the deployed
+`ARFY → ARFX → ARFZ → ARFY` cycle. The visible quote is read from the deployed
 pool state without signing or changing state.
 
-> This is not a pre-rendered animation. The page has checked the immutable v0
+> This is not a pre-rendered animation. The page has checked the public v0.1
 > bytecode and token/hook roles. The primary action advances one operation at a
 > time: connect, obtain only missing valueless test tokens, approve only this
 > swap, then submit the deployed protocol path and produce an explorer receipt.
@@ -49,8 +49,9 @@ the committed benchmark report.
 > This is not arithmetic changed only in memory. The benchmark uses a real v4
 > PoolManager. v0.1 keeps conservation and non-decreasing-invariant checks on
 > every round, then compares its cached final state with a fresh network read.
-> The live Unichain Sepolia demo is the immutable v0 deployment and is shown as
-> separate exploratory evidence, not as a v0.1 deployment.
+> The live Unichain Sepolia demo executes v0.1. It is exploratory evidence on a
+> mutable testnet, while the controlled benchmark starts both paths from the
+> same state and is the source of the gas comparison.
 
 ## 2:20–3:00 — Code
 

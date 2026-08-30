@@ -57,7 +57,7 @@ const [readme, page, packageText, reactApp, benchmarkDemo, swapResult, swapLabDi
   benchmarkOverride
     ? readFile(resolve(benchmarkOverride), "utf8")
     : read("benchmark/optimized-release-candidate-results/raw.json"),
-  read("deployments/unichain-sepolia-1301.json"),
+  read("deployments/unichain-sepolia-1301-v0.1.json"),
 ]);
 
 const packageJson = JSON.parse(packageText);
@@ -133,8 +133,8 @@ check("Subtitles state the current v0.1 evidence boundaries", includesAll(subtit
   "1k through 4k",
   "196 of 196 actionable",
   "workloads were cheaper in the tested canonical path",
-  "public v0 deployment",
-  "local v0.1 release candidate",
+  "public v0.1 deployment",
+  "historical v0 research deployment",
 ]) && !includesAll(subtitles, ["19.12% less gas in the delivered core"])
   && !/At 25k, ARBFOLD uses 0\.98% more gas/.test(subtitles));
 check("Interactive demo remains the first claim", includesAll(benchmarkDemo, ["Don’t replay every leg.", "Settle the equivalent state.", "Replay demo", "Open Swap Lab"]));
@@ -151,7 +151,7 @@ check("Swap Lab explains the valueless assets and cycle", includesAll(`${swapLab
   "After your swap, ARBFOLD checks this cycle",
 ]));
 check("Canonical transaction is linked from the manifest", reactApp.includes("manifest.canonicalDemoTransaction"));
-check("Browser-signed transaction is documented", finalSubmission.includes(manifest.interactiveDemo.transaction));
+check("Canonical v0.1 transaction is documented", finalSubmission.includes(manifest.canonicalDemoTransaction));
 check("Deployment uses Unichain Sepolia", manifest.chainId === 1301 && manifest.network === "unichain-sepolia");
 check("Deployment is explicitly research-only", manifest.researchOnly === true);
 check("README publishes the v0.1 workload boundary", includesAll(readme, ["31.06% less gas", "1k–4k", "196 actionable"]));
@@ -163,13 +163,13 @@ if (publicMode) {
     const cacheKey = Date.now();
     const [publicPage, publicManifest, publicReadme] = await Promise.all([
       fetchText(`https://danelerr.github.io/arbfold-uhi10/?preflight=${cacheKey}`),
-      fetchText(`https://danelerr.github.io/arbfold-uhi10/deployments/unichain-sepolia-1301.json?preflight=${cacheKey}`),
+      fetchText(`https://danelerr.github.io/arbfold-uhi10/deployments/unichain-sepolia-1301-v0.1.json?preflight=${cacheKey}`),
       fetchText(`https://raw.githubusercontent.com/danelerr/arbfold-uhi10/main/README.md?preflight=${cacheKey}`),
     ]);
     const servedManifest = validateManifest(JSON.parse(publicManifest));
     check("Public dashboard serves a Vite application bundle", /<script[^>]+src="\.\/assets\/index-[^"]+\.js"/.test(publicPage));
     check("Public manifest matches canonical transaction", servedManifest.canonicalDemoTransaction === manifest.canonicalDemoTransaction);
-    check("Public manifest matches browser-signed transaction", servedManifest.interactiveDemo.transaction === manifest.interactiveDemo.transaction);
+    check("Public manifest matches v0.1 coordinator", servedManifest.coordinator === manifest.coordinator);
     check("Public repository serves current claim", includesAll(publicReadme, ["31.06% less gas", "1k–4k", "196 actionable"]));
   } catch (error) {
     failures.push(`Public artifact verification: ${error.message}`);

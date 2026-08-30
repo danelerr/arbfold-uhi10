@@ -6,7 +6,7 @@ import { optimizedBenchmarkEvidence, publicDeploymentManifest } from "./scripts/
 
 const developmentEvidence = new Map([
   [
-    "/deployments/unichain-sepolia-1301.json",
+    "/deployments/unichain-sepolia-1301-v0.1.json",
     fileURLToPath(publicDeploymentManifest),
   ],
   [

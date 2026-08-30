@@ -17,12 +17,12 @@ export const BENCHMARK_TOP_LEVEL_FIELDS = Object.freeze([
 
 export const FROZEN_INPUTS = Object.freeze([10_000, 25_000, 50_000, 100_000, 200_000]);
 export const PATH_LABELS = Object.freeze([
-  "ARFY -> ARFX (internal A -> B)",
-  "ARFX -> ARFY (internal B -> A)",
-  "ARFX -> ARFZ (internal B -> C)",
-  "ARFZ -> ARFX (internal C -> B)",
-  "ARFY -> ARFZ (internal A -> C)",
-  "ARFZ -> ARFY (internal C -> A)",
+  "ARFX -> ARFY (internal A -> B)",
+  "ARFY -> ARFX (internal B -> A)",
+  "ARFY -> ARFZ (internal B -> C)",
+  "ARFZ -> ARFY (internal C -> B)",
+  "ARFX -> ARFZ (internal A -> C)",
+  "ARFZ -> ARFX (internal C -> A)",
 ]);
 export const SIX_PATH_INPUTS = Object.freeze([2, 5_000, 5_000, 5_000, 2, 5_000]);
 

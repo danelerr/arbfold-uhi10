@@ -41,20 +41,19 @@ shows output, fold rounds, fixed external-recipient reward, residual arbitrage a
 
 ## 2:00–3:15 — Check the evidence
 
-The controlled benchmark is local v0.1 evidence. The live Swap Lab is the
-immutable v0 deployment until a separate v0.1 deployment is authorized. Use
-the compact `Verify everything` links and inspect the [canonical
-Unichain Sepolia transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c).
-The committed [deployment manifest](../deployments/unichain-sepolia-1301.json)
+The controlled benchmark and live Swap Lab both use v0.1, but serve different
+purposes: the benchmark compares identical snapshots; the mutable public
+testnet lets you execute the protocol. Use the compact `Verify everything`
+links and inspect the [canonical Unichain Sepolia transaction](https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022).
+The committed [v0.1 deployment manifest](../deployments/unichain-sepolia-1301-v0.1.json)
 records the official PoolManager, 28 deployment transactions, the three hooks,
 the demo state transition and its zero residual profit.
 
-The browser-executed signed contract path is
-[`0x87a940…5deceb`](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb).
-It moved 1,000 ARFX through the deployed router, returned 0.290519 ARFY,
-executed one fold round and ended with zero residual. The [live-demo
-guide](LIVE_DEMO_GUIDE.md) separates the no-wallet `eth_call`, signed transaction
-and frozen benchmark evidence.
+The canonical transaction moved 100,000 ARFY through the deployed router,
+returned `30.220363129338304386` ARFX, executed two fold rounds in one
+`fold()` call and ended with zero residual. The [live-demo guide](LIVE_DEMO_GUIDE.md)
+separates the no-wallet `eth_call`, signed testnet execution and controlled
+benchmark evidence.
 
 ```bash
 cd contracts
@@ -97,7 +96,7 @@ ARBFOLD is submitted as a gas-efficient execution primitive, not as a production
 - Same user output and fixed external-recipient reward; equivalent final reserves within measured tolerance in the specialized benchmark.
 - Not the global optimizer from the paper.
 - Requires three new hook-owned pools.
-- The immutable v0 deployment permits the registered-hook reward alias. v0.1
+- Historical v0 permitted the registered-hook reward alias. Public v0.1
   rejects zero, coordinator, manager and hook aliases atomically; production
   authorization still requires an independent audit.
 - Not audited or mainnet-ready.

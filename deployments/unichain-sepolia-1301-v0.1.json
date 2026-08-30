@@ -1,0 +1,125 @@
+{
+  "blockNumber": 61277493,
+  "canonicalDemoTransaction": "0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022",
+  "chainId": 1301,
+  "coordinator": "0x59e52300560ceDb4FC452e6D629c852a9C6fae30",
+  "dependencyCommit": "12048bb17b93ad9ed683aff9c34b89596280c77d",
+  "deployer": "0x75464f762bc50d0A0B127ab5a085504BF102Bb88",
+  "deploymentTransactions": [
+    "0xcd70d6f51b7ce3f7c0f8221e4a5586f806c109bfb6b781399e35a03a12e22b01",
+    "0x29ba8f99e995f1b4d730faef5cdbde4436098333cfff909420498932624d932b",
+    "0x19d22dc1ee1b357a65fad41504d8a89ae10d9ec2ea67dce162522fb5436bef6d",
+    "0xe236957df1dbf17db13060cdd20721d4e7bb556f7406fac40b9a74a58528b214",
+    "0x8f3d15aea23892df7864940598d9a504bffed8ac91a421be2661db724d218d7b",
+    "0x784d2f5322bf55c7724bbeccbc6d28c748a5f3b24d2ce39272d7086ce2b6ea98",
+    "0xadbb2276a5fec324afce7d6cf88122165c266db23231ea3accbf5a8aab9725b1",
+    "0x9e40c608e32bb0c14f8d4ab61a9c3bf1c2faaa89a7f2a614366485f94d298556",
+    "0x5850bb1e41f068e10969eab3c48217f598c26c6400badb0b6ee51cabe10459e7",
+    "0xd667530304a9eef1dd88a05e6deb7dd825911df9f93a96b8baf7698c95cde91e",
+    "0x82dbb040dfd6efda073db37405ae77e2b481068bdb50080acaf51e27baaff520",
+    "0xc18843cc642ee1c163e4b634ff5f1cd14f4b232729bb9932c14f394f85e8e529",
+    "0x29f11402426651e5ce6dd33dfe823e48e42c03339c7746abc3af72fde0ef0120",
+    "0x6f2a49568a487f24f289c6e53c3f9ac1c65424d6ae7799a7486ff52002bdc469",
+    "0x35e81d7e79523f3a5581dea9ea55c0a8109312892757f6677cda776dc0d2c4bb",
+    "0x73edf0c701c0e65da37ad90c618e7a9ef8e2bf8c42086b465650086b50463adc",
+    "0x823efbf779348217dbbbdec42466dc9a680f53688e3ccac7f9526c358e718486",
+    "0x1c15b9be071084bc03c343486030ad7a7b64124a07cd2eee6f118da620f3c6f2",
+    "0xb119b7f554eaf04af1ac49f2e091b048ff59bb5b8d2ccc7c32e063a1054aabe5",
+    "0xf1971c57d92a12ba7a2fc6c75344c2e91825c9227017f66e21b1d12ebc4e678b",
+    "0xaee99e0ce8b36a78a4b77e39e97f40444a2469b1a453be46507f293ea30e6c8c",
+    "0xd85301072c7e51898f5160f142165f9fd2d2d678076a2743de8ee2800dbd13d4",
+    "0xf1bc3c9474ef65d131a19a1aaa7a903f736c86de4c40f289e18fe2b9e73eaff1",
+    "0xe07e2d41413865eadfcc152235bd2140de0bd8948b160c4d367ecc39ea2adc09",
+    "0x2bfe7948d14f8f9d4d96b9488bee6d2961c38d10a3be86ddbb1b199465ffb141",
+    "0xd6e71035cd5d442656f32f204a01a95e160032e86fae5a08b1db73972423ea42",
+    "0x3dffd26c474e133266bfbc4f5764b6de0233fa3453efc2eda9b3460d6ac7642d",
+    "0x5de9d8e5ace705849a43900399c474ba4b086d541f0925bd053cf7788ed79de6"
+  ],
+  "explorerBaseUrl": "https://sepolia.uniscan.xyz",
+  "gitCommit": "6670e626a836db82a2810497812009c1394b0b20",
+  "hooks": {
+    "ac": "0x852c2480537DaE76a62Aa6f09f7cBC510b3CAa88",
+    "ab": "0x6FED95b6c021f55796f79Ba9574b4f116A9dEA88",
+    "bc": "0x5d02c25278b324E97e9fbaDE04eB81679990eA88"
+  },
+  "network": "unichain-sepolia",
+  "officialPoolManager": "0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95",
+  "poolManager": "0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95",
+  "researchOnly": true,
+  "router": "0xe817DFB3d1F7cd07f165cb5FDa83CD63179996aE",
+  "sourceVerification": "not-available",
+  "tokens": {
+    "b": "0x4442c33f831673C91341361DAC7D97d9FD8b01D4",
+    "a": "0x1b4EF3F3Ff9F37e40Eb933039115902fE299Aa83",
+    "c": "0xcf2a07787b6438Ff4742D91f3fBB0748B04aB542"
+  },
+  "usesExistingManager": true,
+  "demo": {
+    "amountIn": "100000000000000000000000",
+    "amountOut": "30220363129338304386",
+    "chainId": 1301,
+    "foldRounds": 2,
+    "originHook": "0x6FED95b6c021f55796f79Ba9574b4f116A9dEA88",
+    "residualProfit": "0",
+    "solver": "0x75464f762bc50d0A0B127ab5a085504BF102Bb88",
+    "solverReward": "85849039116169484",
+    "user": "0x75464f762bc50d0A0B127ab5a085504BF102Bb88",
+    "zeroForOne": false,
+    "preReserves": {
+      "abA": "333333333333333333333",
+      "abB": "1000000000000000000000000",
+      "bcB": "1000000000000000000000000",
+      "bcC": "1000000000000000000000000",
+      "acA": "333333333333333333333",
+      "acC": "1000000000000000000000000"
+    },
+    "postReserves": {
+      "abA": "312268112026399995277",
+      "abB": "1067843924494458942956337",
+      "bcB": "1032156075505541057043663",
+      "bcC": "968936315883453894833065",
+      "acA": "324092342471812197519",
+      "acC": "1031063684116546105166935"
+    }
+  },
+  "rpcSimulation": {
+    "account": "0x75464f762bc50d0A0B127ab5a085504BF102Bb88",
+    "allowanceBlock": 61277822,
+    "allowanceTransaction": "0x2c00de48d7c8d70f0f9935ee91ace8023f5e2f6c816a07fc79bbcc41e5c5955c",
+    "maximumInput": "25000000000000000000000"
+  },
+  "runtimeBytecode": {
+    "coordinator": {
+      "bytes": 10058,
+      "keccak256": "0xb9c0ae81a34c9c63399ea16149e03b1e1f816f90e33b899673993681cf6ebd19"
+    },
+    "hookAB": {
+      "bytes": 14728,
+      "keccak256": "0xf341a37317ca2ba020808bfa20f6afba21e754566f0e6d9bcdfab2ed2bfb07de"
+    },
+    "hookBC": {
+      "bytes": 14728,
+      "keccak256": "0xf341a37317ca2ba020808bfa20f6afba21e754566f0e6d9bcdfab2ed2bfb07de"
+    },
+    "hookAC": {
+      "bytes": 14728,
+      "keccak256": "0xf341a37317ca2ba020808bfa20f6afba21e754566f0e6d9bcdfab2ed2bfb07de"
+    },
+    "router": {
+      "bytes": 4489,
+      "keccak256": "0xe96007674fb271709eae40ed4460d57e59335d7a257397e31cd8c727cc754aef"
+    },
+    "tokenA": {
+      "bytes": 1862,
+      "keccak256": "0xf36bc451f50ffe2a737bb6e176a0abe131c05443a2d90b3cac13089d526894d9"
+    },
+    "tokenB": {
+      "bytes": 1862,
+      "keccak256": "0xf36bc451f50ffe2a737bb6e176a0abe131c05443a2d90b3cac13089d526894d9"
+    },
+    "tokenC": {
+      "bytes": 1862,
+      "keccak256": "0xf36bc451f50ffe2a737bb6e176a0abe131c05443a2d90b3cac13089d526894d9"
+    }
+  }
+}

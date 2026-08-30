@@ -3,7 +3,7 @@ set -euo pipefail
 
 repository_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 contracts_root="$repository_root/contracts"
-manifest_relative=${ARBFOLD_MANIFEST_PATH:-deployments/unichain-sepolia-1301.json}
+manifest_relative=${ARBFOLD_MANIFEST_PATH:-deployments/unichain-sepolia-1301-v0.1.json}
 [[ "$manifest_relative" == deployments/*.json && "$manifest_relative" != *".."* ]] || {
   printf 'ARBFOLD deployment preflight failed: ARBFOLD_MANIFEST_PATH must be a versioned JSON path under deployments/\n' >&2
   exit 1
@@ -132,9 +132,10 @@ if [[ "$operation" == "preflight" ]]; then
 fi
 
 temporary_directory=$(mktemp -d)
-demo_evidence="$temporary_directory/unichain-sepolia-1301-demo.json"
+demo_evidence="$repository_root/deployments/.unichain-sepolia-1301-demo.$$.json"
 cleanup() {
   unset private_key ARBFOLD_TESTNET_PRIVATE_KEY PRIVATE_KEY
+  rm -f "$demo_evidence"
   rm -rf "$temporary_directory"
 }
 trap cleanup EXIT

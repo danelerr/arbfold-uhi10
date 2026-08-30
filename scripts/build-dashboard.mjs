@@ -16,7 +16,7 @@ await Promise.all([
   cp(new URL("../app/.nojekyll", import.meta.url), new URL(".nojekyll", output)),
   cp(
     publicDeploymentManifest,
-    new URL("deployments/unichain-sepolia-1301.json", output),
+    new URL("deployments/unichain-sepolia-1301-v0.1.json", output),
   ),
   cp(
     optimizedBenchmarkEvidence,

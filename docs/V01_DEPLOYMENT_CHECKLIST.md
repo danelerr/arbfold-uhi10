@@ -1,7 +1,8 @@
 # ARBFOLD v0.1 Deployment Checklist
 
-Status: **prepared, not broadcast**. The immutable v0 manifest and transactions
-remain under `deployments/unichain-sepolia-1301.json`.
+Status: **deployed and verified on 2026-08-30**. The v0.1 manifest is
+`deployments/unichain-sepolia-1301-v0.1.json`; v0 remains research history under
+`deployments/unichain-sepolia-1301.json`.
 
 ## Evidence already completed
 
@@ -16,18 +17,19 @@ remain under `deployments/unichain-sepolia-1301.json`.
 - Versioned deployment plan:
   `deployments/unichain-sepolia-1301-v0.1.plan.json`.
 
-## Before any broadcast
+## Completed broadcast gate
 
-1. Commit and publish the exact v0.1 source being deployed.
-2. Regenerate `benchmark/optimized-release-candidate-results/` and confirm the
+1. Completed: committed and published the exact v0.1 source deployed at
+   `6670e626a836db82a2810497812009c1394b0b20`.
+2. Completed: regenerated `benchmark/optimized-release-candidate-results/` and confirmed the
    published commit matches its source manifest.
-3. Confirm the worktree is clean and local `main` equals `origin/main`.
-4. Re-resolve the official PoolManager and check chain ID and bytecode.
-5. Select the dedicated testnet signer and record its current nonce privately.
-6. Run the funded-signer preflight. Do not paste or print a private key.
-7. Simulate again at the selected signer nonce and record expected CREATE and
+3. Completed: confirmed the worktree was clean and local `main` equalled `origin/main` before broadcast.
+4. Completed: re-resolved the official PoolManager and checked chain ID and bytecode.
+5. Completed: selected the dedicated testnet signer and recorded its nonce privately.
+6. Completed: ran the funded-signer preflight without exposing its private key.
+7. Completed: simulated again at the selected signer nonce and recorded expected CREATE and
    CREATE2 addresses.
-8. Obtain explicit authorization for broadcast.
+8. Completed: Daniel explicitly authorized broadcast.
 
 ## Exact commands
 

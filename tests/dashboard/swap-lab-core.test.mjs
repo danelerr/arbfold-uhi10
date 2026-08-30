@@ -10,7 +10,7 @@ import {
 } from "../../app/swap-lab-core.js";
 
 test("deployment roles remain distinct from user-facing token symbols", () => {
-  assert.deepEqual(TOKEN_SYMBOLS, { a: "ARFY", b: "ARFX", c: "ARFZ" });
+  assert.deepEqual(TOKEN_SYMBOLS, { a: "ARFX", b: "ARFY", c: "ARFZ" });
 });
 
 test("all six token routes match the deployed hooks and PoolKey order", () => {
@@ -33,7 +33,7 @@ test("cycle narration starts and ends in the selected input token", () => {
   assert.deepEqual(cycleRoles("c", "b"), ["c", "b", "a", "c"]);
 });
 
-test("route reserve resolution follows a=ARFY, b=ARFX, c=ARFZ", () => {
+test("route reserve resolution follows the v0.1 a=ARFX, b=ARFY, c=ARFZ deployment", () => {
   const network = { abA: 1n, abB: 2n, bcB: 3n, bcC: 4n, acA: 5n, acC: 6n };
   assert.deepEqual(routeReserves(network, resolveRoute("a", "b")), [1n, 2n]);
   assert.deepEqual(routeReserves(network, resolveRoute("b", "a")), [2n, 1n]);

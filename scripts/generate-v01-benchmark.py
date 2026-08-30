@@ -91,12 +91,12 @@ ROW_KEYS = {
 }
 
 PATHS = {
-    0: "ARFY -> ARFX (internal A -> B)",
-    1: "ARFX -> ARFY (internal B -> A)",
-    2: "ARFX -> ARFZ (internal B -> C)",
-    3: "ARFZ -> ARFX (internal C -> B)",
-    4: "ARFY -> ARFZ (internal A -> C)",
-    5: "ARFZ -> ARFY (internal C -> A)",
+    0: "ARFX -> ARFY (internal A -> B)",
+    1: "ARFY -> ARFX (internal B -> A)",
+    2: "ARFY -> ARFZ (internal B -> C)",
+    3: "ARFZ -> ARFY (internal C -> B)",
+    4: "ARFX -> ARFZ (internal A -> C)",
+    5: "ARFZ -> ARFX (internal C -> A)",
 }
 
 PAIRED_DECIMAL_FIELDS = (

@@ -59,12 +59,12 @@ The matrix uses path-specific actionable inputs that keep every reference leg in
 
 | Path | Input | Rounds | Reference | Direct | Reduction |
 |---:|---:|---:|---:|---:|---:|
-| ARFY -> ARFX (internal A -> B) | 2 | 1 | 405033 | 325524 | 19.630252% |
-| ARFX -> ARFY (internal B -> A) | 5000 | 1 | 405208 | 325587 | 19.649415% |
-| ARFX -> ARFZ (internal B -> C) | 5000 | 1 | 405217 | 325846 | 19.587283% |
-| ARFZ -> ARFX (internal C -> B) | 5000 | 1 | 405369 | 325884 | 19.608061% |
-| ARFY -> ARFZ (internal A -> C) | 2 | 1 | 405472 | 326126 | 19.568799% |
-| ARFZ -> ARFY (internal C -> A) | 5000 | 1 | 405409 | 326176 | 19.543967% |
+| ARFX -> ARFY (internal A -> B) | 2 | 1 | 405033 | 325524 | 19.630252% |
+| ARFY -> ARFX (internal B -> A) | 5000 | 1 | 405208 | 325587 | 19.649415% |
+| ARFY -> ARFZ (internal B -> C) | 5000 | 1 | 405217 | 325846 | 19.587283% |
+| ARFZ -> ARFY (internal C -> B) | 5000 | 1 | 405369 | 325884 | 19.608061% |
+| ARFX -> ARFZ (internal A -> C) | 2 | 1 | 405472 | 326126 | 19.568799% |
+| ARFZ -> ARFX (internal C -> A) | 5000 | 1 | 405409 | 326176 | 19.543967% |
 
 ## Steady-state telemetry boundary
 

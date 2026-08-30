@@ -7,30 +7,30 @@ This is the difference between the product demo and the benchmark chart.
 The dashboard connects directly to Unichain Sepolia and verifies:
 
 - chain ID `1301`;
-- the canonical and latest interactive transaction receipts;
+- the canonical v0.1 transaction receipt;
 - bytecode for the official `PoolManager`, coordinator, router and three hooks;
 - current fold-call and fold-round counters;
 - all six current reserves from the three hook-owned CPMMs.
 
-If any check fails, execution remains disabled. This public deployment is
-immutable v0 evidence. The optimized v0.1 five-size comparison is a separate
-controlled Foundry artifact and is never represented as live chain data or as
-a v0.1 testnet deployment.
+If any check fails, execution remains disabled. This public deployment is v0.1.
+The five-size comparison remains a separate controlled Foundry artifact and is
+never represented as a comparison between two mutable live transactions.
 
 The interactive scenario uses three valueless assets across three pools:
-`ARFX/ARFY`, `ARFX/ARFZ` and `ARFY/ARFZ`. The default user swap is 10,000 ARFX
-for ARFY. It moves the first pool and makes the resulting
-`ARFX → ARFY → ARFZ → ARFX` cycle visible before any wallet action.
+`ARFX/ARFY`, `ARFX/ARFZ` and `ARFY/ARFZ`. The default user swap is 10,000 ARFY
+for ARFX. It moves the first pool and makes the resulting
+`ARFY → ARFX → ARFZ → ARFY` cycle visible before any wallet action.
 
 ## Understand it without a wallet
 
 1. Open <https://danelerr.github.io/arbfold-uhi10/>.
 2. Click `Open Swap Lab`.
 3. Confirm that the first view identifies all three valueless tokens and pools.
-4. Inspect the current ARFX → ARFY quote and the cycle explanation. This quote
+4. Inspect the current ARFY → ARFX quote and the cycle explanation. This quote
    is calculated from public reserves and requires no signature or state change.
 5. Expand `Explore another route` only if you want to inspect one of the six
-   supported directions. The default stays ARFX → ARFY for the clearest demo.
+   supported directions. The default stays ARFY → ARFX to match the canonical
+   internal B→A benchmark and deployment path.
 
 ## Execute a persistent testnet transaction
 
@@ -50,8 +50,8 @@ Steps:
 1. Click `Open Swap Lab`.
 2. Click the single `Connect wallet` action. Network switching is a separate
    contextual action when required.
-3. Leave the default 10,000 ARFX input for the clearest demo.
-4. If tokens are missing, confirm `Get … test ARFX`. It mints only the
+3. Leave the default 10,000 ARFY input for the clearest demo.
+4. If tokens are missing, confirm `Get … test ARFY`. It mints only the
    deficit. Return to the lab and click `Allow this demo swap`; this second prompt
    approves exactly the selected amount and is never opened automatically.
 5. Click `Run swap + ARBFOLD` and confirm one atomic transaction.
@@ -73,15 +73,15 @@ deployment is not authorized for production deposits.
 > lets one `fold()` call process multiple runtime-checked direct settlement
 > rounds inside the originating unlock.
 
-## Public validation transaction
+## Public canonical transaction
 
-The same signed contract path was executed from the public browser UI with the
-dedicated testnet wallet on 2026-08-25:
+The v0.1 canonical contract path was executed with the dedicated testnet wallet
+on 2026-08-30:
 
-- transaction: [`0x87a940…5deceb`](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb);
-- input: 1,000 ARFX;
-- output: 0.290518911748886010 ARFY;
-- fold rounds: 1;
+- transaction: [`0x3429…2022`](https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022);
+- input: 100,000 ARFY;
+- output: 30.220363129338304386 ARFX;
+- fold rounds: 2 in one `fold()` call;
 - residual cyclic profit: 0 wei A.
 
 Run `npm run check:live` to verify bytecode, receipts, current reserves, public

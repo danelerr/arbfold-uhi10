@@ -37,9 +37,9 @@ work using two real transactions or equivalent pre-transaction state.
 The page opens directly on the experiment—there is no marketing flow to finish
 before the demo:
 
-1. **Replay the comparison:** click `Replay demo` to see the iterative backrun and ARBFOLD direct settlement run side by side. The comparison loads from the versioned v0.1 Foundry evidence while the immutable public v0 deployment is checked independently in parallel.
-2. **Execute it yourself:** click `Open Swap Lab`. Before connecting, the lab identifies ARFX, ARFY and ARFZ as valueless test assets, shows the three pools and explains the cycle checked after the swap. One contextual action then connects the wallet, switches network if needed, mints only a token deficit, approves only the selected amount and submits one atomic `ARFX → ARFY swap + fold`.
-3. **Inspect the confirmed result:** the transaction receipt—not a later RPC refresh—drives the displayed output, fold rounds, fixed external-recipient reward, residual arbitrage and gas. The default 10,000 ARFX route is chosen to make the fold visible, while zero-fold receipts remain valid results on mutable public testnet state.
+1. **Replay the comparison:** click `Replay demo` to see the iterative backrun and ARBFOLD direct settlement run side by side. The comparison loads from the versioned v0.1 Foundry evidence while the public v0.1 deployment is checked independently in parallel.
+2. **Execute it yourself:** click `Open Swap Lab`. Before connecting, the lab identifies ARFX, ARFY and ARFZ as valueless test assets, shows the three pools and explains the cycle checked after the swap. One contextual action then connects the wallet, switches network if needed, mints only a token deficit, approves only the selected amount and submits one atomic `ARFY → ARFX swap + fold`.
+3. **Inspect the confirmed result:** the transaction receipt—not a later RPC refresh—drives the displayed output, fold rounds, fixed external-recipient reward, residual arbitrage and gas. The default 10,000 ARFY route follows the same internal B→A path used by the canonical benchmark and deployment transaction, while zero-fold receipts remain valid results on mutable public testnet state.
 
 The visual comparison remains usable if the public RPC is slow or unavailable.
 The testnet controls still fail closed: they only enable after checking chain
@@ -62,15 +62,14 @@ while `npm run build:dashboard` creates the GitHub Pages artifact in `dist/`.
 See the exact
 [live-demo walkthrough](docs/LIVE_DEMO_GUIDE.md).
 
-**Judge proof:** [public canonical transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c) · [deployment manifest](deployments/unichain-sepolia-1301.json) · [hook](contracts/src/ArbFoldHook.sol) · [coordinator](contracts/src/ArbFoldCoordinator.sol) · [router](contracts/src/ArbFoldRouter.sol) · [six-path invariants](contracts/test/ArbFoldInvariant.t.sol) · [release evidence](docs/RELEASE_EVIDENCE.md). Run the complete fail-closed gate with `make verify-release`.
+**Judge proof:** [public v0.1 canonical transaction](https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022) · [v0.1 deployment manifest](deployments/unichain-sepolia-1301-v0.1.json) · [hook](contracts/src/ArbFoldHook.sol) · [coordinator](contracts/src/ArbFoldCoordinator.sol) · [router](contracts/src/ArbFoldRouter.sol) · [six-path invariants](contracts/test/ArbFoldInvariant.t.sol) · [release evidence](docs/RELEASE_EVIDENCE.md). Run the complete fail-closed gate with `make verify-release`.
 
-**Public-chain status:** the immutable **v0** research network and canonical
-demo remain live on Unichain Sepolia (chain 1301) using the official v4
-`PoolManager`. The latest browser-executed v0 path is
-[`0x87a940…5deceb`](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb).
-ARFX, ARFY and ARFZ are freely mintable test assets with no value. **v0.1 has
-not been broadcast**; its deployment package is prepared separately and the
-public UI must not be treated as v0.1 deployment evidence.
+**Public-chain status:** **v0.1** is live on Unichain Sepolia (chain 1301)
+using the official v4 `PoolManager`. Its canonical two-round transaction is
+[`0x3429…2022`](https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022).
+ARFX, ARFY and ARFZ are freely mintable test assets with no value. The original
+v0 deployment remains only as historical research evidence; the dashboard,
+README, video and submission use v0.1 exclusively.
 
 ## What happens in one transaction
 
@@ -279,10 +278,11 @@ make test-deployment
 
 For the research-only Unichain Sepolia path, follow the fail-closed [deployment runbook](docs/DEPLOYMENT_RUNBOOK.md). It resolves the current official v4 PoolManager from Uniswap's deployment feed instead of embedding a potentially stale address. Never place a testnet key or RPC credential in the repository.
 
-The immutable v0 public deployment is recorded in
-[`deployments/unichain-sepolia-1301.json`](deployments/unichain-sepolia-1301.json).
-The v0.1 deployment has not been broadcast; its plan and dry-run evidence are
-versioned separately so this manifest is never silently replaced.
+The public v0.1 deployment is recorded in
+[`deployments/unichain-sepolia-1301-v0.1.json`](deployments/unichain-sepolia-1301-v0.1.json).
+The immutable v0 manifest remains in
+[`deployments/unichain-sepolia-1301.json`](deployments/unichain-sepolia-1301.json)
+only as research history; it is not a primary demo or submission link.
 
 ## Explicit limitations
 
@@ -306,4 +306,4 @@ The core uses [Uniswap v4](https://github.com/Uniswap/v4-core) and [OpenZeppelin
 
 If you have five minutes, follow [`docs/JUDGE_GUIDE.md`](docs/JUDGE_GUIDE.md).
 It starts with the v0.1 measured result, distinguishes the controlled benchmark
-from the immutable v0 live demo, and keeps the rejected economic claim visible.
+from the exploratory v0.1 live demo, and keeps the rejected economic claim visible.

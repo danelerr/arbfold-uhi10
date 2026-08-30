@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - "app/**"
-      - "deployments/unichain-sepolia-1301.json"
+      - "deployments/unichain-sepolia-1301-v0.1.json"
       - "benchmark/optimized-release-candidate-results/raw.json"
       - "scripts/build-dashboard.mjs"
       - "scripts/evidence-sources.mjs"

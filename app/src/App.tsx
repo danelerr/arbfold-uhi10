@@ -11,6 +11,7 @@ import {
 import type { BenchmarkRow, DeploymentManifest } from "./types";
 
 const REPOSITORY = "https://github.com/danelerr/arbfold-uhi10";
+const RELEASE_REF = `${REPOSITORY}/blob/uhi10-final`;
 
 export default function App() {
   const [rows, setRows] = useState<BenchmarkRow[]>([]);
@@ -81,9 +82,9 @@ export default function App() {
           </div>
           <nav className="verify-links" aria-label="Technical evidence">
             <a href={transactionUrl} target="_blank" rel="noreferrer">Onchain transaction</a>
-            <a href={`${REPOSITORY}/blob/main/benchmark/optimized-release-candidate-results/REPORT.md`}>v0.1 benchmark</a>
-            <a href={`${REPOSITORY}/tree/main/contracts/test`}>Tests and invariants</a>
-            <a href={`${REPOSITORY}/blob/main/docs/ARCHITECTURE.md`}>Architecture</a>
+            <a href={`${RELEASE_REF}/benchmark/optimized-release-candidate-results/REPORT.md`}>v0.1 benchmark</a>
+            <a href={`${REPOSITORY}/tree/uhi10-final/contracts/test`}>Tests and invariants</a>
+            <a href={`${RELEASE_REF}/docs/ARCHITECTURE.md`}>Architecture</a>
           </nav>
           <p className="evidence-summary">82 Solidity tests · release fuzzing · stateful invariants · versioned raw evidence</p>
         </section>

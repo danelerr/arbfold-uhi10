@@ -14,6 +14,6 @@ export const optimizedSourceManifest = new URL(
 );
 
 export const publicDeploymentManifest = new URL(
-  "../deployments/unichain-sepolia-1301.json",
+  "../deployments/unichain-sepolia-1301-v0.1.json",
   import.meta.url,
 );

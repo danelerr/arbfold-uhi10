@@ -35,7 +35,7 @@ reference; zero-round workloads remain outside the efficiency claim.
 
 ## Partner integration
 
-ARBFOLD v0 is publicly deployed on Unichain Sepolia (chain 1301) against the
+ARBFOLD v0.1 is publicly deployed on Unichain Sepolia (chain 1301) against the
 official Uniswap v4 `PoolManager` at
 `0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95`. The deployment comprises three
 hook-owned CPMM pools, a coordinator and a router. The deployment and canonical
@@ -44,13 +44,12 @@ post-deployment verifier confirmed reserve-to-ERC-6909-claim equality for its
 external reward recipient, underlying backing and zero canonical residual
 profit. The public canonical
 transaction is
-`0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c`.
-The same signed contract path was executed from the public browser UI with the
-dedicated testnet wallet in transaction
-`0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb`.
-The optimized v0.1 benchmark is reproducible locally but has not been
-broadcast; the submission does not present those v0 transactions as v0.1
-deployment evidence.
+`0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022`.
+It executes the canonical internal B→A path—ARFY→ARFX in this deployment—and
+emits two `FoldRound` events followed by `FoldCompleted` with zero residual.
+The Swap Lab uses these same v0.1 contracts and lets a judge submit a fresh
+testnet transaction; the controlled Foundry benchmark remains the only
+apples-to-apples comparison between the reference and direct paths.
 
 ## Problem and background
 
@@ -131,15 +130,14 @@ independent audit and a separate authorization decision.
 
 - Dashboard: https://danelerr.github.io/arbfold-uhi10/
 - Repository: https://github.com/danelerr/arbfold-uhi10
-- Canonical transaction: https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c
-- Signed-path transaction: https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb
-- Deployment manifest: https://danelerr.github.io/arbfold-uhi10/deployments/unichain-sepolia-1301.json
-- v0.1 benchmark: https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/optimized-release-candidate-results/REPORT.md
+- Canonical v0.1 transaction: https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022
+- Deployment manifest: https://danelerr.github.io/arbfold-uhi10/deployments/unichain-sepolia-1301-v0.1.json
+- v0.1 benchmark: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/benchmark/optimized-release-candidate-results/REPORT.md
 - Historical v0 release benchmark: https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md
-- Hook: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldHook.sol#L72
-- Coordinator: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldCoordinator.sol#L144
-- Router: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldRouter.sol#L93
-- Invariant suite: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/test/ArbFoldInvariant.t.sol#L17
+- Hook: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldHook.sol#L72
+- Coordinator: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldCoordinator.sol#L144
+- Router: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldRouter.sol#L93
+- Invariant suite: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/test/ArbFoldInvariant.t.sol#L17
 
 ## Claims boundary
 
