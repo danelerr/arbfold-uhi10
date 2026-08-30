@@ -14,7 +14,7 @@
   },
   "sourceEvidence": {
     "commitBase": "f9d46e8820349ab0f2b0ea0627cc1eb7acd9811e",
-    "publicationCommit": null,
+    "publicationCommit": "121d2c400c490f42b01b56a9ee8478f54c2fb27f",
     "manifest": "benchmark/optimized-release-candidate-results/source-manifest.sha256",
     "rawBenchmark": "benchmark/optimized-release-candidate-results/raw.json"
   },
