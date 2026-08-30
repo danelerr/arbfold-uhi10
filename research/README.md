@@ -37,6 +37,26 @@ five-point grid, the 1k–200k dense sweep, the six-route sample and the preserv
 v0 raw evidence. Regression assertions are in
 [`tests/test_arbfold_v01_reassessment.py`](../tests/test_arbfold_v01_reassessment.py).
 
+## Archive map
+
+The current judge-facing release is indexed in [`docs/README.md`](../docs/README.md).
+The following material explains how the release was reached and is not a second
+set of current product claims:
+
+- thesis and build decisions: dated freeze, reassessment and decision documents
+  under [`docs/`](../docs/);
+- independent reviews and remediation trail: dated `ARBFOLD_V01_*` documents
+  under [`docs/`](../docs/);
+- historical measurements: the packages listed in
+  [`benchmark/README.md`](../benchmark/README.md);
+- generated contract context: [`audit-context/`](../audit-context/);
+- the original deterministic model: [`arbfold_sim/`](../arbfold_sim/).
+
+The last two directories intentionally remain at repository root because tests,
+provenance manifests and checksum records refer to their current paths. Moving
+them for appearance alone would weaken reproducibility without changing the
+judge-facing path.
+
 ## Pinned UHI directory scan
 
 ```bash

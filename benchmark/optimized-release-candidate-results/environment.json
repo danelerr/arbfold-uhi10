@@ -6,7 +6,7 @@
     "forge test --offline",
     "FOUNDRY_PROFILE=release forge test --offline"
   ],
-  "commit_base": "9d3c8c2d6afd4f5e34a4685a0c4254759d76b988",
+  "commit_base": "2abc236665ee8a3de314de70e700497760a841bc",
   "dense_sweep": {
     "end_tokens": 200000,
     "start_tokens": 1000,

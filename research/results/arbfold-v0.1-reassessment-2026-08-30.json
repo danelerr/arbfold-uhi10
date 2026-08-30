@@ -58,7 +58,7 @@
     "digests": {
       "historical_v0_frozen_raw_sha256": "81e9ee474809b9a9e2852e4573383dea9ccc8d40092ceab81cb91d3f550cb00e",
       "historical_v0_release_raw_sha256": "222a5adaeefa510b489708883488bc232c7f5d3b40d328e05fa39b4a1e9c420d",
-      "optimized_environment_sha256": "00a765acf126249429bb0a4f741697c0383b2c333c002151841adcce7ab5ac10",
+      "optimized_environment_sha256": "73aa7aa11f7c14e8ad145c150e4d075d5c441c41481f0890d837b06d3df0d24f",
       "optimized_raw_sha256": "8487473e15436fc7670ac6a5e54adbee4780b9c31704e357a01d3fbe68017c5a"
     },
     "recomputed_publication_gates": {
