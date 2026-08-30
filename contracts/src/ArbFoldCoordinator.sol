@@ -2,6 +2,7 @@
 pragma solidity 0.8.26;
 
 import {IPoolManager} from "@uniswap/v4-core/src/interfaces/IPoolManager.sol";
+import {SafeCast} from "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import {Currency, CurrencyLibrary} from "@uniswap/v4-core/src/types/Currency.sol";
 import {PoolKey} from "@uniswap/v4-core/src/types/PoolKey.sol";
 import {CycleMath} from "./CycleMath.sol";
@@ -23,6 +24,8 @@ contract ArbFoldCoordinator is IArbFoldCoordinator {
     error NotConfigured();
     error InvalidHookConfiguration();
     error InvalidSolver();
+    error StateDrift();
+    error TelemetryOverflow();
     error InvariantDecreased();
     error NoInvariantIncrease();
     error ConservationFailed(uint8 tokenIndex, uint256 beforeTotal, uint256 afterTotal);
@@ -37,10 +40,14 @@ contract ArbFoldCoordinator is IArbFoldCoordinator {
     IArbFoldHook public hookBC;
     IArbFoldHook public hookAC;
     bool public configured;
-    uint256 public totalFoldCalls;
-    uint256 public totalFoldRounds;
-    uint256 public totalSolverRewards;
-    uint256 public lastResidualProfit;
+
+    struct Telemetry {
+        uint64 foldCalls;
+        uint64 foldRounds;
+        uint128 solverRewards;
+    }
+
+    Telemetry private _telemetry;
 
     event HooksConfigured(address indexed hookAB, address indexed hookBC, address indexed hookAC);
     event FoldRound(
@@ -102,29 +109,53 @@ contract ArbFoldCoordinator is IArbFoldCoordinator {
         return CycleMath.best(network());
     }
 
+    function totalFoldCalls() public view returns (uint256) {
+        return uint256(_telemetry.foldCalls);
+    }
+
+    function totalFoldRounds() public view returns (uint256) {
+        return uint256(_telemetry.foldRounds);
+    }
+
+    function totalSolverRewards() public view returns (uint256) {
+        return uint256(_telemetry.solverRewards);
+    }
+
+    /// @notice Returns the exact cyclic profit available in the current network state.
+    /// @dev Computed on demand so fold execution does not persist a residual telemetry slot.
+    function lastResidualProfit() public view returns (uint256) {
+        return CycleMath.best(network()).profitA;
+    }
+
     /// @notice Folds the post-swap cycle by moving backed ERC-6909 claims directly among hooks.
     function fold(address solver) external override {
         if (!isHook(msg.sender)) revert NotHook();
-        if (solver == address(0)) revert InvalidSolver();
+        if (solver == address(0) || solver == address(this) || solver == address(manager) || isHook(solver)) {
+            revert InvalidSolver();
+        }
 
         CycleMath.Network memory initialState = network();
-        uint256 rounds;
+        CycleMath.Network memory currentState = initialState;
+        CycleMath.Quote memory q = CycleMath.Quote({
+            reverse: false, amountAIn: 0, intermediateFirst: 0, intermediateSecond: 0, amountAOut: 0, profitA: 0
+        });
+        uint256 rounds = 0;
+        uint256 rewards;
         for (; rounds < MAX_ROUNDS; ++rounds) {
-            CycleMath.Network memory beforeState = network();
-            CycleMath.Quote memory q = CycleMath.best(beforeState);
+            q = CycleMath.best(currentState);
             if (q.profitA <= RESIDUAL_THRESHOLD) break;
             uint256 reward = q.profitA * SOLVER_SHARE_BPS / BPS;
-            _applyDirect(beforeState, q, reward, solver);
-            totalSolverRewards += reward;
+            currentState = _applyDirect(currentState, q, reward, solver);
+            rewards += reward;
             emit FoldRound(msg.sender, solver, rounds, q.reverse, q.profitA, reward);
         }
 
+        uint256 residualProfit = _terminalResidual(currentState, q, rounds);
         CycleMath.Network memory finalState = network();
+        if (!_sameNetwork(currentState, finalState)) revert StateDrift();
         if (rounds != 0 && !_anyInvariantIncreased(initialState, finalState)) revert NoInvariantIncrease();
-        lastResidualProfit = CycleMath.best(finalState).profitA;
-        ++totalFoldCalls;
-        totalFoldRounds += rounds;
-        emit FoldCompleted(msg.sender, solver, rounds, lastResidualProfit);
+        _recordTelemetry(rounds, rewards);
+        emit FoldCompleted(msg.sender, solver, rounds, residualProfit);
     }
 
     function _validateHook(IArbFoldHook hook, Currency expected0, Currency expected1) private view {
@@ -143,11 +174,11 @@ contract ArbFoldCoordinator is IArbFoldCoordinator {
 
     function _applyDirect(CycleMath.Network memory n, CycleMath.Quote memory q, uint256 reward, address solver)
         private
+        returns (CycleMath.Network memory afterState)
     {
         // Memory-to-memory assignment aliases dynamic memory. Copy every field so the
         // pre-transition snapshot remains independent for the safety checks below.
-        CycleMath.Network memory afterState =
-            CycleMath.Network({abA: n.abA, abB: n.abB, bcB: n.bcB, bcC: n.bcC, acA: n.acA, acC: n.acC});
+        afterState = CycleMath.Network({abA: n.abA, abB: n.abB, bcB: n.bcB, bcC: n.bcC, acA: n.acA, acC: n.acC});
         if (!q.reverse) {
             manager.transferFrom(address(hookAC), address(hookAB), tokenA.toId(), q.amountAIn);
             manager.transferFrom(address(hookAC), solver, tokenA.toId(), reward);
@@ -180,6 +211,36 @@ contract ArbFoldCoordinator is IArbFoldCoordinator {
         hookAB.setReservesFromCoordinator(afterState.abA, afterState.abB);
         hookBC.setReservesFromCoordinator(afterState.bcB, afterState.bcC);
         hookAC.setReservesFromCoordinator(afterState.acA, afterState.acC);
+    }
+
+    function _recordTelemetry(uint256 rounds, uint256 rewards) private {
+        Telemetry memory telemetry = _telemetry;
+        if (telemetry.foldCalls == type(uint64).max) revert TelemetryOverflow();
+        if (rounds > type(uint64).max - telemetry.foldRounds) revert TelemetryOverflow();
+        if (rewards > type(uint128).max - telemetry.solverRewards) revert TelemetryOverflow();
+
+        _telemetry = Telemetry({
+            foldCalls: telemetry.foldCalls + 1,
+            foldRounds: telemetry.foldRounds + SafeCast.toUint64(rounds),
+            solverRewards: telemetry.solverRewards + SafeCast.toUint128(rewards)
+        });
+    }
+
+    function _sameNetwork(CycleMath.Network memory expected, CycleMath.Network memory actual)
+        private
+        pure
+        returns (bool)
+    {
+        return expected.abA == actual.abA && expected.abB == actual.abB && expected.bcB == actual.bcB
+            && expected.bcC == actual.bcC && expected.acA == actual.acA && expected.acC == actual.acC;
+    }
+
+    function _terminalResidual(CycleMath.Network memory currentState, CycleMath.Quote memory q, uint256 rounds)
+        internal
+        pure
+        returns (uint256)
+    {
+        return rounds == MAX_ROUNDS ? CycleMath.best(currentState).profitA : q.profitA;
     }
 
     function _anyInvariantIncreased(CycleMath.Network memory beforeState, CycleMath.Network memory afterState)

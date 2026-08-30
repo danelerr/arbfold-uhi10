@@ -146,7 +146,7 @@ export function SwapComposer({ lab, liveReady }: SwapComposerProps) {
         <ol>
           <li><b>Your swap moves one pool</b><span>You swap {currentAmount} {lab.inputToken.symbol} → {lab.outputToken.symbol}.</span></li>
           <li><b>ARBFOLD checks all three pools</b><span>{cycleText}</span></li>
-          <li><b>If arbitrage exists, ARBFOLD folds it</b><span>Instead of replaying three arbitrage swaps, the pools apply the equivalent verified transition directly.</span></li>
+          <li><b>If arbitrage exists, ARBFOLD folds it</b><span>Instead of replaying three arbitrage swaps, the pools apply runtime-checked direct settlement rounds.</span></li>
         </ol>
       </section>
 

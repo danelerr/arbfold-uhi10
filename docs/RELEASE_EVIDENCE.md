@@ -1,6 +1,6 @@
 # ARBFOLD Release Evidence
 
-This is the judge-facing index for the UHI10 release candidate. A pending
+This is the judge-facing index for the UHI10 v0.1 release candidate. A pending
 external artifact is marked pending rather than inferred or fabricated.
 
 ## Identity
@@ -10,7 +10,8 @@ external artifact is marked pending rather than inferred or fabricated.
 | UHI project ID | `HK-UHI10-1057` |
 | Registered name | MATURE |
 | Submitted project | ARBFOLD |
-| Delivered source commit | [`9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b`](https://github.com/danelerr/arbfold-uhi10/commit/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b) |
+| v0.1 source commit | Pending commit; evidence pins base `f9d46e8820349ab0f2b0ea0627cc1eb7acd9811e`, dirty state and exact source hashes |
+| Historical v0 source commit | [`9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b`](https://github.com/danelerr/arbfold-uhi10/commit/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b) |
 | Testnet deployment source | [`1c7d7edff2c52fea060beee3e3791a086bcdc044`](https://github.com/danelerr/arbfold-uhi10/commit/1c7d7edff2c52fea060beee3e3791a086bcdc044) |
 | Final release tag | Pending final review |
 
@@ -28,32 +29,41 @@ external artifact is marked pending rather than inferred or fabricated.
 - [Canonical public transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c)
 - [Browser-executed signed-path transaction](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb)
 
-## Result
+## v0.1 measured result
 
-| Workload | Atomic backrun | ARBFOLD | Exact change |
+| Workload | Iterative reference | ARBFOLD v0.1 | Exact change |
 |---:|---:|---:|---:|
-| 10k | 407,272 | 389,292 | 4.41% less |
-| 25k | 409,381 | 413,409 | **0.98% more** |
-| 50k | 544,186 | 440,127 | 19.12% less |
-| **100k** | **544,187** | **440,128** | **19.12% less** |
-| 200k | 544,177 | 440,117 | 19.12% less |
+| 10k | 407,292 | 327,669 | 19.55% less |
+| 25k | 409,402 | 329,777 | **19.45% less** |
+| 50k | 544,219 | 375,171 | 31.06% less |
+| **100k** | **544,219** | **375,171** | **31.06% less** |
+| 200k | 544,209 | 375,160 | 31.06% less |
 
-- [Release-candidate report](../benchmark/release-candidate-results/REPORT.md)
-- [Raw result](../benchmark/release-candidate-results/raw.json)
-- [Environment freeze](../benchmark/release-candidate-results/environment.json)
-- [Delivered-source manifest](../benchmark/release-candidate-results/source-manifest.sha256)
-- Source tree SHA-256: `53db6012988f770c06f784b6f0ad152ac844ae1a0dc8058e1f1dfd002b85c3f3`
+- [v0.1 report](../benchmark/optimized-release-candidate-results/REPORT.md)
+- [v0.1 raw result](../benchmark/optimized-release-candidate-results/raw.json)
+- [v0.1 environment](../benchmark/optimized-release-candidate-results/environment.json)
+- [v0.1 source manifest](../benchmark/optimized-release-candidate-results/source-manifest.sha256)
+
+At the canonical workload the iterative reference performs two cyclic rounds:
+six swaps and two profit reinjections. One `fold()` call applies two
+runtime-checked direct settlement rounds. The measured user output and fixed
+external-recipient reward match, and all six final reserves are equivalent
+within the measured tolerance.
+
+Steady-state telemetry gas has not been measured with a cross-transaction
+harness and is not claimed in this release. The release reports only the valid
+first-call grid above.
 
 ## Mechanical and security evidence
 
 | Gate | Result | Evidence |
 |---|---|---|
-| Core test suites | 61/61 pass in default profile | `make test-core` |
+| Solidity suite | 82 tests pass in default and release profiles | `forge test --offline`; `FOUNDRY_PROFILE=release forge test --offline` |
 | Release fuzz | 10,000 stateless cases per fuzz property | `make test-release-fuzz` |
 | Stateful invariants | 8 properties × 20,480 calls; six paths; zero unexpected reverts | [`ArbFoldInvariant.t.sol`](../contracts/test/ArbFoldInvariant.t.sol) |
 | Negative paths | 30 explicit tests | [`ArbFoldNegativePaths.t.sol`](../contracts/test/ArbFoldNegativePaths.t.sol) |
 | Arithmetic | 50,000 Foundry cases + 50,000 arbitrary-precision differential cases, seed `1057` | [Arithmetic specification](ARITHMETIC_SPEC.md) |
-| Coverage | 98.50% lines; 90.38% branches; 100% functions | [Coverage report](COVERAGE.md) |
+| v0.1 coverage | 98.61% lines; 91.07% branches; 100% functions | [Coverage report](COVERAGE.md) |
 | Slither 0.11.3 | 0 unreviewed High/Medium findings | [Static-analysis review](STATIC_ANALYSIS.md) |
 | Deployment path | Local deploy, canonical swap and read-only verifier pass | `make test-deployment` |
 | Complete gate | Fail-closed verification command | `make verify-release` |
@@ -63,7 +73,7 @@ the generated `lcov.info` and complete Slither JSON artifact:
 
 - [Successful ARBFOLD verification run 32815343056](https://github.com/danelerr/arbfold-uhi10/actions/runs/32815343056)
 
-## Public evidence
+## Public evidence — immutable v0 deployment
 
 | Artifact | Status |
 |---|---|
@@ -78,7 +88,8 @@ the generated `lcov.info` and complete Slither JSON artifact:
 | Video | Pending recording |
 | Final submission timestamp | Pending; Daniel submits manually |
 
-The dashboard fails closed unless the committed manifest passes its schema gate
+The current public deployment remains v0. v0.1 has not been broadcast. The
+dashboard fails closed unless the committed v0 manifest passes its schema gate
 and live RPC checks confirm chain ID, both receipts, deployed bytecode, current
 counters and reserves. It does not substitute local values for public evidence.
 It also exposes a wallet-free end-to-end `eth_call` and an optional signed
@@ -94,15 +105,18 @@ On 2026-08-25, the resolver returned
 `0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95`; bytecode and chain ID 1301 were
 confirmed immediately before broadcast. Twenty-eight deployment transactions
 and three demo transactions finalized with status `1`; the post-demo verifier
-then proved manager/coordinator bindings, six reserve-to-claim equalities,
-underlying token backing, positive reserves and a zero canonical residual.
+then proved manager/coordinator bindings, six reserve-to-claim equalities on
+those external-recipient paths, underlying token backing, positive reserves
+and a zero canonical residual.
 
 ## Preserved research record
 
 - [Rejected economic-superiority result](../benchmark/arbfold-results/REPORT.md)
 - [Historical minimal-harness 39.58% result](../benchmark/arbfold-results/REPORT.md)
 - [Earlier clean-core 18.86% result](../benchmark/clean-core-results/REPORT.md)
-- [Current release 19.12% result](../benchmark/release-candidate-results/REPORT.md)
+- [Historical v0 release 19.12% result and 25k regression](../benchmark/release-candidate-results/REPORT.md)
+- [Optimized v0.1 result](../benchmark/optimized-release-candidate-results/REPORT.md)
+- [v0.1 reassessment](../research/results/arbfold-v0.1-reassessment-2026-08-30.json)
 
 ## Known limits
 

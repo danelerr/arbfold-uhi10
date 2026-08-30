@@ -6,17 +6,6 @@ interface BenchmarkDemoProps {
   onOpenTestnet: () => void;
 }
 
-const replaySequence = [
-  "backrun-0",
-  "backrun-1",
-  "backrun-2",
-  "backrun-3",
-  "backrun-4",
-  "direct-0",
-  "direct-1",
-  "direct-2",
-] as const;
-
 export function BenchmarkDemo({ rows, onOpenTestnet }: BenchmarkDemoProps) {
   const [selectedSize, setSelectedSize] = useState(100_000);
   const [activeStep, setActiveStep] = useState<string | null>(null);
@@ -27,6 +16,31 @@ export function BenchmarkDemo({ rows, onOpenTestnet }: BenchmarkDemoProps) {
   const selected = useMemo(
     () => rows.find((row) => row.size === selectedSize) ?? rows.find((row) => row.size === 100_000) ?? rows[0],
     [rows, selectedSize],
+  );
+  const referenceSteps = useMemo(() => {
+    if (!selected) return [];
+    return [
+      "User swap",
+      ...Array.from({ length: selected.referenceRounds }, (_, index) => [
+        `Round ${index + 1}: 3 arbitrage swaps`,
+        `Round ${index + 1}: reinject profit`,
+      ]).flat(),
+    ];
+  }, [selected]);
+  const directSteps = useMemo(() => {
+    if (!selected) return [];
+    return [
+      "Same user swap",
+      ...Array.from({ length: selected.directRounds }, (_, index) => `Direct settlement round ${index + 1}`),
+      "Read final residual",
+    ];
+  }, [selected]);
+  const replaySequence = useMemo(
+    () => [
+      ...referenceSteps.map((_, index) => `backrun-${index}`),
+      ...directSteps.map((_, index) => `direct-${index}`),
+    ],
+    [directSteps, referenceSteps],
   );
 
   useEffect(() => () => timers.current.forEach(window.clearTimeout), []);
@@ -68,8 +82,8 @@ export function BenchmarkDemo({ rows, onOpenTestnet }: BenchmarkDemoProps) {
     <section id="top" className="hero shell">
       <div className="hero-copy">
         <p className="eyebrow">Controlled Foundry Benchmark</p>
-        <h1><span>3 arbitrage swaps.</span><em>1 verified transition.</em></h1>
-        <p className="hero-summary">ARBFOLD reaches the same result without replaying three arbitrage swaps.</p>
+        <h1><span>Don’t replay every leg.</span><em>Settle the equivalent state.</em></h1>
+        <p className="hero-summary">ARBFOLD applies runtime-checked direct settlement rounds instead of replaying each arbitrage leg.</p>
         <div className="hero-actions">
           <button id="replay-demo" className="button primary" type="button" disabled={!selected || running} onClick={replay}>
             {running ? "Replaying…" : complete ? "Replay again" : "Replay demo"}
@@ -82,17 +96,17 @@ export function BenchmarkDemo({ rows, onOpenTestnet }: BenchmarkDemoProps) {
       <div id="replay-console" className={`comparison ${running ? "is-replaying" : ""}`} aria-label="ARBFOLD interactive benchmark">
           <div className="paths">
             <article className="execution-path conventional-path">
-              <header><span>3-swap backrun</span><strong><b>{selected?.backrun.toLocaleString("en-US") ?? "—"}</b><small>gas</small></strong></header>
+              <header><span>{selected ? `${selected.referenceRounds}-round iterative reference` : "Iterative reference"}</span><strong><b>{selected?.backrun.toLocaleString("en-US") ?? "—"}</b><small>gas</small></strong></header>
               <div className="steps conventional-steps">
-                {['User swap', 'Swap A/B', 'Swap B/C', 'Swap C/A', 'Reinject'].map((label, index) => (
+                {referenceSteps.map((label, index) => (
                   <span className={stepClass(`backrun-${index}`)} key={label}>{label}</span>
                 ))}
               </div>
             </article>
             <article className="execution-path direct-path">
-              <header><span>ARBFOLD</span><strong><b>{selected?.direct.toLocaleString("en-US") ?? "—"}</b><small>gas</small></strong></header>
+              <header><span>ARBFOLD · one fold() call</span><strong><b>{selected?.direct.toLocaleString("en-US") ?? "—"}</b><small>gas</small></strong></header>
               <div className="steps direct-steps">
-                {['Same user swap', 'Verify cycle', 'Apply state'].map((label, index) => (
+                {directSteps.map((label, index) => (
                   <span className={stepClass(`direct-${index}`)} key={label}>{label}</span>
                 ))}
               </div>
@@ -107,19 +121,19 @@ export function BenchmarkDemo({ rows, onOpenTestnet }: BenchmarkDemoProps) {
             </div>
             <dl className="result-facts">
               <div><dt>User output</dt><dd>Same</dd></div>
-              <div><dt>Solver reward</dt><dd>Same</dd></div>
+              <div><dt>Fixed execution reward</dt><dd>Same</dd></div>
               <div><dt>Final reserves</dt><dd>Equivalent</dd></div>
             </dl>
           </div>
           <p id="replay-status" className="replay-status">
-            {running ? "Replaying both equivalent execution paths…" : complete ? "Replay complete · same output · same reward · equivalent final reserves" : selected ? `Selected ${selected.size / 1_000}k benchmark` : "Loading benchmark"}
+            {running ? "Replaying both equivalent execution paths…" : complete ? "Replay complete · same output · same fixed reward · equivalent final reserves" : selected ? `Selected ${selected.size / 1_000}k benchmark` : "Loading benchmark"}
           </p>
         </div>
     </section>
 
     <section className="why shell" aria-labelledby="why-title">
       <h2 id="why-title">Why?</h2>
-      <p>Arbitrage normally reconciles these pools through three additional swaps. ARBFOLD asks: if cooperating pools can verify the same final state, why replay every intermediate trade?</p>
+      <p>The iterative reference replays three arbitrage swaps and reinjects profit in every round. One ARBFOLD <code>fold()</code> call can process the equivalent runtime-checked direct settlement rounds.</p>
     </section>
 
     <section className="benchmark shell" aria-labelledby="benchmark-title">
@@ -138,8 +152,9 @@ export function BenchmarkDemo({ rows, onOpenTestnet }: BenchmarkDemoProps) {
             </button>
           ))}
       </div>
+      <p className="benchmark-boundary"><strong>Dense canonical sweep:</strong> 1k–4k execute zero fold rounds and cost more. Every actionable point from 5k–200k was cheaper in the tested canonical path. This is not a universal claim.</p>
       <p className="benchmark-boundary">The public testnet is mutable. Live transactions are exploratory and are not used as an apples-to-apples gas benchmark.</p>
-      <a className="inline-link" href="https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md">View methodology</a>
+      <a className="inline-link" href="https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/optimized-release-candidate-results/REPORT.md">View methodology</a>
     </section>
   </>;
 }

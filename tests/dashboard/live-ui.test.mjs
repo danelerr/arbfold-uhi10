@@ -6,7 +6,7 @@ async function read(path) {
   return readFile(new URL(path, import.meta.url), "utf8");
 }
 
-const [html, packageText, main, app, benchmark, dialog, composer, result, hook, live, labCore] = await Promise.all([
+const [html, packageText, main, app, benchmark, dialog, composer, result, hook, live, labCore, finalSubmission, demoScript, videoRunbook, subtitles] = await Promise.all([
   read("../../app/index.html"),
   read("../../package.json"),
   read("../../app/src/main.tsx"),
@@ -18,6 +18,10 @@ const [html, packageText, main, app, benchmark, dialog, composer, result, hook, 
   read("../../app/src/hooks/useSwapLab.ts"),
   read("../../app/src/lib/arbfold.ts"),
   read("../../app/swap-lab-core.js"),
+  read("../../docs/FINAL_SUBMISSION.md"),
+  read("../../docs/DEMO_SCRIPT.md"),
+  read("../../docs/VIDEO_RECORDING_RUNBOOK.md"),
+  read("../../assets/arbfold-demo-en.srt"),
 ]);
 const pkg = JSON.parse(packageText);
 
@@ -60,7 +64,17 @@ test("Swap Lab explains the tokens, pools, cycle and contextual signed path", ()
   assert.match(composer, /Allow this demo swap/);
   assert.match(composer, /Run swap \+ ARBFOLD/);
   assert.match(benchmark, /Controlled Foundry Benchmark/);
-  assert.match(benchmark, /3-swap backrun/);
+  assert.match(benchmark, /iterative reference/);
+  assert.match(benchmark, /Round \$\{index \+ 1\}: 3 arbitrage swaps/);
+  assert.match(benchmark, /ARBFOLD · one fold\(\) call/);
+  assert.match(benchmark, /Direct settlement round/);
+  assert.match(benchmark, /Don’t replay every leg/);
+  assert.match(benchmark, /runtime-checked direct settlement rounds/);
+  assert.match(benchmark, /1k–4k execute zero fold rounds and cost more/);
+  assert.match(benchmark, /5k–200k was cheaper in the tested canonical path/);
+  assert.match(benchmark, /This is not a universal claim/);
+  assert.doesNotMatch(`${benchmark}\n${result}`, /Solver reward/);
+  assert.match(`${benchmark}\n${result}`, /Fixed execution reward/);
   assert.match(benchmark, /The public testnet is mutable/);
   assert.doesNotMatch(`${app}\n${benchmark}\n${dialog}\n${composer}\n${result}`, /Demo A|Demo B|Demo C|Normal swap|swapExactInputPlain|Live network state|Wallet balances and allowance|REJECTED CLAIM/);
   assert.doesNotMatch(`${dialog}\n${composer}`, /allowance|uint256\.max|progress|session-strip/);
@@ -94,4 +108,29 @@ test("live application treats the signed receipt as final and refreshes state be
   assert.match(hook, /Promise\.allSettled/);
   assert.ok(hook.indexOf("setResult(nextResult)") < hook.indexOf("Promise.allSettled"));
   assert.doesNotMatch(hook, /readLiveState\(manifest, receipt\.blockNumber\)/);
+  assert.match(result, /Runtime-checked fold round/);
+  assert.match(result, /Residual remained above the threshold/);
+  assert.match(result, /Final remaining arbitrage/);
+});
+
+test("active release copy cannot regress to stale counts, rewards, or v0 headlines", () => {
+  const activeCopy = [app, benchmark, result, finalSubmission, demoScript, videoRunbook, subtitles].join("\n");
+  for (const stale of [
+    "83 current Solidity tests",
+    "83 passing Solidity tests",
+    "61 passing core tests",
+    "Same solver reward",
+  ]) {
+    assert.doesNotMatch(activeCopy, new RegExp(stale, "i"));
+  }
+  assert.match(app, /82 Solidity tests/);
+  assert.match(subtitles, /544,219 gas versus 375,171/);
+  assert.match(subtitles, /409,402 gas versus 329,777/);
+  assert.match(subtitles, /1k through 4k execute zero fold rounds/);
+  assert.match(subtitles, /196 of 196 actionable/);
+  assert.match(subtitles, /tested canonical path/);
+  assert.match(subtitles, /fixed external-recipient reward/);
+  assert.match(subtitles, /immutable public v0 deployment/);
+  assert.match(subtitles, /local v0.1 release candidate/);
+  assert.doesNotMatch(subtitles, /ARBFOLD uses 19\.12% less|At 25k, ARBFOLD uses 0\.98% more/);
 });

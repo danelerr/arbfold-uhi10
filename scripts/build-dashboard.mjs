@@ -1,6 +1,7 @@
 import { cp, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { build } from "vite";
+import { optimizedBenchmarkEvidence, publicDeploymentManifest } from "./evidence-sources.mjs";
 
 const output = new URL("../dist/", import.meta.url);
 
@@ -14,11 +15,11 @@ await mkdir(new URL("data/", output), { recursive: true });
 await Promise.all([
   cp(new URL("../app/.nojekyll", import.meta.url), new URL(".nojekyll", output)),
   cp(
-    new URL("../deployments/unichain-sepolia-1301.json", import.meta.url),
+    publicDeploymentManifest,
     new URL("deployments/unichain-sepolia-1301.json", output),
   ),
   cp(
-    new URL("../benchmark/release-candidate-results/raw.json", import.meta.url),
+    optimizedBenchmarkEvidence,
     new URL("data/release-results.json", output),
   ),
 ]);

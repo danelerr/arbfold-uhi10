@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { poolSymbols, TOKEN_SYMBOLS } from "../../swap-lab-core.js";
 import { EXPLORER_URL, tokenAmount } from "../lib/arbfold";
 import type { SwapLabResult } from "../types";
@@ -15,6 +16,7 @@ export function SwapResult({ result, onReset }: SwapResultProps) {
   const cycle = [result.inputRole, result.outputRole, (["a", "b", "c"] as const).find((role) => role !== result.inputRole && role !== result.outputRole)!, result.inputRole];
   const folded = result.rounds !== null && result.rounds > 0n;
   const decoded = !result.decodeWarning;
+  const roundCount = Number(result.rounds ?? 0n);
 
   return (
     <section id="swap-lab-result" className="swap-result" aria-labelledby="swap-result-title">
@@ -30,11 +32,15 @@ export function SwapResult({ result, onReset }: SwapResultProps) {
       {decoded && folded && (
         <div className="result-story">
           <p>What happened next</p>
-          <ol>
-            <li>The {poolLeft}/{poolRight} pool moved</li>
-            <li>A profitable cycle was found across the three pools</li>
-            <li>ARBFOLD applied {result.rounds?.toString()} verified {result.rounds === 1n ? "fold" : "folds"}</li>
-            <li>Remaining arbitrage: {result.residual === null ? "—" : tokenAmount(result.residual)} ARFY</li>
+          <ol className="round-timeline">
+            <li>Your {inputSymbol} → {outputSymbol} swap moved the {poolLeft}/{poolRight} pool</li>
+            {Array.from({ length: roundCount }, (_, index) => (
+              <Fragment key={`round-${index + 1}`}>
+                <li>Runtime-checked fold round {index + 1} settled</li>
+                {index < roundCount - 1 && <li>Residual remained above the threshold, so ARBFOLD continued</li>}
+              </Fragment>
+            ))}
+            <li>Final remaining arbitrage: {result.residual === null ? "—" : tokenAmount(result.residual)} ARFY</li>
           </ol>
           <CycleFoldAnimation cycle={cycle} folded />
         </div>
@@ -51,7 +57,7 @@ export function SwapResult({ result, onReset }: SwapResultProps) {
       <dl className="lab-metrics">
         <div><dt>Gas</dt><dd>{result.gasUsed.toLocaleString("en-US")}</dd></div>
         <div><dt>Fold rounds</dt><dd>{result.rounds?.toString() ?? "—"}</dd></div>
-        <div><dt>Solver reward</dt><dd>{result.reward === null ? "—" : `${tokenAmount(result.reward)} ARFY`}</dd></div>
+        <div><dt>Fixed execution reward</dt><dd>{result.reward === null ? "—" : `${tokenAmount(result.reward)} ARFY`}</dd></div>
         <div><dt>Remaining arbitrage</dt><dd>{result.residual === null ? "—" : `${tokenAmount(result.residual)} ARFY`}</dd></div>
       </dl>
 

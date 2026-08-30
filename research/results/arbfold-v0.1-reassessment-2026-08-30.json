@@ -1,0 +1,252 @@
+{
+  "analysis_date": "2026-08-30",
+  "artifact_verification": {
+    "checks": {
+      "all_actionable_dense_rows_are_cheaper": true,
+      "all_publication_gates_recompute_from_raw": true,
+      "canonical_residual_is_zero": true,
+      "canonical_topology_is_2_6_2_vs_2_1": true,
+      "canonical_uint256_values_are_exact": true,
+      "compiler_matrix_is_complete_and_source_bound": true,
+      "dense_sweep_has_200_rows": true,
+      "dense_sweep_summary_is_derived": true,
+      "frozen_grid_is_unchanged": true,
+      "input_identity_is_lossless": true,
+      "raw_schema_is_v4": true,
+      "six_path_matrix_is_complete_and_unique": true,
+      "source_manifest_is_current": true,
+      "steady_state_telemetry_measurement_is_absent": true,
+      "zero_round_region_is_1k_through_4k": true
+    },
+    "derived_dense_sweep_summary": {
+      "actionable_rows": 196,
+      "cheaper_actionable_rows": 196,
+      "first_actionable_tokens": 5000,
+      "regression_ranges": [
+        {
+          "end_tokens": 4000,
+          "start_tokens": 1000
+        }
+      ],
+      "round_regions": {
+        "0": [
+          {
+            "end_tokens": 4000,
+            "start_tokens": 1000
+          }
+        ],
+        "1": [
+          {
+            "end_tokens": 36000,
+            "start_tokens": 5000
+          }
+        ],
+        "2": [
+          {
+            "end_tokens": 200000,
+            "start_tokens": 37000
+          }
+        ]
+      },
+      "zero_round_ranges": [
+        {
+          "end_tokens": 4000,
+          "start_tokens": 1000
+        }
+      ]
+    },
+    "digests": {
+      "historical_v0_frozen_raw_sha256": "81e9ee474809b9a9e2852e4573383dea9ccc8d40092ceab81cb91d3f550cb00e",
+      "historical_v0_release_raw_sha256": "222a5adaeefa510b489708883488bc232c7f5d3b40d328e05fa39b4a1e9c420d",
+      "optimized_environment_sha256": "e2c953b2d89b6959fcc90037b039e85dbe48ae8ca4cf433a7db99bd995e3b7be",
+      "optimized_raw_sha256": "1c184e301a07f80116f9e79d8cfeeee2a83cea4215d291213c0c4dbe19a74860"
+    },
+    "recomputed_publication_gates": {
+      "all_five_cheaper": true,
+      "all_frozen_final_reserves_within_one_wei": true,
+      "all_frozen_outputs_equal": true,
+      "all_frozen_residuals_equal_and_within_threshold": true,
+      "all_frozen_rewards_equal": true,
+      "twenty_five_k_cheaper": true
+    },
+    "residual_threshold_wei_a": 1000000000000,
+    "source_manifest": {
+      "checks": {
+        "all_manifest_entries_match_worktree": true,
+        "environment_selected_compiler_matches_matrix": true,
+        "environment_tree_digest_matches_manifest": true,
+        "raw_tree_digest_matches_manifest": true
+      },
+      "entries": 19,
+      "manifest_sha256": "d41622745ff2b64fc807bc8ee5070981bbe029813b1debfc889301dc9a836618",
+      "mismatches": [],
+      "source_tree_sha256": "d41622745ff2b64fc807bc8ee5070981bbe029813b1debfc889301dc9a836618"
+    },
+    "validated_compiler_configurations": [
+      "no-ir-runs-200",
+      "no-ir-runs-1000",
+      "via-ir-runs-200",
+      "via-ir-runs-1000"
+    ],
+    "validated_paths": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "canonical": {
+    "direct_external_recipient_reward": "85849039116169484",
+    "direct_fold_calls": 1,
+    "direct_rounds": 2,
+    "direct_total_gas": 375171,
+    "direct_user_output": "30220363129338304386",
+    "equivalence_tolerance_wei": 0,
+    "gas_reduction_percent": "31.062495",
+    "gas_saved": 169048,
+    "input_tokens": 100000,
+    "input_wei": "100000000000000000000000",
+    "reference_arbitrage_swaps": 6,
+    "reference_external_recipient_reward": "85849039116169484",
+    "reference_reinjections": 2,
+    "reference_rounds": 2,
+    "reference_total_gas": 544219,
+    "reference_user_output": "30220363129338304386",
+    "residual_wei_a": 0
+  },
+  "decision_ledger": {
+    "execution_efficiency_universal": "not_supported_zero_round_calls_are_more_expensive",
+    "execution_gas_advantage_tested_actionable_workloads": "supported",
+    "mechanical_equivalence_fixed_grid": "supported",
+    "production_readiness": "not_established",
+    "steady_state_telemetry_gas": "not_measured_without_cross_transaction_harness",
+    "ten_percent_lp_net_uplift": "remains_falsified_by_v0_experiment",
+    "v0_1_promotion_gate": "pass",
+    "v0_1_public_deployment": "not_performed"
+  },
+  "dense_sweep": {
+    "actionable_rows": 196,
+    "cheaper_actionable_rows": 196,
+    "first_actionable_tokens": 5000,
+    "regression_ranges": [
+      {
+        "end_tokens": 4000,
+        "start_tokens": 1000
+      }
+    ],
+    "round_regions": {
+      "0": [
+        {
+          "end_tokens": 4000,
+          "start_tokens": 1000
+        }
+      ],
+      "1": [
+        {
+          "end_tokens": 36000,
+          "start_tokens": 5000
+        }
+      ],
+      "2": [
+        {
+          "end_tokens": 200000,
+          "start_tokens": 37000
+        }
+      ]
+    },
+    "rows": 200,
+    "zero_round_ranges": [
+      {
+        "end_tokens": 4000,
+        "start_tokens": 1000
+      }
+    ]
+  },
+  "frozen_grid": [
+    {
+      "direct_external_recipient_reward": "325783390905445",
+      "direct_rounds": 1,
+      "direct_total_gas": 327669,
+      "direct_user_output": "3290526781323537662",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "19.549365",
+      "gas_saved": 79623,
+      "input_tokens": 10000,
+      "input_wei": "10000000000000000000000",
+      "reference_external_recipient_reward": "325783390905445",
+      "reference_total_gas": 407292,
+      "reference_user_output": "3290526781323537662"
+    },
+    {
+      "direct_external_recipient_reward": "4444159189523040",
+      "direct_rounds": 1,
+      "direct_total_gas": 329777,
+      "direct_user_output": "8106284199656885463",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "19.449099",
+      "gas_saved": 79625,
+      "input_tokens": 25000,
+      "input_wei": "25000000000000000000000",
+      "reference_external_recipient_reward": "4444159189523040",
+      "reference_total_gas": 409402,
+      "reference_user_output": "8106284199656885463"
+    },
+    {
+      "direct_external_recipient_reward": "21056280014547246",
+      "direct_rounds": 2,
+      "direct_total_gas": 375171,
+      "direct_user_output": "15827657919385309012",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "31.062495",
+      "gas_saved": 169048,
+      "input_tokens": 50000,
+      "input_wei": "50000000000000000000000",
+      "reference_external_recipient_reward": "21056280014547246",
+      "reference_total_gas": 544219,
+      "reference_user_output": "15827657919385309012"
+    },
+    {
+      "direct_external_recipient_reward": "85849039116169484",
+      "direct_rounds": 2,
+      "direct_total_gas": 375171,
+      "direct_user_output": "30220363129338304386",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "31.062495",
+      "gas_saved": 169048,
+      "input_tokens": 100000,
+      "input_wei": "100000000000000000000000",
+      "reference_external_recipient_reward": "85849039116169484",
+      "reference_total_gas": 544219,
+      "reference_user_output": "30220363129338304386"
+    },
+    {
+      "direct_external_recipient_reward": "310692072234548048",
+      "direct_rounds": 2,
+      "direct_total_gas": 375160,
+      "direct_user_output": "55416597187482630203",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "31.063250",
+      "gas_saved": 169049,
+      "input_tokens": 200000,
+      "input_wei": "200000000000000000000000",
+      "reference_external_recipient_reward": "310692072234548048",
+      "reference_total_gas": 544209,
+      "reference_user_output": "55416597187482630203"
+    }
+  ],
+  "schema": "arbfold-v0.1-thesis-reassessment-v4",
+  "scope": "optimized v0.1 coordinator, frozen five-point grid, dense canonical sweep, and supplemental six-path measurements",
+  "six_path_matrix": {
+    "paths": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "rows": 6
+  }
+}

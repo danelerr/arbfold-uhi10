@@ -7,6 +7,7 @@ import {
   type Address,
 } from "viem";
 import { normalizeNetwork, reductionPercent, validateManifest } from "../../live-core.js";
+import { validateBenchmarkPayload } from "../../benchmark-core.js";
 import { TOKEN_SYMBOLS } from "../../swap-lab-core.js";
 import type {
   BenchmarkPayload,
@@ -121,15 +122,30 @@ export async function loadManifest(): Promise<DeploymentManifest> {
 }
 
 export async function loadBenchmark(): Promise<BenchmarkRow[]> {
-  const payload = await fetchJson<BenchmarkPayload>("data/release-results.json");
-  return payload.rows.map((row) => {
-    const backrun = row.backrun_total_gas;
-    const direct = row.direct_total_gas;
+  const payload = validateBenchmarkPayload(
+    await fetchJson<unknown>("data/release-results.json"),
+  ) as BenchmarkPayload;
+  const rows = payload.frozen_grid.map((row) => ({
+    size: row.input_tokens,
+    backrun: row.reference_total_gas,
+    direct: row.direct_total_gas,
+    referenceRounds: row.reference_rounds,
+    directRounds: row.direct_rounds,
+    referenceSwaps: row.reference_arbitrage_swaps,
+    referenceReinjections: row.reference_reinjections,
+  }));
+  return rows.map((row) => {
+    const backrun = row.backrun;
+    const direct = row.direct;
     return {
-      size: Number(BigInt(row.origin_input_wei) / 10n ** 18n),
+      size: row.size,
       backrun,
       direct,
       reduction: reductionPercent(backrun, direct),
+      referenceRounds: row.referenceRounds,
+      directRounds: row.directRounds,
+      referenceSwaps: row.referenceSwaps,
+      referenceReinjections: row.referenceReinjections,
     };
   });
 }

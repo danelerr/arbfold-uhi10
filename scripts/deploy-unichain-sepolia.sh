@@ -3,7 +3,12 @@ set -euo pipefail
 
 repository_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 contracts_root="$repository_root/contracts"
-manifest="$repository_root/deployments/unichain-sepolia-1301.json"
+manifest_relative=${ARBFOLD_MANIFEST_PATH:-deployments/unichain-sepolia-1301.json}
+[[ "$manifest_relative" == deployments/*.json && "$manifest_relative" != *".."* ]] || {
+  printf 'ARBFOLD deployment preflight failed: ARBFOLD_MANIFEST_PATH must be a versioned JSON path under deployments/\n' >&2
+  exit 1
+}
+manifest="$repository_root/$manifest_relative"
 rpc_url=${ARBFOLD_UNICHAIN_RPC:-https://sepolia.unichain.org}
 credential_file=${ARBFOLD_CREDENTIAL_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/arbfold/unichain-sepolia.env}
 source_verification=${ARBFOLD_SOURCE_VERIFICATION:-not-available}
@@ -26,6 +31,7 @@ The credential file must be mode 600 and contain:
 Optional:
   ARBFOLD_UNICHAIN_RPC=https://sepolia.unichain.org
   ARBFOLD_SOURCE_VERIFICATION=not-available|partial|verified
+  ARBFOLD_MANIFEST_PATH=deployments/unichain-sepolia-1301-v0.1.json
 
 The script never commits, pushes or prints the private key.
 
@@ -143,7 +149,7 @@ git_commit=$(git rev-parse HEAD)
   OFFICIAL_POOL_MANAGER="$pool_manager" \
   EXPECTED_CHAIN_ID=1301 \
   WRITE_MANIFEST=true \
-  MANIFEST_PATH=../deployments/unichain-sepolia-1301.json \
+  MANIFEST_PATH="$manifest" \
   NETWORK_NAME=unichain-sepolia \
   GIT_COMMIT="$git_commit" \
   EXPLORER_BASE_URL=https://sepolia.uniscan.xyz \

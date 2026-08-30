@@ -88,7 +88,7 @@ function providerName(candidate: WalletCandidate | null): string {
   if (candidate?.provider.isMetaMask) return "MetaMask";
   if (candidate?.provider.isCoinbaseWallet) return "Coinbase Wallet";
   if (candidate?.provider.isBraveWallet) return "Brave Wallet";
-  return candidate ? "wallet del navegador" : "wallet";
+  return candidate ? "browser wallet" : "wallet";
 }
 
 function legacyCandidates(): WalletCandidate[] {

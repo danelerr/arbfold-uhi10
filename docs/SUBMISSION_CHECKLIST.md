@@ -12,7 +12,7 @@ This matrix separates completed repository work from manual publication tasks. I
 | Project thumbnail | Complete | [`assets/arbfold-uhi10-thumbnail.png`](../assets/arbfold-uhi10-thumbnail.png) |
 | Demo/explainer video ≤5 minutes | Pending recording | Use [`VIDEO_RECORDING_RUNBOOK.md`](VIDEO_RECORDING_RUNBOOK.md) and [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md); human voice only. |
 | Problem/background | Drafted | Root [`README.md`](../README.md) and [`JUDGE_GUIDE.md`](JUDGE_GUIDE.md) |
-| Impact and uniqueness | Drafted | Same-state execution comparison in README and dashboard; release 19.12%, earlier clean-core 18.86% and frozen v0 39.58% remain separated. |
+| Impact and uniqueness | Drafted | v0.1 execution comparison in README and dashboard; optimized 31.06%, historical release 19.12%, earlier clean-core 18.86% and frozen v0 39.58% remain separated. |
 | Challenges | Drafted | [`LIMITATIONS.md`](LIMITATIONS.md) and [`THREAT_MODEL.md`](THREAT_MODEL.md) |
 | Future plans | Drafted | [`LIMITATIONS.md`](LIMITATIONS.md) |
 | Partner integrations with exact locations | Complete | Unichain Sepolia deployment and official v4 `PoolManager` are documented in [`README.md`](../README.md) and the public manifest; no unsupported partner claims. |
@@ -42,7 +42,7 @@ Do not submit until all are true:
 - live RPC status becomes green and the no-wallet dry-run returns `PASS`;
 - video uses a real human voice and is at most five minutes;
 - README links resolve from GitHub;
-- the first minute shows the problem, both paths and the delivered 19.12% canonical result;
-- the video labels 39.58% only as the historical minimal-harness result and discloses the 0.98% 25k regression;
+- the first minute shows the problem, both paths and the v0.1 31.06% canonical result;
+- the video labels 39.58% only as the historical minimal-harness result, preserves the historical 0.98% 25k regression, and shows that v0.1 removes it;
 - the video explicitly says the 10% LP-value claim failed;
 - the final form links directly to the hook, coordinator, tests and dashboard.

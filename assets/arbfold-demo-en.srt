@@ -1,153 +1,157 @@
 1
 00:00:00,000 --> 00:00:07,200
 A cyclic arbitrage normally reconciles three
-inconsistent pools by executing three full swaps.
+inconsistent pools by executing three swaps.
 
 2
 00:00:07,200 --> 00:00:14,850
-Even if a protocol reinjects the profit,
-the EVM still pays for that full path.
+Even when the profit is reinjected, the EVM
+still pays to replay every leg.
 
 3
 00:00:14,850 --> 00:00:22,500
 ARBFOLD asks whether cooperating v4 pools can
-reach the same safe state more efficiently.
+settle the equivalent state directly.
 
 4
 00:00:22,500 --> 00:00:30,150
-Path A performs the user swap, three arbitrage
-swaps and profit reinjection.
+This controlled v0.1 benchmark starts both paths
+from the same pool state.
 
 5
 00:00:30,150 --> 00:00:39,600
-Path B performs the same user swap, computes the
-same cycle and moves backed ERC-6909 reserves.
+At canonical 100k, the iterative reference
+executes two cyclic arbitrage rounds.
 
 6
 00:00:39,600 --> 00:00:48,150
-Those reserves move directly between three
-hook-owned pools.
+That means six arbitrage swaps and two
+profit reinjections after the user swap.
 
 7
 00:00:48,150 --> 00:00:58,050
-At 100k: 544,187 gas versus 440,128.
-ARBFOLD uses 19.12% less.
+One ARBFOLD fold() call instead processes
+two runtime-checked direct settlement rounds.
 
 8
 00:00:58,050 --> 00:01:05,250
-At 25k, ARBFOLD uses 0.98% more gas.
-The advantage is workload-dependent.
+At 100k: 544,219 gas versus 375,171.
+ARBFOLD uses 31.06% less in this benchmark.
 
 9
 00:01:05,250 --> 00:01:12,450
-This is not three numbers changed in memory.
+The user output is exactly equal in both paths.
 
 10
 00:01:12,450 --> 00:01:20,550
-The public demo uses the official v4 PoolManager
-on Unichain Sepolia.
+The fixed external-recipient reward is also
+exactly equal.
 
 11
 00:01:20,550 --> 00:01:28,200
-All 28 deployment transactions and all three
-demo transactions finalized successfully.
+The six final reserves are equivalent within
+the measured one-wei tolerance.
 
 12
 00:01:28,200 --> 00:01:35,850
-The post-deployment reserve, claim and backing
-verifier passed.
+At 25k: 409,402 gas versus 329,777.
 
 13
 00:01:35,850 --> 00:01:43,500
-Every virtual reserve must equal its
-PoolManager ERC-6909 claim balance.
+That is 19.45% less gas, removing the
+historical v0 regression at this workload.
 
 14
 00:01:43,500 --> 00:01:51,600
-Token totals are conserved except for the same
-capped solver reward.
+The dense sweep also shows the boundary:
+1k through 4k execute zero fold rounds.
 
 15
 00:01:51,600 --> 00:01:59,250
-No participating invariant may decrease.
+Those zero-round calls cost more because there
+is no actionable settlement to perform.
 
 16
 00:01:59,250 --> 00:02:06,450
-Canonical residual cyclic profit is zero.
+From 5k through 200k, 196 of 196 actionable
+workloads were cheaper in the tested canonical path.
 
 17
 00:02:06,450 --> 00:02:15,000
-OpenZeppelin BaseCustomCurve computes and books
-the user's output before the fold.
+That is a path-specific experimental result,
+not a universal claim that ARBFOLD is always cheaper.
 
 18
 00:02:15,000 --> 00:02:23,550
-The fixed coordinator transfers backed claims
-inside the same PoolManager unlock.
+The public Unichain Sepolia demo remains the
+immutable public v0 deployment.
 
 19
 00:02:23,550 --> 00:02:32,100
-Independent conservation and invariant guards
-must accept the transition.
+The optimized local v0.1 release candidate and
+its benchmark have not been deployed.
 
 20
 00:02:32,100 --> 00:02:39,750
-The router then settles every currency delta
-atomically.
+The public demo uses the official v4 PoolManager
+with hook-owned custom-curve pools.
 
 21
 00:02:39,750 --> 00:02:47,850
-The default suite contains 61 passing core tests.
+Every virtual reserve remains backed by its
+PoolManager ERC-6909 claim balance.
 
 22
 00:02:47,850 --> 00:02:55,950
-It covers six-path stateful invariants,
-unauthorized calls and exact backing.
+Conservation, reserve bounds and non-decreasing
+pool invariants are checked at runtime.
 
 23
 00:02:55,950 --> 00:03:03,600
-It also covers slippage rollback and the frozen
-five-size benchmark grid.
+The current suite contains 82 Solidity tests
+across default and release profiles.
 
 24
 00:03:03,600 --> 00:03:11,700
-We preregistered a harder claim:
-10% more LP net value.
+It covers all six paths, stateful invariants,
+negative cases and exact PoolManager backing.
 
 25
 00:03:11,700 --> 00:03:18,450
-It failed.
+We preregistered a stronger economic claim:
+10% more LP net value.
 
 26
 00:03:18,450 --> 00:03:26,550
-Gas savings produced only 0.000287% LP-value
-improvement in that frozen environment.
+It failed. The measured improvement was only
+0.000287% in that frozen environment.
 
 27
 00:03:26,550 --> 00:03:34,650
-The minimal harness measured 39.58%, the earlier
-clean core 18.86%, and the delivered core 19.12%.
+We preserved the rejected economic result and
+all historical v0 benchmark evidence unchanged.
 
 28
 00:03:34,650 --> 00:03:42,750
-We preserved every result instead of selecting
-only the flattering one.
+What survived is an execution-gas advantage
+in the tested actionable workloads.
 
 29
 00:03:42,750 --> 00:03:50,400
-Same outcome. Same user output.
-Same solver reward.
+Steady-state telemetry gas is not claimed because
+it has not been measured across real transactions.
 
 30
 00:03:50,400 --> 00:03:58,500
-At the canonical 100k workload,
-19.12% less gas in the delivered core.
+ARBFOLD is a fixed three-CPMM research experiment,
+not a universal arbitrage detector.
 
 31
 00:03:58,500 --> 00:04:04,800
-The advantage is workload-dependent.
+It is not audited for production and does not
+claim material LP-net uplift.
 
 32
 00:04:04,800 --> 00:04:12,000
-ARBFOLD folds the cycle
-instead of replaying it.
+Do not replay every leg.
+Settle the equivalent state.

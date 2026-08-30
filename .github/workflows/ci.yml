@@ -114,4 +114,4 @@ jobs:
           path: |
             contracts/lcov.info
             contracts/slither-report.json
-            benchmark/release-candidate-results/source-manifest.sha256
+            benchmark/optimized-release-candidate-results/source-manifest.sha256

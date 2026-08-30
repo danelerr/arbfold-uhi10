@@ -6,8 +6,9 @@ on:
     paths:
       - "app/**"
       - "deployments/unichain-sepolia-1301.json"
-      - "benchmark/release-candidate-results/raw.json"
+      - "benchmark/optimized-release-candidate-results/raw.json"
       - "scripts/build-dashboard.mjs"
+      - "scripts/evidence-sources.mjs"
       - "vite.config.ts"
       - "tsconfig.json"
       - "package.json"

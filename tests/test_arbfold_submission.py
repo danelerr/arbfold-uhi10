@@ -1,6 +1,7 @@
 import hashlib
 import json
 import re
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -9,19 +10,52 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
-    def test_dashboard_grid_matches_release_candidate_results(self) -> None:
-        raw = json.loads((ROOT / "benchmark/release-candidate-results/raw.json").read_text())
+    def test_dashboard_grid_matches_optimized_release_candidate_results(self) -> None:
+        raw = json.loads(
+            (ROOT / "benchmark/optimized-release-candidate-results/raw.json").read_text()
+        )
         source = (ROOT / "app/src/lib/arbfold.ts").read_text()
         component = (ROOT / "app/src/components/BenchmarkDemo.tsx").read_text()
         build = (ROOT / "scripts/build-dashboard.mjs").read_text()
-        expected_sizes = [int(row["origin_input_wei"]) // 10**18 for row in raw["rows"]]
+        expected_sizes = [int(row["input_tokens"]) for row in raw["frozen_grid"]]
+        self.assertEqual(raw["schema"], "arbfold-v0.1-optimized-release-candidate-v4")
+        self.assertNotIn("storage_transition_matrix", raw)
         self.assertEqual(expected_sizes, [10_000, 25_000, 50_000, 100_000, 200_000])
+        self.assertTrue(
+            all(
+                row["reference_user_output"] == row["direct_user_output"]
+                and row["reference_external_recipient_reward"]
+                == row["direct_external_recipient_reward"]
+                for row in raw["frozen_grid"]
+            )
+        )
+        self.assertTrue(
+            all(
+                isinstance(row[field], str)
+                for row in raw["frozen_grid"]
+                for field in (
+                    "reference_user_output",
+                    "direct_user_output",
+                    "reference_external_recipient_reward",
+                    "direct_external_recipient_reward",
+                )
+            )
+        )
+        self.assertTrue(
+            all(
+                isinstance(row["input_wei"], str)
+                for section in ("frozen_grid", "dense_sweep", "six_path_matrix")
+                for row in raw[section]
+            )
+        )
         self.assertIn('"data/release-results.json"', source)
-        self.assertIn("payload.rows.map", source)
+        self.assertIn("payload.frozen_grid.map", source)
+        self.assertNotIn("payload.rows", source)
         self.assertIn("rows.map", component)
         self.assertIn("data-size={row.size}", component)
         self.assertNotIn("const results = [", source)
-        self.assertIn("benchmark/release-candidate-results/raw.json", build)
+        evidence_sources = (ROOT / "scripts/evidence-sources.mjs").read_text()
+        self.assertIn("benchmark/optimized-release-candidate-results/raw.json", evidence_sources)
         self.assertIn("data/release-results.json", build)
 
     def test_failed_economic_gate_remains_preserved_outside_demo_surface(self) -> None:
@@ -79,10 +113,17 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
             f'TREE_SHA256  {raw["tested_source_tree_sha256"]}',
         )
 
+        paths = subprocess.check_output(
+            ["git", "ls-tree", "-r", "--name-only", raw["tested_commit"], "contracts/src"],
+            cwd=ROOT,
+            text=True,
+        ).splitlines()
         entries = []
-        for path in sorted((ROOT / "contracts/src").glob("*.sol")):
-            relative = path.relative_to(ROOT).as_posix()
-            entries.append(f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {relative}")
+        for relative in sorted(path for path in paths if path.endswith(".sol")):
+            payload = subprocess.check_output(
+                ["git", "show", f'{raw["tested_commit"]}:{relative}'], cwd=ROOT
+            )
+            entries.append(f"{hashlib.sha256(payload).hexdigest()}  {relative}")
         tree = hashlib.sha256(("\n".join(entries) + "\n").encode()).hexdigest()
         self.assertEqual(tree, raw["tested_source_tree_sha256"])
 
@@ -104,6 +145,10 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
         source = (ROOT / "app/src/lib/arbfold.ts").read_text()
         validation = (ROOT / "app/live-core.js").read_text()
         self.assertIn("ARBFOLD is not always cheaper", component)
+        self.assertIn("1k–4k execute zero fold rounds and cost more", component)
+        self.assertIn("5k–200k was cheaper in the tested canonical path", component)
+        self.assertNotIn("Solver reward", component)
+        self.assertNotIn("Solver reward", (ROOT / "app/src/components/SwapResult.tsx").read_text())
         self.assertIn('row.reduction >= 0 ? "−" : "+"', component)
         self.assertIn("Public RPC verification unavailable", app)
         self.assertIn('"deployments/unichain-sepolia-1301.json"', source)

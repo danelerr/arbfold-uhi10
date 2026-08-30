@@ -2,7 +2,7 @@
 
 ## Scope
 
-ARBFOLD v0 is a fixed network of three 30 bps hook-owned constant-product pools:
+ARBFOLD v0.1 is a fixed network of three 30 bps hook-owned constant-product pools:
 
 ```text
 AB: token A / token B
@@ -61,9 +61,20 @@ The fold occurs inside `beforeSwap` **after** OpenZeppelin `BaseCustomCurve` has
 - reads all six virtual reserves;
 - computes the best direction and closed-form cycle size;
 - moves ERC-6909 claims instead of calling three full swaps;
-- pays 10% of threatened profit to the chosen solver;
+- pays a fixed 10% external-recipient reward;
 - requires conservation and non-decreasing invariants;
-- performs at most eight deterministic rounds and records residual profit.
+- reads the network once, caches the six-reserve state between rounds, and
+  performs at most eight deterministic direct settlement rounds;
+- makes `_applyDirect` return the runtime-checked after-state used by the next
+  quote, then compares all six cached reserves with one final real `network()`
+  read and reverts with `StateDrift` on any mismatch;
+- emits the exact terminal residual in `FoldCompleted`; the
+  `lastResidualProfit()` getter computes the current residual on demand and no
+  longer writes it to storage inside `fold()`;
+- packs fold calls, rounds and rewards into one telemetry word while retaining
+  the original public getter ABI and explicit overflow checks;
+- rejects reward recipients that alias zero, the coordinator, PoolManager or
+  any registered hook.
 
 ### `CycleMath`
 
@@ -96,19 +107,26 @@ Provides the stable CREATE2 deployer address needed by `HookMiner`. The deploy s
 
 ## Accounting model
 
-For every hook and currency:
+Along every accepted v0.1 path, the reward recipient is external to the
+coordinator, PoolManager and all three registered hooks:
 
 ```text
 virtualReserve(hook, token) == PoolManager.balanceOf(hook, tokenId)
 ```
 
-For token A during one direct round:
+For token A during one such direct round:
 
 ```text
 hookAClaimsBefore == hookAClaimsAfter + solverReward
 ```
 
 Tokens B and C remain completely inside hook claims. The underlying ERC-20 balance held by PoolManager equals the sum of all outstanding hook and solver claims.
+
+The immutable v0 deployment did not enforce that separation. Its reproducible
+counterexample remains documented in
+[`THESIS_REASSESSMENT_2026-08-29.md`](THESIS_REASSESSMENT_2026-08-29.md#84-reward-address-aliasing-counterexample).
+v0.1 preserves that historical result and adds atomic alias-rejection tests;
+it does not reinterpret the old benchmark.
 
 ## Benchmark separation
 
@@ -119,3 +137,10 @@ The frozen benchmark uses two purpose-built harnesses with the same PoolManager,
 
 The clean core is not substituted into the historical gas result. This prevents later safety guards, events or router changes from silently rewriting the preregistered measurement.
 
+The v0.1 benchmark is a new versioned artifact under
+`benchmark/optimized-release-candidate-results/`. At the canonical workload,
+the iterative reference executes two cyclic arbitrage rounds—six swaps and two
+profit reinjections. One `fold()` call applies two runtime-checked direct
+settlement rounds and reaches equivalent final reserves within measured
+tolerance. This is not shorthand for replacing all transaction work with one
+state write.

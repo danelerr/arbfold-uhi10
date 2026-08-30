@@ -30,6 +30,7 @@ contract ArbFoldCleanCoreBenchmarkTest is Test {
     int24 private constant MIN_TICK = -887220;
     int24 private constant MAX_TICK = 887220;
     uint256 private constant INTRINSIC_GAS = 21_000;
+    bytes32 private constant TELEMETRY_SLOT = bytes32(uint256(3));
 
     struct Environment {
         IPoolManager manager;
@@ -39,6 +40,24 @@ contract ArbFoldCleanCoreBenchmarkTest is Test {
         ArbFoldHook hookAC;
         ArbFoldRouter directRouter;
         CleanCoreAtomicBackrunRouter backrunRouter;
+    }
+
+    struct ScenarioResult {
+        uint256 input;
+        uint256 referenceRounds;
+        uint256 directRounds;
+        uint256 referenceExecutionGas;
+        uint256 directExecutionGas;
+        uint256 referenceCalldataGas;
+        uint256 directCalldataGas;
+        uint256 referenceUserOutput;
+        uint256 directUserOutput;
+        uint256 referenceRecipientReward;
+        uint256 directRecipientReward;
+        uint256 referenceResidual;
+        uint256 directResidual;
+        CycleMath.Network referenceFinal;
+        CycleMath.Network directFinal;
     }
 
     DemoToken private tokenAContract;
@@ -127,6 +146,51 @@ contract ArbFoldCleanCoreBenchmarkTest is Test {
         console2.log("CLEAN_CORE_CANONICAL_RESIDUAL_A", env.coordinator.lastResidualProfit());
     }
 
+    function test_ReportV01FrozenGrid() public {
+        uint256[5] memory sizes = _sizes();
+        for (uint256 i; i < sizes.length; ++i) {
+            _logScenario("grid", 1, _measureScenario(env.hookAB, false, sizes[i]));
+        }
+    }
+
+    function test_ReportV01DenseSweep() public {
+        uint256 snapshot = vm.snapshotState();
+        for (uint256 size = 1_000 ether; size <= 200_000 ether; size += 1_000 ether) {
+            bytes memory referenceCalldata = abi.encodeCall(
+                CleanCoreAtomicBackrunRouter.swapExactInput, (env.hookAB, false, size, 0, solver, block.timestamp)
+            );
+            _cool(env, address(env.backrunRouter));
+            uint256 start = gasleft();
+            env.backrunRouter.swapExactInput(env.hookAB, false, size, 0, solver, block.timestamp);
+            uint256 referenceExecution = start - gasleft();
+            assertTrue(vm.revertToState(snapshot));
+
+            bytes memory directCalldata =
+                abi.encodeCall(ArbFoldRouter.swapExactInput, (env.hookAB, false, size, 0, solver, block.timestamp));
+            _cool(env, address(env.directRouter));
+            start = gasleft();
+            env.directRouter.swapExactInput(env.hookAB, false, size, 0, solver, block.timestamp);
+            uint256 directExecution = start - gasleft();
+            uint256 rounds = env.coordinator.totalFoldRounds();
+            assertTrue(vm.revertToState(snapshot));
+
+            console2.log("V01_SWEEP_INPUT", size);
+            console2.log(
+                "V01_SWEEP_REFERENCE_TOTAL", INTRINSIC_GAS + _calldataGas(referenceCalldata) + referenceExecution
+            );
+            console2.log("V01_SWEEP_DIRECT_TOTAL", INTRINSIC_GAS + _calldataGas(directCalldata) + directExecution);
+            console2.log("V01_SWEEP_ROUNDS", rounds);
+        }
+    }
+
+    function test_ReportV01SixPathMatrix() public {
+        for (uint8 path; path < 6; ++path) {
+            (ArbFoldHook origin, bool zeroForOne) = _path(path);
+            uint256 amountIn = path == 0 || path == 4 ? 2 ether : 5_000 ether;
+            _logScenario("path", path, _measureScenario(origin, zeroForOne, amountIn));
+        }
+    }
+
     function _assertScenario(uint256 size) private {
         CycleMath.Network memory initial = env.coordinator.network();
         uint256 expectedOutput = CycleMath.swapOut(size, initial.abB, initial.abA);
@@ -157,6 +221,201 @@ contract ArbFoldCleanCoreBenchmarkTest is Test {
         _assertNonDecreasing(postUser, directFinal);
         assertEq(backrunReward, directReward, "solver reward mismatch");
         assertLe(CycleMath.best(directFinal).profitA, 1e12, "material direct residual");
+    }
+
+    function _measureScenario(ArbFoldHook origin, bool zeroForOne, uint256 size)
+        private
+        returns (ScenarioResult memory result)
+    {
+        result.input = size;
+        uint256 snapshot = vm.snapshotState();
+
+        bytes memory referenceCalldata = abi.encodeCall(
+            CleanCoreAtomicBackrunRouter.swapExactInput, (origin, zeroForOne, size, 0, solver, block.timestamp)
+        );
+        result.referenceCalldataGas = _calldataGas(referenceCalldata);
+        _cool(env, address(env.backrunRouter));
+        uint256 start = gasleft();
+        result.referenceUserOutput =
+            env.backrunRouter.swapExactInput(origin, zeroForOne, size, 0, solver, block.timestamp);
+        result.referenceExecutionGas = start - gasleft();
+        result.referenceFinal = env.coordinator.network();
+        result.referenceRecipientReward = env.manager.balanceOf(solver, tokenA.toId());
+        result.referenceResidual = CycleMath.best(result.referenceFinal).profitA;
+        _assertClaimsMatchReserves(env);
+        _assertBacking(env);
+        assertTrue(vm.revertToState(snapshot));
+
+        bytes memory directCalldata =
+            abi.encodeCall(ArbFoldRouter.swapExactInput, (origin, zeroForOne, size, 0, solver, block.timestamp));
+        result.directCalldataGas = _calldataGas(directCalldata);
+        _cool(env, address(env.directRouter));
+        start = gasleft();
+        result.directUserOutput = env.directRouter.swapExactInput(origin, zeroForOne, size, 0, solver, block.timestamp);
+        result.directExecutionGas = start - gasleft();
+        result.directRounds = env.coordinator.totalFoldRounds();
+        result.directFinal = env.coordinator.network();
+        result.directResidual = env.coordinator.lastResidualProfit();
+        result.directRecipientReward = env.manager.balanceOf(solver, tokenA.toId());
+
+        assertEq(result.directUserOutput, result.referenceUserOutput, "direct user output mismatch");
+        assertEq(result.directRecipientReward, result.referenceRecipientReward, "recipient reward mismatch");
+        _assertNetworkApproxEq(result.referenceFinal, result.directFinal, 1);
+        _assertClaimsMatchReserves(env);
+        _assertBacking(env);
+        assertTrue(vm.revertToState(snapshot));
+
+        CycleMath.Network memory initial = env.coordinator.network();
+        (uint256 expectedOutput, CycleMath.Network memory postUser) = _postUser(initial, origin, zeroForOne, size);
+        (result.referenceRounds,) = _simulateRounds(postUser);
+        assertEq(result.directUserOutput, expectedOutput, "modeled user output mismatch");
+        assertEq(result.referenceUserOutput, expectedOutput, "reference modeled user output mismatch");
+        assertEq(result.directRounds, result.referenceRounds, "round count mismatch");
+        assertTrue(vm.revertToState(snapshot));
+    }
+
+    function _postUser(CycleMath.Network memory initial, ArbFoldHook origin, bool zeroForOne, uint256 amountIn)
+        private
+        view
+        returns (uint256 amountOut, CycleMath.Network memory postUser)
+    {
+        postUser = CycleMath.Network({
+            abA: initial.abA, abB: initial.abB, bcB: initial.bcB, bcC: initial.bcC, acA: initial.acA, acC: initial.acC
+        });
+        if (origin == env.hookAB) {
+            if (zeroForOne) {
+                amountOut = CycleMath.swapOut(amountIn, initial.abA, initial.abB);
+                postUser.abA += amountIn;
+                postUser.abB -= amountOut;
+            } else {
+                amountOut = CycleMath.swapOut(amountIn, initial.abB, initial.abA);
+                postUser.abB += amountIn;
+                postUser.abA -= amountOut;
+            }
+        } else if (origin == env.hookBC) {
+            if (zeroForOne) {
+                amountOut = CycleMath.swapOut(amountIn, initial.bcB, initial.bcC);
+                postUser.bcB += amountIn;
+                postUser.bcC -= amountOut;
+            } else {
+                amountOut = CycleMath.swapOut(amountIn, initial.bcC, initial.bcB);
+                postUser.bcC += amountIn;
+                postUser.bcB -= amountOut;
+            }
+        } else if (zeroForOne) {
+            amountOut = CycleMath.swapOut(amountIn, initial.acA, initial.acC);
+            postUser.acA += amountIn;
+            postUser.acC -= amountOut;
+        } else {
+            amountOut = CycleMath.swapOut(amountIn, initial.acC, initial.acA);
+            postUser.acC += amountIn;
+            postUser.acA -= amountOut;
+        }
+    }
+
+    function _simulateRounds(CycleMath.Network memory current) private view returns (uint256 rounds, uint256 rewards) {
+        for (; rounds < env.coordinator.MAX_ROUNDS(); ++rounds) {
+            CycleMath.Quote memory q = CycleMath.best(current);
+            if (q.profitA <= env.coordinator.RESIDUAL_THRESHOLD()) break;
+            uint256 reward = q.profitA * env.coordinator.SOLVER_SHARE_BPS() / env.coordinator.BPS();
+            current = _applyExpected(current, q, reward);
+            rewards += reward;
+        }
+    }
+
+    function _applyExpected(CycleMath.Network memory n, CycleMath.Quote memory q, uint256 reward)
+        private
+        pure
+        returns (CycleMath.Network memory afterState)
+    {
+        afterState = CycleMath.Network({abA: n.abA, abB: n.abB, bcB: n.bcB, bcC: n.bcC, acA: n.acA, acC: n.acC});
+        if (!q.reverse) {
+            afterState.abA += q.amountAIn;
+            afterState.abB -= q.intermediateFirst;
+            afterState.bcB += q.intermediateFirst;
+            afterState.bcC -= q.intermediateSecond;
+            afterState.acC += q.intermediateSecond;
+            afterState.acA -= q.amountAIn + reward;
+        } else {
+            afterState.acA += q.amountAIn;
+            afterState.acC -= q.intermediateFirst;
+            afterState.bcC += q.intermediateFirst;
+            afterState.bcB -= q.intermediateSecond;
+            afterState.abB += q.intermediateSecond;
+            afterState.abA -= q.amountAIn + reward;
+        }
+    }
+
+    function _logScenario(string memory kind, uint256 path, ScenarioResult memory result) private view {
+        uint256 referenceTotal = INTRINSIC_GAS + result.referenceCalldataGas + result.referenceExecutionGas;
+        uint256 directTotal = INTRINSIC_GAS + result.directCalldataGas + result.directExecutionGas;
+        uint256 tolerance = _networkTolerance(result.referenceFinal, result.directFinal);
+        console2.log("V01_ROW_KIND", kind);
+        console2.log("V01_PATH", path);
+        console2.log("V01_INPUT", result.input);
+        console2.log("V01_REFERENCE_ROUNDS", result.referenceRounds);
+        console2.log("V01_DIRECT_ROUNDS", result.directRounds);
+        console2.log("V01_REFERENCE_ARBITRAGE_SWAPS", result.referenceRounds * 3);
+        console2.log("V01_REFERENCE_REINJECTIONS", result.referenceRounds);
+        console2.log("V01_DIRECT_FOLD_CALLS", uint256(1));
+        console2.log("V01_REFERENCE_EXECUTION_GAS", result.referenceExecutionGas);
+        console2.log("V01_DIRECT_EXECUTION_GAS", result.directExecutionGas);
+        console2.log("V01_REFERENCE_CALLDATA_GAS", result.referenceCalldataGas);
+        console2.log("V01_DIRECT_CALLDATA_GAS", result.directCalldataGas);
+        console2.log("V01_REFERENCE_TOTAL_GAS", referenceTotal);
+        console2.log("V01_DIRECT_TOTAL_GAS", directTotal);
+        console2.log("V01_ABSOLUTE_GAS_SAVED", int256(referenceTotal) - int256(directTotal));
+        console2.log("V01_DIRECT_TO_REFERENCE_BPS", directTotal * 10_000 / referenceTotal);
+        console2.log("V01_REFERENCE_USER_OUTPUT", result.referenceUserOutput);
+        console2.log("V01_DIRECT_USER_OUTPUT", result.directUserOutput);
+        console2.log("V01_REFERENCE_EXTERNAL_RECIPIENT_REWARD", result.referenceRecipientReward);
+        console2.log("V01_DIRECT_EXTERNAL_RECIPIENT_REWARD", result.directRecipientReward);
+        console2.log("V01_REFERENCE_RESIDUAL", result.referenceResidual);
+        console2.log("V01_DIRECT_RESIDUAL", result.directResidual);
+        console2.log("V01_REFERENCE_AB_A", result.referenceFinal.abA);
+        console2.log("V01_REFERENCE_AB_B", result.referenceFinal.abB);
+        console2.log("V01_REFERENCE_BC_B", result.referenceFinal.bcB);
+        console2.log("V01_REFERENCE_BC_C", result.referenceFinal.bcC);
+        console2.log("V01_REFERENCE_AC_A", result.referenceFinal.acA);
+        console2.log("V01_REFERENCE_AC_C", result.referenceFinal.acC);
+        console2.log("V01_DIRECT_AB_A", result.directFinal.abA);
+        console2.log("V01_DIRECT_AB_B", result.directFinal.abB);
+        console2.log("V01_DIRECT_BC_B", result.directFinal.bcB);
+        console2.log("V01_DIRECT_BC_C", result.directFinal.bcC);
+        console2.log("V01_DIRECT_AC_A", result.directFinal.acA);
+        console2.log("V01_DIRECT_AC_C", result.directFinal.acC);
+        console2.log("V01_EQUIVALENCE_TOLERANCE", tolerance);
+        console2.log("V01_ROW_END", uint256(1));
+    }
+
+    function _networkTolerance(CycleMath.Network memory a, CycleMath.Network memory b)
+        private
+        pure
+        returns (uint256 maximum)
+    {
+        maximum = _max(maximum, _absDiff(a.abA, b.abA));
+        maximum = _max(maximum, _absDiff(a.abB, b.abB));
+        maximum = _max(maximum, _absDiff(a.bcB, b.bcB));
+        maximum = _max(maximum, _absDiff(a.bcC, b.bcC));
+        maximum = _max(maximum, _absDiff(a.acA, b.acA));
+        maximum = _max(maximum, _absDiff(a.acC, b.acC));
+    }
+
+    function _path(uint8 path) private view returns (ArbFoldHook hook, bool zeroForOne) {
+        if (path == 0) return (env.hookAB, true);
+        if (path == 1) return (env.hookAB, false);
+        if (path == 2) return (env.hookBC, true);
+        if (path == 3) return (env.hookBC, false);
+        if (path == 4) return (env.hookAC, true);
+        return (env.hookAC, false);
+    }
+
+    function _max(uint256 a, uint256 b) private pure returns (uint256) {
+        return a > b ? a : b;
+    }
+
+    function _absDiff(uint256 a, uint256 b) private pure returns (uint256) {
+        return a > b ? a - b : b - a;
     }
 
     function _deployEnvironment() private returns (Environment memory deployed) {
@@ -297,6 +556,7 @@ contract ArbFoldCleanCoreBenchmarkTest is Test {
     function _cool(Environment memory deployed, address route) private {
         vm.cool(address(deployed.manager));
         vm.cool(address(deployed.coordinator));
+        vm.coolSlot(address(deployed.coordinator), TELEMETRY_SLOT);
         vm.cool(address(deployed.hookAB));
         vm.cool(address(deployed.hookBC));
         vm.cool(address(deployed.hookAC));

@@ -1,0 +1,43 @@
+{
+  "schema": "arbfold-v0.1-deployment-plan-v1",
+  "status": "not-broadcast",
+  "researchOnly": true,
+  "network": "unichain-sepolia",
+  "chainId": 1301,
+  "plannedManifest": "deployments/unichain-sepolia-1301-v0.1.json",
+  "preservedV0Manifest": "deployments/unichain-sepolia-1301.json",
+  "officialPoolManager": "0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95",
+  "managerReadOnlyCheck": {
+    "checkedAt": "2026-08-30",
+    "chainId": 1301,
+    "runtimeCodeBytes": 24009
+  },
+  "sourceEvidence": {
+    "commitBase": "f9d46e8820349ab0f2b0ea0627cc1eb7acd9811e",
+    "publicationCommit": null,
+    "manifest": "benchmark/optimized-release-candidate-results/source-manifest.sha256",
+    "rawBenchmark": "benchmark/optimized-release-candidate-results/raw.json"
+  },
+  "expectedPublicAddresses": null,
+  "expectedPublicAddressesReason": "The CREATE and CREATE2 addresses depend on the explicitly selected signer and its nonce at authorized broadcast time. Re-simulate immediately before broadcast and bind the finalized addresses to the source manifest.",
+  "localDryRun": {
+    "chainId": 31337,
+    "privateKey": "deterministic Foundry key 1; local simulation only",
+    "gasUsed": 331863967,
+    "poolManager": "0xF2E246BB76DF876Cef8b38ae84130F4F55De395b",
+    "coordinator": "0xB9816fC57977D5A786E654c7CF76767be63b966e",
+    "hookAB": "0xF91C8c2A08a1E0b86022432A1f0f360F85776a88",
+    "hookBC": "0xC379b3210eB70561603A98df91989D42729e6a88",
+    "hookAC": "0x2481ef0E7b4DDdDAA0C549f22029023bFFc6aA88",
+    "router": "0x8913265B93D7e3d9dcc1913616E1f874b741512d",
+    "result": "pass"
+  },
+  "commands": {
+    "networkCheck": "ARBFOLD_MANIFEST_PATH=deployments/unichain-sepolia-1301-v0.1.json scripts/deploy-unichain-sepolia.sh --network-check",
+    "fundedSignerPreflight": "ARBFOLD_MANIFEST_PATH=deployments/unichain-sepolia-1301-v0.1.json scripts/deploy-unichain-sepolia.sh --preflight",
+    "authorizedBroadcastOnly": "ARBFOLD_MANIFEST_PATH=deployments/unichain-sepolia-1301-v0.1.json scripts/deploy-unichain-sepolia.sh"
+  },
+  "broadcastPerformed": false,
+  "transactions": [],
+  "canonicalDemoTransaction": null
+}

@@ -1,0 +1,36 @@
+{
+  "accessed": "2026-08-29",
+  "bytes": 2354898,
+  "commit": "3660c054f9d7e9a0cfbf5c27cc2845f55852df05",
+  "counts": {
+    "atomic_backrun": 0,
+    "custom_accounting": 13,
+    "cyclic_arbitrage": 0,
+    "defensive_rebalancing": 0,
+    "direct_reserve": 1,
+    "internalize_near_arbitrage": 3,
+    "mev_internalization": 1,
+    "pool_to_pool": 0,
+    "profit_reinjection": 0,
+    "reserve_transfer": 0,
+    "same_final_state": 0
+  },
+  "interpretation": "Negative keyword results are bounded search evidence only. They do not prove historical or global novelty.",
+  "newline_count": 33832,
+  "patterns": {
+    "atomic_backrun": "atomic backrun",
+    "custom_accounting": "custom accounting",
+    "cyclic_arbitrage": "cyclic arbitrage",
+    "defensive_rebalancing": "defensive rebalanc",
+    "direct_reserve": "direct reserve",
+    "internalize_near_arbitrage": "internaliz\\w*[^\\n]{0,80}arbitrage",
+    "mev_internalization": "MEV internalization",
+    "pool_to_pool": "pool-to-pool",
+    "profit_reinjection": "profit reinjection",
+    "reserve_transfer": "reserve transfer",
+    "same_final_state": "same final state"
+  },
+  "schema": "uhi-directory-bounded-keyword-scan-v1",
+  "sha256": "3fd9e5baefb36b88a170bc2bd25d0fb6d6e1a19b5471d03d993ac699f0df5848",
+  "url": "https://raw.githubusercontent.com/AtriumAcademy/UHI-Hook-Data/3660c054f9d7e9a0cfbf5c27cc2845f55852df05/hook_directory.md"
+}

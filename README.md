@@ -1,19 +1,34 @@
-# ARBFOLD
+# ARBFOLD — Direct State Settlement for Cyclic Arbitrage
 
 [![ARBFOLD verification](https://github.com/danelerr/arbfold-uhi10/actions/workflows/ci.yml/badge.svg)](https://github.com/danelerr/arbfold-uhi10/actions/workflows/ci.yml)
 [![Interactive demo](https://img.shields.io/badge/interactive-demo-c9ff5b?style=flat&labelColor=111319)](https://danelerr.github.io/arbfold-uhi10/)
 
-### 3 swaps → 1 verified transition
+### Don’t replay every leg. Settle the equivalent state.
 
-> **Why replay a three-swap arbitrage cycle when cooperating pools can verify and apply the equivalent final state directly?**
+> **Why replay each cyclic-arbitrage leg when cooperating pools can runtime-check and settle the equivalent state directly?**
 
-ARBFOLD is a research-grade Uniswap v4 custom-accounting experiment. After a user swap creates an arbitrage cycle across three new hook-owned pools, ARBFOLD replaces three follow-up swaps plus profit reinjection with one verified, PoolManager-backed reserve transition inside the same transaction.
+ARBFOLD is a research-grade Uniswap v4 custom-accounting experiment. After a
+user swap creates an actionable cycle across three new hook-owned pools, one
+`fold()` call can process multiple runtime-checked direct settlement rounds
+inside the originating transaction.
 
-> **Same user output. Same solver reward. Equivalent final reserves. 19.12% less gas at the canonical 100k benchmark.**
+> **Same user output. Same fixed external-recipient reward. Equivalent final reserves within measured tolerance. 31.06% less gas at the canonical 100k v0.1 benchmark.**
 
-The release-candidate code under `contracts/src` measured **440,128 gas for ARBFOLD versus 544,187 gas for a three-leg atomic backrun plus profit reinjection** at 100k. Every participating invariant must remain non-decreasing.
+The v0.1 code under `contracts/src` measured **375,171 total gas for ARBFOLD
+versus 544,219 for the iterative reference** at 100k. The reference executes
+two cyclic rounds—six arbitrage swaps and two profit reinjections—while one
+ARBFOLD call applies two direct settlement rounds. Every round retains the
+conservation and non-decreasing-invariant checks, and the final cached state is
+compared exactly with a fresh onchain read.
 
-**The advantage is workload-dependent:** 4.41% less gas at 10k, **0.98% more at 25k**, and 19.12% less from 50k through 200k in the fixed publication grid.
+**The claim remains bounded:** v0.1 has an execution-gas advantage at all five
+frozen actionable workloads and all 196 actionable points in the 1k–200k dense
+sweep. Calls from 1k–4k execute zero rounds and remain more expensive than the
+reference, so folding should be selected only when an opportunity is actionable.
+
+Steady-state telemetry gas has not been measured with a cross-transaction
+harness and is not claimed in this release. That measurement remains future
+work using two real transactions or equivalent pre-transaction state.
 
 ## See it run in 30 seconds
 
@@ -22,15 +37,15 @@ The release-candidate code under `contracts/src` measured **440,128 gas for ARBF
 The page opens directly on the experiment—there is no marketing flow to finish
 before the demo:
 
-1. **Replay the comparison:** click `Replay demo` to see the conventional three-leg backrun and ARBFOLD direct transition run side by side. The comparison loads immediately from the frozen equivalent-state Foundry benchmark while the public Unichain Sepolia deployment is verified independently in parallel.
+1. **Replay the comparison:** click `Replay demo` to see the iterative backrun and ARBFOLD direct settlement run side by side. The comparison loads from the versioned v0.1 Foundry evidence while the immutable public v0 deployment is checked independently in parallel.
 2. **Execute it yourself:** click `Open Swap Lab`. Before connecting, the lab identifies ARFX, ARFY and ARFZ as valueless test assets, shows the three pools and explains the cycle checked after the swap. One contextual action then connects the wallet, switches network if needed, mints only a token deficit, approves only the selected amount and submits one atomic `ARFX → ARFY swap + fold`.
-3. **Inspect the confirmed result:** the transaction receipt—not a later RPC refresh—drives the displayed output, fold rounds, solver reward, residual arbitrage and gas. The default 10,000 ARFX route is chosen to make the fold visible, while zero-fold receipts remain valid results on mutable public testnet state.
+3. **Inspect the confirmed result:** the transaction receipt—not a later RPC refresh—drives the displayed output, fold rounds, fixed external-recipient reward, residual arbitrage and gas. The default 10,000 ARFX route is chosen to make the fold visible, while zero-fold receipts remain valid results on mutable public testnet state.
 
 The visual comparison remains usable if the public RPC is slow or unavailable.
 The testnet controls still fail closed: they only enable after checking chain
 ID 1301, both public receipts, deployed bytecode, coordinator token/hook roles,
 onchain token symbols and the current three-pool state. The Foundry
-comparison comes from [`raw.json`](benchmark/release-candidate-results/raw.json)
+comparison comes from [`raw.json`](benchmark/optimized-release-candidate-results/raw.json)
 and is explicitly labeled as benchmark evidence—not as one public transaction
 that somehow executes both alternative histories.
 
@@ -49,7 +64,13 @@ See the exact
 
 **Judge proof:** [public canonical transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c) · [deployment manifest](deployments/unichain-sepolia-1301.json) · [hook](contracts/src/ArbFoldHook.sol) · [coordinator](contracts/src/ArbFoldCoordinator.sol) · [router](contracts/src/ArbFoldRouter.sol) · [six-path invariants](contracts/test/ArbFoldInvariant.t.sol) · [release evidence](docs/RELEASE_EVIDENCE.md). Run the complete fail-closed gate with `make verify-release`.
 
-**Public-chain status:** the research network and canonical demo are live on **Unichain Sepolia (chain 1301)** using the official v4 `PoolManager`. The latest browser-executed signed-path validation is [`0x87a940…5deceb`](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb): 1,000 ARFX entered, 0.290519 ARFY reached the user, one fold round ran and residual cyclic profit was zero. ARFX and ARFY are freely mintable test assets with no value.
+**Public-chain status:** the immutable **v0** research network and canonical
+demo remain live on Unichain Sepolia (chain 1301) using the official v4
+`PoolManager`. The latest browser-executed v0 path is
+[`0x87a940…5deceb`](https://sepolia.uniscan.xyz/tx/0x87a940bc58558886fe7debc34373c9ccec5ce1db6143695b8b5c7063e75deceb).
+ARFX, ARFY and ARFZ are freely mintable test assets with no value. **v0.1 has
+not been broadcast**; its deployment package is prepared separately and the
+public UI must not be treated as v0.1 deployment evidence.
 
 ## What happens in one transaction
 
@@ -101,7 +122,8 @@ The suite covers:
 - real Uniswap v4 `PoolManager` execution;
 - mined hook addresses with the required permission flags;
 - exact-input output preservation;
-- ERC-6909 claims equal to all six virtual reserves;
+- ERC-6909 claims equal to all six virtual reserves along the tested
+  external-reward-address paths;
 - exact underlying token backing;
 - per-transition conservation;
 - invariant monotonicity;
@@ -109,23 +131,47 @@ The suite covers:
 - unauthorized coordinator calls;
 - atomic slippage reverts;
 - all six origin/direction paths;
-- 10,000-case release fuzzing and 20,480 calls per stateful invariant property;
+- 10,000-case release fuzzing and the configured stateful invariant depth without reductions;
 - 50,000-case arithmetic differential/fuzz verification;
-- 98.50% project line coverage and 90.38% branch coverage;
+- 98.61% project line coverage and 91.07% branch coverage;
 - a pinned Slither gate with zero unreviewed High/Medium findings.
 
-### Delivered release-candidate comparison
+### Optimized v0.1 release-candidate comparison
 
 ```bash
 cd contracts
 forge test --offline --match-contract ArbFoldCleanCoreBenchmarkTest -vv
 ```
 
-Both paths start from the same deployed state snapshot. The direct path uses the published hook, coordinator and router; the reference executes three real `PoolManager.swap` calls and reinjects the same retained profit.
+Both paths start from the same deployed state snapshot. The direct path uses
+the published hook, coordinator and router; in each round the reference
+executes three real `PoolManager.swap` calls and reinjects the same retained
+profit.
 
-The delivered source was fixed at commit [`9cbc16e`](https://github.com/danelerr/arbfold-uhi10/commit/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b) and the comparison was rerun from that clean commit. Its deterministic `contracts/src` tree hash is `53db6012988f770c06f784b6f0ad152ac844ae1a0dc8058e1f1dfd002b85c3f3`.
+The generator records the base commit, dirty-state declaration, exact source
+and test hashes, compiler settings, raw Forge output and reproduction commands.
+Both paths use identical snapshots and compiler settings.
 
-| Origin input | Atomic backrun | Published ARBFOLD | Exact change |
+| Origin input | Iterative reference | ARBFOLD v0.1 | Exact change |
+|---:|---:|---:|---:|
+| 10k | 407,292 | 327,669 | 19.55% less |
+| 25k | 409,402 | 329,777 | **19.45% less** |
+| 50k | 544,219 | 375,171 | 31.06% less |
+| **100k** | **544,219** | **375,171** | **31.06% less** |
+| 200k | 544,209 | 375,160 | 31.06% less |
+
+See the [v0.1 report](benchmark/optimized-release-candidate-results/REPORT.md),
+[raw data](benchmark/optimized-release-candidate-results/raw.json),
+[environment](benchmark/optimized-release-candidate-results/environment.json)
+and [source manifest](benchmark/optimized-release-candidate-results/source-manifest.sha256).
+The dense sweep finds zero-round regressions at 1k–4k, then an execution-gas
+advantage at every actionable point from 5k–200k in the tested canonical path.
+
+### Historical v0 release candidate
+
+The immutable v0 release grid remains below. It is not overwritten by v0.1:
+
+| Origin input | Atomic backrun | ARBFOLD v0 | Exact change |
 |---:|---:|---:|---:|
 | 10k | 407,272 | 389,292 | 4.41% less |
 | 25k | 409,381 | 413,409 | **0.98% more** |
@@ -133,7 +179,7 @@ The delivered source was fixed at commit [`9cbc16e`](https://github.com/danelerr
 | **100k** | **544,187** | **440,128** | **19.12% less** |
 | 200k | 544,177 | 440,117 | 19.12% less |
 
-The advantage is workload-dependent. It is material for the two-round opportunities in this fixed grid, small at 10k and negative at 25k. See the [release-candidate report](benchmark/release-candidate-results/REPORT.md), [raw data](benchmark/release-candidate-results/raw.json) and [environment freeze](benchmark/release-candidate-results/environment.json).
+See the [historical v0 report](benchmark/release-candidate-results/REPORT.md).
 
 The earlier safety-hardened clean-core validation remains immutable at **18.86% less gas** canonically. It is historical evidence, not the delivered headline.
 
@@ -170,7 +216,7 @@ The 39.58% result belongs to the smaller frozen harness—not to the safety-hard
 
 ARBFOLD was originally subjected to a harder economic authorization gate. The mechanics and gas gates passed, but the preregistered requirement of **10% greater LP net value** failed: the measured improvement was only **0.000287%** under the frozen gas-price assumption.
 
-That decision remains preserved in the [frozen v0 report](benchmark/arbfold-results/REPORT.md). The [earlier clean-core report](benchmark/clean-core-results/REPORT.md) records 18.86%; the [release report](benchmark/release-candidate-results/REPORT.md) records the delivered source's 19.12% canonical reduction and 25k regression:
+That decision remains preserved in the [frozen v0 report](benchmark/arbfold-results/REPORT.md). The [earlier clean-core report](benchmark/clean-core-results/REPORT.md) records 18.86%; the [v0 release report](benchmark/release-candidate-results/REPORT.md) records 19.12% canonically and the 25k regression; the [v0.1 report](benchmark/optimized-release-candidate-results/REPORT.md) records the optimization without rewriting those histories:
 
 ```text
 Economic-superiority thesis   KILLED
@@ -179,6 +225,12 @@ Research-grade UHI10 build    IMPLEMENTED
 ```
 
 The project therefore claims an **execution primitive**, not universal economic superiority.
+
+The 2026-08-29 [historical thesis reassessment](docs/THESIS_REASSESSMENT_2026-08-29.md)
+records the v0 reward-recipient aliasing case. v0.1 rejects the zero address,
+the coordinator, PoolManager and all three registered hooks, and its tests
+require the complete transaction to revert atomically for every forbidden
+alias. This hardening does not make the contracts production-ready.
 
 ## Exact integration map
 
@@ -206,6 +258,7 @@ claimed.
 | [`benchmark/arbfold-results/`](benchmark/arbfold-results/) | Immutable raw results and the failed economic gate. |
 | [`benchmark/clean-core-results/`](benchmark/clean-core-results/) | Immutable earlier clean-core validation. |
 | [`benchmark/release-candidate-results/`](benchmark/release-candidate-results/) | Delivered-source report, raw grid, environment and source manifest. |
+| [`benchmark/optimized-release-candidate-results/`](benchmark/optimized-release-candidate-results/) | New v0.1 report, raw grid, dense sweep, compiler matrix, environment and source manifest. |
 | [`docs/`](docs/) | Architecture, limits, judge guide and demo script. |
 | [`docs/DEPLOYMENT_RUNBOOK.md`](docs/DEPLOYMENT_RUNBOOK.md) | Official-manager resolution, deployment, demo, verification and manifest finalization. |
 | [`docs/NEXT_ITERATION_PLAN.md`](docs/NEXT_ITERATION_PLAN.md) | Archived execution plan; current evidence lives in the release evidence and final-submission copy. |
@@ -226,7 +279,10 @@ make test-deployment
 
 For the research-only Unichain Sepolia path, follow the fail-closed [deployment runbook](docs/DEPLOYMENT_RUNBOOK.md). It resolves the current official v4 PoolManager from Uniswap's deployment feed instead of embedding a potentially stale address. Never place a testnet key or RPC credential in the repository.
 
-The canonical public deployment is recorded in [`deployments/unichain-sepolia-1301.json`](deployments/unichain-sepolia-1301.json). Its source commit is `1c7d7edff2c52fea060beee3e3791a086bcdc044`; explorer source verification is explicitly reported as `not-available`, so the repository, manifest and onchain state remain the reproducible evidence.
+The immutable v0 public deployment is recorded in
+[`deployments/unichain-sepolia-1301.json`](deployments/unichain-sepolia-1301.json).
+The v0.1 deployment has not been broadcast; its plan and dry-run evidence are
+versioned separately so this manifest is never silently replaced.
 
 ## Explicit limitations
 
@@ -248,4 +304,6 @@ The core uses [Uniswap v4](https://github.com/Uniswap/v4-core) and [OpenZeppelin
 
 ## Judge path
 
-If you have five minutes, follow [`docs/JUDGE_GUIDE.md`](docs/JUDGE_GUIDE.md). It starts with the delivered core's 19.12% canonical result, points to the exact v4 code and shows both the 25k regression and rejected economic claim.
+If you have five minutes, follow [`docs/JUDGE_GUIDE.md`](docs/JUDGE_GUIDE.md).
+It starts with the v0.1 measured result, distinguishes the controlled benchmark
+from the immutable v0 live demo, and keeps the rejected economic claim visible.

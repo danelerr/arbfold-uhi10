@@ -10,10 +10,10 @@ Toolchain: Foundry `v1.5.1`, Solidity `0.8.26`, clean-core dependencies pinned u
 
 | Scope | Hit / found | Coverage |
 |---|---:|---:|
-| Lines | 262 / 266 | **98.50%** |
-| Statements | 396 / 408 | **97.06%** |
-| Branches | 47 / 52 | **90.38%** |
-| Functions | 35 / 35 | **100.00%** |
+| Lines | 283 / 287 | **98.61%** |
+| Statements | 434 / 446 | **97.31%** |
+| Branches | 51 / 56 | **91.07%** |
+| Functions | 42 / 42 | **100.00%** |
 
 The report includes every project-owned file under `contracts/src` and filters dependency, test and script code from the denominator. `ArbFoldDeploymentTest` is excluded only from the coverage execution because coverage disables the optimizer, causing its deliberate EIP-170 deployed-bytecode assertion to reject the unoptimized hook. The same deployment suite runs under the release compiler settings in `make test-deployment` and the ordinary test suite.
 

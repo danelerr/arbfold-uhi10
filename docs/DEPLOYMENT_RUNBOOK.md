@@ -84,7 +84,19 @@ cast code "$pool_manager_address" --rpc-url "$ARBFOLD_UNICHAIN_RPC"
 
 The chain ID must be `1301`, and `cast code` must return non-empty bytecode.
 
-## 2. Deploy and write the initial manifest
+## 2. Select a versioned manifest
+
+The immutable v0 manifest is
+`deployments/unichain-sepolia-1301.json`. v0.1 must use:
+
+```bash
+export ARBFOLD_MANIFEST_PATH=deployments/unichain-sepolia-1301-v0.1.json
+```
+
+The executor refuses to overwrite either file. Do not point a v0.1 deployment
+at the v0 path.
+
+## 3. Deploy and write the initial manifest
 
 ```bash
 cd contracts
@@ -95,7 +107,7 @@ POOL_MANAGER="$pool_manager_address" \
 OFFICIAL_POOL_MANAGER="$pool_manager_address" \
 EXPECTED_CHAIN_ID=1301 \
 WRITE_MANIFEST=true \
-MANIFEST_PATH=../deployments/unichain-sepolia-1301.json \
+MANIFEST_PATH="$PWD/../deployments/unichain-sepolia-1301-v0.1.json" \
 NETWORK_NAME=unichain-sepolia \
 GIT_COMMIT=$(git rev-parse HEAD) \
 EXPLORER_BASE_URL=https://sepolia.uniscan.xyz \
@@ -106,7 +118,7 @@ forge script script/DeployArbFold.s.sol:DeployArbFold \
 
 Read every address back from the manifest. Do not retype addresses.
 
-## 3. Verify the deployed network before trading
+## 4. Verify the deployed network before trading
 
 Set the public addresses from the manifest and run:
 
@@ -128,7 +140,7 @@ This read-only verifier checks hook flags, fixed bindings, positive reserves,
 reserve/claim equality, underlying backing, coordinator operators, quote
 liveness and EIP-170 runtime sizes.
 
-## 4. Execute the canonical demo
+## 5. Execute the canonical demo
 
 ```bash
 PRIVATE_KEY="$ARBFOLD_TESTNET_PRIVATE_KEY" \
@@ -148,11 +160,11 @@ forge script script/RunArbFoldDemo.s.sol:RunArbFoldDemo \
 Run the verifier again with `SOLVER="$deployer_address"` so token-A backing
 includes the solver's ERC-6909 claim.
 
-## 5. Finalize the public manifest
+## 6. Finalize the public manifest
 
 ```bash
 scripts/finalize-manifest.sh \
-  deployments/unichain-sepolia-1301.json \
+  deployments/unichain-sepolia-1301-v0.1.json \
   contracts/broadcast/DeployArbFold.s.sol/1301/run-latest.json \
   contracts/broadcast/RunArbFoldDemo.s.sol/1301/run-latest.json \
   not-available \
@@ -163,7 +175,7 @@ Replace `not-available` with `partial` or `verified` only after explorer source
 verification actually succeeds. Remove the intermediate `*-demo.json` after
 the finalized manifest contains its `demo` object.
 
-## 6. Publication checks
+## 7. Publication checks
 
 - Open every transaction and address link in an incognito browser.
 - Confirm `researchOnly: true`, chain `1301`, current official manager, source

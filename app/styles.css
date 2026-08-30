@@ -148,8 +148,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 .direct-path header > span, .direct-path header strong { color: var(--lime); }
 
 .steps { display: grid; gap: 0; margin-top: 22px; }
-.conventional-steps { grid-template-columns: repeat(5, 1fr); }
-.direct-steps { grid-template-columns: repeat(3, 1fr); max-width: 430px; }
+.conventional-steps,
+.direct-steps { grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); }
+.direct-steps { max-width: 560px; }
 .steps span {
   position: relative;
   min-width: 0;

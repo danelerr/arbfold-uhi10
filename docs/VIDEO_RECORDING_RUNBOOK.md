@@ -23,8 +23,9 @@ From the repository root, run:
 make video-proof
 ```
 
-The command takes roughly five seconds on the development machine. It executes
-the 61-test default core suite and leaves a compact test table, the canonical
+The command executes
+the 82 current Solidity tests and leaves
+a compact test table, the canonical
 release benchmark and the public Unichain manifest facts on screen. It never
 loads a private key or calls the deployment wallet.
 
@@ -38,7 +39,7 @@ volume before recording the actual take.
 3. Hook callback: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldHook.sol#L72
 4. Direct transition: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldCoordinator.sol#L144
 5. Atomic settlement: https://github.com/danelerr/arbfold-uhi10/blob/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b/contracts/src/ArbFoldRouter.sol#L93
-6. Release report: https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md
+6. v0.1 report: https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/optimized-release-candidate-results/REPORT.md
 
 Set the browser zoom so the complete benchmark cards fit without horizontal
 scrolling. Keep one terminal window ready with the completed `make video-proof`
@@ -48,14 +49,14 @@ output.
 
 | Time | Screen | Action | Message |
 |---:|---|---|---|
-| 0:00–0:45 | Interactive benchmark | The page opens on the experiment. Click `Replay demo` and let both lanes complete. | Conventional execution performs three arbitrage swaps plus reinjection; ARBFOLD applies one verified direct transition to the equivalent state. |
+| 0:00–0:45 | Interactive benchmark | The page opens on the experiment. Click `Replay demo` and let both lanes complete. | The canonical reference executes two rounds—six swaps and two reinjections. One `fold()` call applies two runtime-checked direct settlement rounds. |
 | 0:45–1:20 | Swap Lab | Click `Open Swap Lab`, identify the three valueless tokens and pools, trace the default cycle, then show the single contextual action. | The public quote needs no signature. Wallet preparation mints only the deficit, approves only the selected amount, and the final action submits one real swap + fold. |
-| 1:20–1:50 | Workload controls | Close the panel, scroll to `Full benchmark`, then click 10k, 25k, 50k, 100k and 200k slowly. Stop at 25k, then return to 100k. | Same user swap, output and reward. The canonical result is 19.12% less gas, but 25k is 0.98% more expensive, so the claim is workload-dependent. |
-| 1:50–2:20 | Public proof | Use `Verify everything` to open the canonical transaction and benchmark report. | Official Unichain Sepolia PoolManager, exact claims/backing and zero canonical residual profit. |
+| 1:20–1:50 | Workload controls | Close the panel, scroll to `Full benchmark`, then click 10k, 25k, 50k, 100k and 200k slowly. Stop at 25k, then return to 100k. | v0.1 is cheaper at all five frozen actionable workloads; the report discloses the 1k–4k zero-round regressions. |
+| 1:50–2:20 | Public proof | Use `Verify everything` to open the canonical transaction and benchmark report. | The controlled benchmark is v0.1 local evidence; the Unichain Sepolia transaction is the immutable v0 live demo. Do not conflate them. |
 | 2:20–3:00 | Commit-pinned code tabs | Show the highlighted hook, coordinator and router functions. Do not scroll through whole files. | BaseCustomCurve computes the user output; the fixed coordinator transfers backed claims under conservation/invariant guards; the router settles every delta in one unlock. |
-| 3:00–3:25 | Terminal | Show the already completed `make video-proof` output and its final PASS line. | 61 core tests, all-six-path stateful invariants, exact backing, negative paths and the frozen five-size benchmark. |
-| 3:25–3:55 | Report | Show the rejected economic gate in the repository report and the complete workload grid in the demo. | The 10% LP-value thesis failed. The historical 39.58%, earlier 18.86% and delivered 19.12% results remain separate rather than cherry-picked. |
-| 3:55–4:15 | Interactive benchmark | Return to the first-screen result. | Three swaps become one verified transition; same user output, same solver reward and equivalent final reserves; 19.12% less gas at the canonical 100k workload. |
+| 3:00–3:25 | Terminal | Show the already completed proof output and its final PASS line. | 82 Solidity tests in both profiles, all-six-path stateful invariants, exact backing, negative paths and the frozen five-size benchmark. |
+| 3:25–3:55 | Report | Show the rejected economic gate and both versioned result directories. | The 10% LP-value thesis failed. Historical v0 evidence remains immutable; v0.1 is a separate optimization result. |
+| 3:55–4:15 | Interactive benchmark | Return to the first-screen result. | Don’t replay every leg. Settle the equivalent state. Canonical v0.1 total gas is 31.06% lower in the controlled benchmark. |
 
 Use the exact narration in [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md). The shorter
 phrases above are visual cues, not replacement claims.
@@ -68,9 +69,10 @@ phrases above are visual cues, not replacement claims.
 - Do not say ARBFOLD is always cheaper, production-ready or a universal MEV
   solution.
 - Say “equivalent final reserve state” rather than “identical transaction.”
-- Say “19.12% less at the canonical 100k benchmark,” never “19.12% less” without
+- Say “31.06% less at the canonical v0.1 100k benchmark,” never “31.06% less” without
   the workload qualifier.
-- Show the 25k regression before the closing claim.
+- Show that the historical 25k regression was not overwritten and that v0.1
+  removes it; also show the v0.1 zero-round boundary.
 - Keep the explorer visit brief; the dashboard already summarizes the event.
 - Do not spend recording time installing dependencies or waiting for CI.
 
@@ -82,8 +84,9 @@ form, verify all of the following:
 - duration is no more than five minutes;
 - Daniel's voice is clear in the first ten seconds and throughout;
 - no secret, email notification or wallet balance is visible;
-- the canonical result is 19.12%, not 18.86% or 39.58%;
-- the 0.98% 25k regression and failed 10% LP-value claim are audible;
+- the v0.1 canonical result is 31.06%, while historical 19.12%, 18.86% and
+  39.58% results remain correctly labeled;
+- the 1k–4k zero-round regression boundary and failed 10% LP-value claim are audible;
 - the public transaction and actual v4 code appear on screen;
 - the uploaded video opens in a private browser window without authentication;
 - the subtitle track has been retimed against the final human narration;
@@ -91,15 +94,15 @@ form, verify all of the following:
 
 Recommended title:
 
-> ARBFOLD — Folding Cyclic Arbitrage with Uniswap v4 Custom Accounting
+> ARBFOLD — Direct State Settlement for Cyclic Arbitrage
 
 Recommended description:
 
-> ARBFOLD is a research-grade Uniswap v4 experiment that reaches the equivalent
-> post-arbitrage reserve state through a verified direct transition. This demo
-> shows the real PoolManager integration, public Unichain Sepolia proof and the
-> workload-dependent Foundry benchmark: 19.12% less gas at the canonical 100k
-> workload, with a disclosed 0.98% regression at 25k.
+> ARBFOLD is a research-grade Uniswap v4 experiment in which one `fold()` call
+> can process multiple runtime-checked direct settlement rounds. The controlled
+> v0.1 benchmark measures 31.06% less total gas at canonical 100k and discloses
+> that zero-round 1k–4k calls remain more expensive. The public Unichain Sepolia
+> demo is the immutable v0 deployment, not v0.1 deployment evidence.
 
 Once the upload passes this gate, place its public URL in
 [`FINAL_SUBMISSION.md`](FINAL_SUBMISSION.md) and the final Hookathon form.

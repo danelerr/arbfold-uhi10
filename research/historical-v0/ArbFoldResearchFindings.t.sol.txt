@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.26;
+
+import {CurrencyLibrary} from "@uniswap/v4-core/src/types/Currency.sol";
+import {ArbFoldTestBase} from "./ArbFoldTestBase.sol";
+import {CycleMath} from "../src/CycleMath.sol";
+
+/// @notice Reproduces findings discovered after the frozen release benchmark.
+/// @dev This test documents the delivered core; it does not change its behavior.
+contract ArbFoldResearchFindingsTest is ArbFoldTestBase {
+    using CurrencyLibrary for *;
+
+    function test_RegisteredHookRewardRecipientBreaksClaimReserveContinuity() public {
+        router.swapExactInput(hookAB, false, 100_000 ether, 0, address(hookAB), block.timestamp);
+
+        uint256 reward = coordinator.totalSolverRewards();
+        CycleMath.Network memory n = coordinator.network();
+        uint256 hookABClaimA = manager.balanceOf(address(hookAB), tokenA.toId());
+        uint256 hookACClaimA = manager.balanceOf(address(hookAC), tokenA.toId());
+
+        assertGt(reward, 0, "test must execute a profitable fold");
+        assertEq(hookABClaimA, n.abA + reward, "hook reward was not excluded from virtual reserves");
+        assertEq(hookACClaimA, n.acA, "unrelated A-side hook drifted");
+
+        // PoolManager custody still backs every claim. The defect is the
+        // disagreement between hook claims and the virtual reserve ledger.
+        assertEq(
+            hookABClaimA + hookACClaimA, tokenAContract.balanceOf(address(manager)), "PoolManager claim backing changed"
+        );
+        assertEq(
+            n.abA + n.acA + reward,
+            tokenAContract.balanceOf(address(manager)),
+            "virtual reserve shortfall does not equal the aliased reward"
+        );
+    }
+}

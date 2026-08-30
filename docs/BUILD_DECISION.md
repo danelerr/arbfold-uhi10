@@ -16,11 +16,20 @@ UHI10 requires a functional, original v4 hook, public code, a demo, tests or fro
 
 ## Authorized claims
 
-> In the delivered release validation, the direct transition reaches the same final reserve state as an atomic three-leg backrun plus profit reinjection, with identical user output, identical solver reward, non-decreasing invariants, exact PoolManager backing and 19.12% less canonical total gas.
+> In v0.1, one `fold()` call can process multiple runtime-checked direct
+> settlement rounds. At canonical 100k, the iterative reference executes two
+> cyclic rounds—six swaps and two profit reinjections—while ARBFOLD applies two
+> direct rounds, reaches equivalent final reserves within measured tolerance,
+> preserves user output and the fixed external-recipient reward, and uses
+> 31.06% less total gas.
 
 > The immutable minimal v0 harness measured 39.58% less canonical gas. That historical number must always be labelled as the frozen harness result, not the delivered clean-core result.
 
-The release grid also discloses that the direct path used 0.98% more gas at 25k; gas superiority is workload-dependent. The earlier clean-core result remains immutable at 18.86% canonical and 1.13% more at 25k.
+The historical v0 release grid discloses that the direct path used 0.98% more
+gas at 25k. v0.1 removes that regression and is cheaper in all five frozen
+actionable rows, but its dense sweep discloses zero-round regressions at
+1k–4k. The historical v0 19.12% and earlier clean-core 18.86% results remain
+immutable.
 
 ## Prohibited claims
 

@@ -81,11 +81,11 @@ export default function App() {
           </div>
           <nav className="verify-links" aria-label="Technical evidence">
             <a href={transactionUrl} target="_blank" rel="noreferrer">Onchain transaction</a>
-            <a href={`${REPOSITORY}/blob/main/benchmark/release-candidate-results/REPORT.md`}>Benchmark</a>
+            <a href={`${REPOSITORY}/blob/main/benchmark/optimized-release-candidate-results/REPORT.md`}>v0.1 benchmark</a>
             <a href={`${REPOSITORY}/tree/main/contracts/test`}>Tests and invariants</a>
             <a href={`${REPOSITORY}/blob/main/docs/ARCHITECTURE.md`}>Architecture</a>
           </nav>
-          <p className="evidence-summary">61 Solidity tests · 10,000 release fuzz cases · stateful invariants · 98.5% line coverage · Slither checked</p>
+          <p className="evidence-summary">82 Solidity tests · release fuzzing · stateful invariants · versioned raw evidence</p>
         </section>
       </main>
 
@@ -100,7 +100,7 @@ export default function App() {
 
       <footer className="site-footer shell">
         <span>ARBFOLD</span>
-        <span>Research-grade execution compression for cooperating Uniswap v4 pools.</span>
+        <span>Direct state settlement for cyclic arbitrage · research-grade.</span>
       </footer>
     </>
   );

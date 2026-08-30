@@ -11,21 +11,26 @@ make serve
 
 The one-sentence claim is:
 
-> ARBFOLD compresses three arbitrage swaps plus profit reinjection into one verified reserve transition, with the same user output, solver reward and equivalent final reserves. It uses 19.12% less gas at the canonical 100k benchmark.
+> ARBFOLD lets one `fold()` call process multiple runtime-checked direct
+> settlement rounds instead of replaying every cyclic-arbitrage leg. At the
+> canonical v0.1 workload it reaches equivalent final reserves within measured
+> tolerance with the same user output and fixed external-recipient reward,
+> using 31.06% less total gas than the iterative reference.
 
 Click `Replay demo`. The first screen animates the conventional
 user swap + three arbitrage swaps + reinjection beside ARBFOLD's user swap +
 verification + direct transition, then reveals the measured gas and equivalence
 checks. No wallet is required.
 
-Scroll to `Full benchmark`, then change the five workload buttons.
-The result is workload-dependent:
-ARBFOLD is 19.12% cheaper at 50k–200k, 4.41% cheaper at 10k and 0.98% more
-expensive at 25k. Then click `Open Swap Lab`. The lab first explains the three
+Scroll to `Full benchmark`, then change the five workload buttons. v0.1 is
+cheaper at all five frozen actionable workloads; the dense sweep separately
+shows that 1k–4k execute zero rounds and are more expensive, while all 196
+actionable points from 5k–200k are cheaper in the tested canonical path. Then
+click `Open Swap Lab`. The lab first explains the three
 valueless tokens, three pools, selected swap and checked cycle. Its single
 contextual action advances through connect, network switch, exact token deficit,
 exact approval and execution. The confirmed receipt links the transaction and
-shows output, fold rounds, solver reward, residual arbitrage and gas.
+shows output, fold rounds, fixed external-recipient reward, residual arbitrage and gas.
 
 ## 0:45–2:00 — Inspect the v4-native path
 
@@ -36,7 +41,9 @@ shows output, fold rounds, solver reward, residual arbitrage and gas.
 
 ## 2:00–3:15 — Check the evidence
 
-Use the compact `Verify everything` links and inspect the [canonical
+The controlled benchmark is local v0.1 evidence. The live Swap Lab is the
+immutable v0 deployment until a separate v0.1 deployment is authorized. Use
+the compact `Verify everything` links and inspect the [canonical
 Unichain Sepolia transaction](https://sepolia.uniscan.xyz/tx/0x6220b30fd09267c2d4f716ace816c4ebae4b9d5b9970cbe73cb3ccd665cfbf7c).
 The committed [deployment manifest](../deployments/unichain-sepolia-1301.json)
 records the official PoolManager, 28 deployment transactions, the three hooks,
@@ -61,18 +68,23 @@ Core properties are in:
 
 - [`ArbFold.t.sol`](../contracts/test/ArbFold.t.sol): output, slippage, authorization, fuzz and canonical state;
 - [`ArbFoldInvariant.t.sol`](../contracts/test/ArbFoldInvariant.t.sol): stateful claims, backing, invariant and residual properties;
+- [`ArbFoldResearchFindings.t.sol`](../contracts/test/ArbFoldResearchFindings.t.sol): preserves the v0 aliasing finding and proves v0.1 rejects it atomically;
+- [`ArbFoldV01.t.sol`](../contracts/test/ArbFoldV01.t.sol): residual getter, cached-state drift, packed telemetry, overflow and forbidden-recipient regressions;
 - [`ArbFoldCleanCoreBenchmark.t.sol`](../contracts/test/ArbFoldCleanCoreBenchmark.t.sol): delivered-code execution equivalence and gas grid;
 - [`ArbFoldGate.t.sol`](../benchmark/arbfold-foundry/test/ArbFoldGate.t.sol): frozen execution-equivalence and gas comparison.
 
 ## 3:15–4:15 — Verify research honesty
 
-Read the [release-candidate report](../benchmark/release-candidate-results/REPORT.md), the [earlier clean-core report](../benchmark/clean-core-results/REPORT.md), and then the [frozen v0 report](../benchmark/arbfold-results/REPORT.md):
+Read the [v0.1 report](../benchmark/optimized-release-candidate-results/REPORT.md), the [historical release report](../benchmark/release-candidate-results/REPORT.md), the [earlier clean-core report](../benchmark/clean-core-results/REPORT.md), and the [frozen v0 report](../benchmark/arbfold-results/REPORT.md):
 
 ```text
-Release-candidate canonical gas reduction       19.12%
+v0.1 canonical gas reduction                    31.06%
+v0.1 25k change                                 19.45% less
+v0.1 dense actionable rows                      196/196 cheaper
+Historical release canonical gas reduction     19.12%
 Earlier clean-core canonical reduction          18.86%
 Frozen minimal-harness canonical reduction      39.58%
-Release-candidate 25k change                     0.98% more
+Historical release 25k change                   0.98% more
 >=10% LP net-value uplift                       FAIL
 ```
 
@@ -82,9 +94,12 @@ ARBFOLD is submitted as a gas-efficient execution primitive, not as a production
 
 - Atomic backrun: three complete AMM swaps, then distribute/reinject profit.
 - ARBFOLD: direct backed reserve transition with explicit Pareto checks.
-- Same user output, solver reward and final state in the specialized benchmark.
+- Same user output and fixed external-recipient reward; equivalent final reserves within measured tolerance in the specialized benchmark.
 - Not the global optimizer from the paper.
 - Requires three new hook-owned pools.
+- The immutable v0 deployment permits the registered-hook reward alias. v0.1
+  rejects zero, coordinator, manager and hook aliases atomically; production
+  authorization still requires an independent audit.
 - Not audited or mainnet-ready.
 
 Read [`ARCHITECTURE.md`](ARCHITECTURE.md), [`LIMITATIONS.md`](LIMITATIONS.md) and the [threat model](THREAT_MODEL.md) for the full boundaries.

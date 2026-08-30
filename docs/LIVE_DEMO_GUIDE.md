@@ -12,8 +12,10 @@ The dashboard connects directly to Unichain Sepolia and verifies:
 - current fold-call and fold-round counters;
 - all six current reserves from the three hook-owned CPMMs.
 
-If any check fails, execution remains disabled. The five-size gas comparison is
-a separate frozen Foundry artifact and is never represented as live chain data.
+If any check fails, execution remains disabled. This public deployment is
+immutable v0 evidence. The optimized v0.1 five-size comparison is a separate
+controlled Foundry artifact and is never represented as live chain data or as
+a v0.1 testnet deployment.
 
 The interactive scenario uses three valueless assets across three pools:
 `ARFX/ARFY`, `ARFX/ARFZ` and `ARFY/ARFZ`. The default user swap is 10,000 ARFX
@@ -67,9 +69,9 @@ deployment is not authorized for production deposits.
 
 ## One-sentence explanation
 
-> A normal cyclic backrun performs three AMM swaps and then reinjects profit;
-> ARBFOLD lets three cooperating v4 pools reach the equivalent safe reserve
-> state through one verified direct transition inside the originating unlock.
+> A cyclic reference replays each arbitrage leg and reinjects profit; ARBFOLD
+> lets one `fold()` call process multiple runtime-checked direct settlement
+> rounds inside the originating unlock.
 
 ## Public validation transaction
 

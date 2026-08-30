@@ -1,4 +1,4 @@
-.PHONY: test test-core test-benchmark test-research test-dashboard test-deployment test-release-fuzz arithmetic coverage slither source-manifest source-manifest-check fmt lint snapshot verify-release video-proof build-dashboard check-live submission-preflight serve
+.PHONY: test test-core test-benchmark test-research test-dashboard test-deployment test-release-fuzz arithmetic coverage slither benchmark-v01 source-manifest source-manifest-check source-manifest-v0-check fmt lint snapshot verify-release video-proof build-dashboard check-live submission-preflight serve
 
 test: test-core test-benchmark test-research test-dashboard
 
@@ -41,11 +41,16 @@ coverage:
 slither:
 	bash scripts/run-slither.sh
 
-source-manifest:
-	python3 scripts/source-manifest.py --write benchmark/release-candidate-results/source-manifest.sha256
+benchmark-v01:
+	python3 scripts/generate-v01-benchmark.py --check
+
+source-manifest: benchmark-v01
 
 source-manifest-check:
-	python3 scripts/source-manifest.py --check benchmark/release-candidate-results/source-manifest.sha256
+	python3 scripts/source-manifest.py --scope optimized-v01 --check benchmark/optimized-release-candidate-results/source-manifest.sha256
+
+source-manifest-v0-check:
+	python3 research/reassess_arbfold.py --check research/results/arbfold-thesis-reassessment-2026-08-29.json
 
 fmt:
 	cd contracts && forge fmt --check
@@ -61,6 +66,7 @@ verify-release: fmt
 	cd contracts && forge clean && forge build --offline
 	$(MAKE) test-core
 	$(MAKE) test-release-fuzz
+	$(MAKE) benchmark-v01
 	$(MAKE) arithmetic
 	$(MAKE) test-benchmark
 	$(MAKE) test-research
@@ -71,6 +77,7 @@ verify-release: fmt
 	$(MAKE) slither
 	$(MAKE) coverage
 	$(MAKE) source-manifest-check
+	python3 research/reassess_arbfold_v01.py --check research/results/arbfold-v0.1-reassessment-2026-08-30.json
 
 video-proof:
 	bash scripts/video-proof.sh

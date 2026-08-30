@@ -66,13 +66,94 @@ export interface BenchmarkRow {
   backrun: number;
   direct: number;
   reduction: number;
+  referenceRounds: number;
+  directRounds: number;
+  referenceSwaps: number;
+  referenceReinjections: number;
 }
 
 export interface BenchmarkPayload {
-  rows: Array<{
-    origin_input_wei: string;
-    backrun_total_gas: number;
+  schema: "arbfold-v0.1-optimized-release-candidate-v4";
+  source_tree_sha256: string;
+  residual_threshold_wei_a: string;
+  frozen_grid: Array<{
+    kind: "grid";
+    path: number;
+    path_label: string;
+    input_tokens: number;
+    input_wei: string;
+    reference_total_gas: number;
     direct_total_gas: number;
+    reference_execution_gas: number;
+    direct_execution_gas: number;
+    reference_calldata_gas: number;
+    direct_calldata_gas: number;
+    absolute_gas_saved: number;
+    direct_to_reference_bps: number;
+    gas_reduction_percent: string;
+    reference_rounds: number;
+    direct_rounds: number;
+    reference_arbitrage_swaps: number;
+    reference_reinjections: number;
+    direct_fold_calls: number;
+    reference_user_output: string;
+    direct_user_output: string;
+    reference_external_recipient_reward: string;
+    direct_external_recipient_reward: string;
+    reference_residual: number;
+    direct_residual: number;
+    equivalence_tolerance_wei: number;
+    reference_final_reserves: Record<string, number>;
+    direct_final_reserves: Record<string, number>;
+  }>;
+  mechanical_gates: {
+    all_frozen_outputs_equal: boolean;
+    all_frozen_rewards_equal: boolean;
+    all_frozen_final_reserves_within_one_wei: boolean;
+    all_frozen_residuals_equal_and_within_threshold: boolean;
+    twenty_five_k_cheaper: boolean;
+    all_five_cheaper: boolean;
+  };
+  dense_sweep: Array<{
+    input_tokens: number;
+    input_wei: string;
+    reference_total_gas: number;
+    direct_total_gas: number;
+    absolute_gas_saved: number;
+    gas_reduction_percent: string;
+    direct_rounds: number;
+  }>;
+  dense_sweep_summary: {
+    first_actionable_tokens: number;
+    actionable_rows: number;
+    cheaper_actionable_rows: number;
+    zero_round_ranges: Array<{ start_tokens: number; end_tokens: number }>;
+    regression_ranges: Array<{ start_tokens: number; end_tokens: number }>;
+    round_regions: Record<string, Array<{ start_tokens: number; end_tokens: number }>>;
+  };
+  six_path_matrix: Array<{
+    kind: "path";
+    path: number;
+    path_label: string;
+    input_tokens: number;
+    input_wei: string;
+  }>;
+  compiler_matrix: Array<{
+    name: string;
+    status: "measured" | "compile-failed";
+    via_ir: boolean;
+    optimizer_runs: number;
+    canonical_reference_total_gas?: number;
+    canonical_direct_total_gas?: number;
+    canonical_gas_reduction_percent?: string;
+    deployed_bytecode_bytes?: {
+      coordinator: number;
+      hook: number;
+      router: number;
+      reference_router: number;
+    };
+    error?: string;
+    error_sha256?: string;
   }>;
 }
 

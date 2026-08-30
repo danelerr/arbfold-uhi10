@@ -2,15 +2,16 @@ import react from "@vitejs/plugin-react";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
+import { optimizedBenchmarkEvidence, publicDeploymentManifest } from "./scripts/evidence-sources.mjs";
 
 const developmentEvidence = new Map([
   [
     "/deployments/unichain-sepolia-1301.json",
-    fileURLToPath(new URL("./deployments/unichain-sepolia-1301.json", import.meta.url)),
+    fileURLToPath(publicDeploymentManifest),
   ],
   [
     "/data/release-results.json",
-    fileURLToPath(new URL("./benchmark/release-candidate-results/raw.json", import.meta.url)),
+    fileURLToPath(optimizedBenchmarkEvidence),
   ],
 ]);
 

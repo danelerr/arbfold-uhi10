@@ -6,14 +6,16 @@ Target length: **3:30–4:15**. Use a real human voice. Do not exceed five minut
 
 > A cyclic arbitrage normally reconciles three inconsistent pools by executing three full swaps. Even if a protocol reinjects the profit, the EVM still pays for that full path. ARBFOLD asks whether cooperating v4 pools can reach the same safe state more efficiently.
 
-The page opens directly on `3 swaps → 1 verified transition`. Click `Replay
+The page opens directly on `Don’t replay every leg. Settle the equivalent
+state.` Click `Replay
 demo`; let both execution paths finish before speaking over the
 result.
 
-> The left side executes the conventional user swap, three-leg backrun and
-> reinjection. The right side verifies the same cycle and applies one direct,
-> PoolManager-backed reserve transition. Same user output, same solver reward,
-> equivalent final reserves—19.12% less gas at the canonical 100k workload.
+> At canonical 100k, the iterative reference runs two cycles—six arbitrage
+> swaps and two profit reinjections. One ARBFOLD call applies two
+> runtime-checked direct settlement rounds. The user output and fixed
+> external-recipient reward match, the final reserves are equivalent within
+> measured tolerance, and v0.1 uses 31.06% less total gas.
 
 ## 0:45–1:20 — Run the deployed code
 
@@ -22,7 +24,7 @@ are valueless test tokens, identify the three pools, and point to the dynamic
 `ARFX → ARFY → ARFZ → ARFX` cycle. The visible quote is read from the deployed
 pool state without signing or changing state.
 
-> This is not a pre-rendered animation. The page has verified the deployed
+> This is not a pre-rendered animation. The page has checked the immutable v0
 > bytecode and token/hook roles. The primary action advances one operation at a
 > time: connect, obtain only missing valueless test tokens, approve only this
 > swap, then submit the deployed protocol path and produce an explorer receipt.
@@ -34,14 +36,21 @@ Open the latest interactive validation transaction and show its `SwapAndFold`,
 
 Close the testnet panel and scroll to `Full benchmark`.
 
-Click 10k, 25k, 50k, 100k and 200k. Explicitly show that the direct path costs 0.98% more at 25k: the advantage is workload-dependent, not universal.
+Click 10k, 25k, 50k, 100k and 200k. All five frozen v0.1
+actionable rows are cheaper. Then show the report's dense boundary: 1k–4k
+execute zero rounds and are more expensive; all 196 actionable rows from
+5k–200k are cheaper in the tested canonical path.
 
 ## 1:50–2:20 — Same result
 
 Use `Verify everything` to open the canonical Unichain Sepolia transaction and
 the committed benchmark report.
 
-> This is not three numbers changed in memory. The public demo uses the official v4 PoolManager on Unichain Sepolia. All 28 deployment transactions and all three demo transactions finalized, and the post-deployment verifier passed. Each virtual reserve must exactly equal its ERC-6909 claim balance. Token totals are conserved except for the same capped solver reward, no invariant may decrease, and residual cyclic profit is zero in the canonical case.
+> This is not arithmetic changed only in memory. The benchmark uses a real v4
+> PoolManager. v0.1 keeps conservation and non-decreasing-invariant checks on
+> every round, then compares its cached final state with a fresh network read.
+> The live Unichain Sepolia demo is the immutable v0 deployment and is shown as
+> separate exploratory evidence, not as a v0.1 deployment.
 
 ## 2:20–3:00 — Code
 
@@ -62,7 +71,8 @@ Run the recording-safe proof command:
 make video-proof
 ```
 
-It executes the 61-test core suite and prints a compact summary, the canonical
+It executes the 82 current Solidity tests
+and prints a compact summary, the canonical
 benchmark and the committed public deployment facts. Mention fuzzing, stateful
 invariants, unauthorized calls, exact backing, slippage rollback and the
 five-size clean-core gas grid.
@@ -71,8 +81,15 @@ five-size clean-core gas grid.
 
 Show the evidence cards.
 
-> We preregistered a harder claim: 10% more LP net value. It failed. Gas savings produced only 0.000287% LP-value improvement in that environment. The minimal frozen harness measured 39.58% lower gas, the earlier clean core measured 18.86%, and the delivered release candidate measures 19.12%, including a 25k case where direct execution is 0.98% more expensive. We preserved every result instead of selecting the flattering one.
+> We preregistered a harder claim: 10% more LP net value. It failed. Gas
+> savings produced only 0.000287% LP-value improvement in that environment.
+> We kept the historical 39.58%, 18.86% and v0 19.12% reports immutable. v0.1
+> is a separate optimization result: 31.06% less at canonical 100k and 19.45%
+> less at the former 25k regression.
 
 ## 3:55–4:15 — Close
 
-> Three swaps become one verified transition. Same user output, same solver reward and equivalent final reserves. At the canonical 100k benchmark, 19.12% less gas in the delivered core. The advantage is workload-dependent.
+> Don’t replay every leg. Settle the equivalent state. One fold call can process
+> multiple runtime-checked direct settlement rounds. At canonical 100k, v0.1
+> uses 31.06% less total gas than the iterative reference; zero-round workloads
+> remain outside the efficiency claim.

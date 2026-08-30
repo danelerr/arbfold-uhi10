@@ -2,16 +2,33 @@
 set -euo pipefail
 
 root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-slither_bin="${SLITHER:-slither}"
 report="${SLITHER_REPORT:-${root_dir}/contracts/slither-report.json}"
 
-if ! command -v "${slither_bin}" >/dev/null 2>&1; then
-  printf 'Required analyzer not found: %s\n' "${slither_bin}" >&2
+if [[ -n "${SLITHER:-}" ]]; then
+  if [[ "${SLITHER}" == */* ]]; then
+    slither_bin="${SLITHER}"
+    [[ "${slither_bin}" == /* ]] || slither_bin="${root_dir}/${slither_bin}"
+    if [[ ! -x "${slither_bin}" ]]; then
+      printf 'SLITHER is not executable: %s\n' "${slither_bin}" >&2
+      exit 1
+    fi
+  elif command -v "${SLITHER}" >/dev/null 2>&1; then
+    slither_bin="$(command -v "${SLITHER}")"
+  else
+    printf 'SLITHER command not found: %s\n' "${SLITHER}" >&2
+    exit 1
+  fi
+elif command -v slither >/dev/null 2>&1; then
+  slither_bin="$(command -v slither)"
+elif [[ -x "${root_dir}/.venv/bin/slither" ]]; then
+  slither_bin="${root_dir}/.venv/bin/slither"
+else
+  printf '%s\n' \
+    'Slither is required for the release gate.' \
+    'Create the repository virtual environment and install CI dependencies:' \
+    '  python3 -m venv .venv' \
+    '  .venv/bin/pip install -r requirements-ci.txt' >&2
   exit 1
-fi
-slither_bin="$(command -v "${slither_bin}")"
-if [[ "${slither_bin}" != /* ]]; then
-  slither_bin="${root_dir}/${slither_bin}"
 fi
 
 rm -f "${report}"

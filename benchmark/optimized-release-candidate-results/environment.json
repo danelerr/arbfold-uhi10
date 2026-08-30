@@ -1,0 +1,47 @@
+{
+  "branch": "main",
+  "commands": [
+    "FOUNDRY_PROFILE=release forge test --offline --match-test test_ReportCleanCoreGasGrid|test_ReportV01FrozenGrid|test_ReportV01DenseSweep|test_ReportV01SixPathMatrix -vv",
+    "forge fmt --check",
+    "forge test --offline",
+    "FOUNDRY_PROFILE=release forge test --offline"
+  ],
+  "commit_base": "f9d46e8820349ab0f2b0ea0627cc1eb7acd9811e",
+  "dense_sweep": {
+    "end_tokens": 200000,
+    "start_tokens": 1000,
+    "step_tokens": 1000
+  },
+  "dirty_state_relevant_to_measurement": [
+    "M contracts/src/ArbFoldCoordinator.sol",
+    " M contracts/test/ArbFoldCleanCoreBenchmark.t.sol",
+    "?? contracts/test/ArbFoldResearchFindings.t.sol",
+    "?? contracts/test/ArbFoldV01.t.sol",
+    "?? scripts/generate-v01-benchmark.py"
+  ],
+  "evm_target": "cancun",
+  "forge_version": "forge Version: 1.5.1-stable",
+  "frozen_grid_token_units": [
+    10000,
+    25000,
+    50000,
+    100000,
+    200000
+  ],
+  "gas_accounting": "intrinsic + calldata + measured EVM execution",
+  "generated_at": "2026-08-30T16:45:26.138632-04:00",
+  "openzeppelin_uniswap_hooks_commit": "12048bb17b93ad9ed683aff9c34b89596280c77d",
+  "optimizer_enabled": true,
+  "optimizer_runs": 200,
+  "platform": "macOS-26.6-arm64-arm-64bit",
+  "residual_threshold_wei_a": "1000000000000",
+  "schema": "arbfold-v0.1-environment-v4",
+  "selected_compiler_configuration": "no-ir-runs-200",
+  "selection_rationale": "Retains the already validated compilation pipeline and compares both paths under identical settings; alternative configurations are reported, not selected by relative percentage.",
+  "solidity_version": "0.8.26",
+  "source_tree_sha256": "d41622745ff2b64fc807bc8ee5070981bbe029813b1debfc889301dc9a836618",
+  "state_tolerance_wei": 1,
+  "timezone": "America/La_Paz",
+  "tracked_measurement_diff_sha256": "bf6de3364c46a4a94bf28b57774b5a8310cf6cacced70fc0deaed8efb07eedd0",
+  "via_ir": false
+}

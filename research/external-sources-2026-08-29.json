@@ -1,0 +1,106 @@
+{
+  "schema": "arbfold-external-source-manifest-v1",
+  "accessed": "2026-08-29",
+  "policy": "Primary sources only for technical claims; repository commits are pinned where available.",
+  "sources": [
+    {
+      "name": "Defensive Rebalancing for Automated Market Makers",
+      "kind": "research_paper",
+      "version": "arXiv v2, revised 2026-08-04",
+      "url": "https://arxiv.org/html/2601.19950v2",
+      "pdf_url": "https://arxiv.org/pdf/2601.19950v2",
+      "pdf_sha256": "5c80ec29dd53c3b2cc5df7a7589551343423bea24449d1e0bb5b98873bf0a5cd",
+      "pdf_bytes": 513105,
+      "used_for": [
+        "general defensive-rebalancing result",
+        "constructive arbitrage-mimic plus profit-distribution proof",
+        "global sum-log optimization objective",
+        "priority and onchain verification limitations"
+      ]
+    },
+    {
+      "name": "Uniswap v4 Core whitepaper",
+      "kind": "protocol_whitepaper",
+      "commit": "d153b048868a60c2403a3ef5b2301bb247884d46",
+      "url": "https://raw.githubusercontent.com/Uniswap/v4-core/d153b048868a60c2403a3ef5b2301bb247884d46/docs/whitepaper/whitepaper-v4.pdf",
+      "pdf_sha256": "45a96d11a880416665b96cb06197ea0eb90f776da32a8bf3b1827c6ab63870cd",
+      "pdf_bytes": 395851,
+      "repository": "https://github.com/Uniswap/v4-core",
+      "used_for": [
+        "singleton architecture",
+        "flash accounting",
+        "custom accounting",
+        "ERC-6909 claims"
+      ]
+    },
+    {
+      "name": "OpenZeppelin Uniswap Hooks BaseCustomCurve documentation",
+      "kind": "official_library_documentation",
+      "url": "https://docs.openzeppelin.com/uniswap-hooks/api/base",
+      "pinned_local_dependency_commit": "12048bb17b93ad9ed683aff9c34b89596280c77d",
+      "used_for": [
+        "hook-owned liquidity",
+        "custom-curve behavior",
+        "experimental software status"
+      ]
+    },
+    {
+      "name": "MEV-X Homelander",
+      "kind": "official_competitor_repository",
+      "url": "https://github.com/mev-x-project/MEV-X-Homelander",
+      "commit": "36ace1f3ae13548c4159796b74ba91c766bbe4f8",
+      "used_for": [
+        "post-swap atomic internalization architecture",
+        "router, executor and profit-distributor comparison",
+        "scope warning that ARBFOLD does not benchmark actual Homelander code"
+      ]
+    },
+    {
+      "name": "KNOT hook",
+      "kind": "comparable_repository",
+      "url": "https://github.com/Hijanhv/KNOT-hook-",
+      "commit": null,
+      "limitation": "The repository was readable through the public web index during prior review, but git ls-remote and a fresh clone failed on 2026-08-29. It is therefore not treated as pinned benchmark evidence.",
+      "used_for": [
+        "qualitative distinction between same-pair quote protection and cyclic reserve transitions"
+      ]
+    },
+    {
+      "name": "UHI Hook Directory",
+      "kind": "official_project_directory",
+      "repository": "https://github.com/AtriumAcademy/UHI-Hook-Data",
+      "commit": "3660c054f9d7e9a0cfbf5c27cc2845f55852df05",
+      "snapshot_url": "https://raw.githubusercontent.com/AtriumAcademy/UHI-Hook-Data/3660c054f9d7e9a0cfbf5c27cc2845f55852df05/hook_directory.md",
+      "snapshot_sha256": "3fd9e5baefb36b88a170bc2bd25d0fb6d6e1a19b5471d03d993ac699f0df5848",
+      "used_for": [
+        "bounded negative novelty search only"
+      ]
+    },
+    {
+      "name": "Atrium Academy UHI10 theme",
+      "kind": "official_program_source",
+      "url": "https://blog.atrium.academy/uniswap-hook-incubator-2025-wrapped",
+      "used_for": [
+        "UHI10 Sustainable Liquidity and MEV Protection scope"
+      ]
+    },
+    {
+      "name": "Unichain whitepaper",
+      "kind": "chain_whitepaper",
+      "url": "https://docs.unichain.org/whitepaper.pdf",
+      "used_for": [
+        "Unichain OP Stack architecture",
+        "application-level MEV internalization context"
+      ]
+    },
+    {
+      "name": "OP Stack transaction fees",
+      "kind": "official_protocol_documentation",
+      "url": "https://docs.optimism.io/op-stack/transactions/fees",
+      "used_for": [
+        "execution fee, L1 data fee and operator fee distinction",
+        "warning that Foundry execution gas is not a complete L2 transaction-cost model"
+      ]
+    }
+  ]
+}

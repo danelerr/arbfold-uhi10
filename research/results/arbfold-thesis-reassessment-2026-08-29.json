@@ -1,0 +1,223 @@
+{
+  "analysis_date": "2026-08-29",
+  "arithmetic_differential": {
+    "direction_mismatches": 0,
+    "final_reserve_max_relative_error": 1.6724536008004878e-13,
+    "profit_max_relative_error": 8.163592768170244e-13,
+    "rejected_fold_domain": 7662,
+    "residual_max_absolute_error": 736086,
+    "residual_max_relative_error": 0.5841584158415841,
+    "residual_metric_is_part_of_existing_pass_gate": false,
+    "samples": 50000,
+    "seed": 1057,
+    "valid_fold_pairs": 42338
+  },
+  "artifact_verification": {
+    "checks": {
+      "delivered_sources_match_release_manifest": true,
+      "freeze_digest_matches_decision": true,
+      "freeze_digest_matches_v0_raw": true,
+      "release_mechanical_checks_all_true": true,
+      "release_tree_digest_matches_manifest": true,
+      "v0_decision_is_kill": true,
+      "v0_raw_digest_matches_decision": true
+    },
+    "digests": {
+      "arithmetic_differential_sha256": "4a1c95a3fd5a1049b38ba4f23665d131a3a477a78828d6e980db9d951ea5cee6",
+      "delivered_source_tree_sha256": "53db6012988f770c06f784b6f0ad152ac844ae1a0dc8058e1f1dfd002b85c3f3",
+      "freeze_v0_sha256": "8f6dc062d3897693eed8fa5af9cf5d6b6ce62f7c32af07719cf5d588e203aaf0",
+      "release_raw_sha256": "222a5adaeefa510b489708883488bc232c7f5d3b40d328e05fa39b4a1e9c420d",
+      "release_source_manifest_sha256": "20afdcea444547df5a115983cbe82674452ab8d532fa4259153379a2466af969",
+      "v0_decision_sha256": "9e349450d504ed5c34f29e9e532bc26dd3da10f180166a759d74376472264061",
+      "v0_raw_sha256": "81e9ee474809b9a9e2852e4573383dea9ccc8d40092ceab81cb91d3f550cb00e"
+    }
+  },
+  "canonical_economics": {
+    "actual_contract_distribution": {
+      "backrun_pool_retention_a": "0.772641352045525365",
+      "direct_pool_retention_a": "0.772641352045525365",
+      "interpretation": "The delivered mechanism pays the same fixed reward in both paths. Execution savings accrue to the gas payer unless a separate competitive reward market passes them through.",
+      "lp_retention_difference_a": "0"
+    },
+    "canonical_input_wei": "100000000000000000000000",
+    "canonical_release_gas": {
+      "backrun_total": 544187,
+      "direct_over_backrun": "0.808780805127649135315617609387949362994705863976904997730560",
+      "direct_total": 440128,
+      "reduction_percent": "19.1219194872350864684382390612050637005294136023095002269440",
+      "saved": 104059
+    },
+    "fixed_pool_retention_a": "0.772641352045525365",
+    "fixed_reward_share_of_gross": "0.0999999999999999989516481380972301366262318779290472769651259",
+    "fixed_solver_reward_a": "0.085849039116169484",
+    "gas_indexed_reward_counterfactual": {
+      "assumptions": {
+        "entire_transaction_gas_charged_to_cyclic_surplus": true,
+        "gas_token_and_token_a_value_parity": true,
+        "l1_data_fee_included": false,
+        "operating_multiplier": "1.20",
+        "operator_fee_included": false
+      },
+      "backrun_execution_cost_share_of_gross_required_for_1_10_ratio": "0.343383958752556353354446713954076819640870608293785182394748",
+      "gas_price_for_1_10_lp_ratio_gwei": "451.425443012747139923577050062353672893199905517726889440386",
+      "gas_price_where_backrun_lp_net_reaches_zero_gwei": "1314.63754059066529367049684514085537998273877668277019970464",
+      "sensitivities": [
+        {
+          "backrun_cost_a_equivalent": "0.0000006530244",
+          "backrun_lp_net_a_equivalent": "0.858489738137294849",
+          "both_lp_net_values_positive": true,
+          "direct_cost_a_equivalent": "0.0000005281536",
+          "direct_lp_net_a_equivalent": "0.858489863008094849",
+          "direct_over_backrun_lp_net": "1.00000014545403917225380934653097537211707597891224559186719",
+          "gas_price_gwei": "0.001",
+          "lp_net_uplift_percent": "0.00001454540391722538093465309753721170759789122455918671900"
+        },
+        {
+          "backrun_cost_a_equivalent": "0.000006530244",
+          "backrun_lp_net_a_equivalent": "0.858483860917694849",
+          "both_lp_net_values_positive": true,
+          "direct_cost_a_equivalent": "0.000005281536",
+          "direct_lp_net_a_equivalent": "0.858485109625694849",
+          "direct_over_backrun_lp_net": "1.00000145455034957228740047176017897350512075171249371075006",
+          "gas_price_gwei": "0.01",
+          "lp_net_uplift_percent": "0.00014545503495722874004717601789735051207517124937107500600"
+        },
+        {
+          "backrun_cost_a_equivalent": "0.00006530244",
+          "backrun_lp_net_a_equivalent": "0.858425088721694849",
+          "both_lp_net_values_positive": true,
+          "direct_cost_a_equivalent": "0.00005281536",
+          "direct_lp_net_a_equivalent": "0.858437575801694849",
+          "direct_over_backrun_lp_net": "1.00001454649935569202090237051609139231802993454781184867821",
+          "gas_price_gwei": "0.1",
+          "lp_net_uplift_percent": "0.00145464993556920209023705160913923180299345478118486782100"
+        },
+        {
+          "backrun_cost_a_equivalent": "0.0006530244",
+          "backrun_lp_net_a_equivalent": "0.857837366761694849",
+          "both_lp_net_values_positive": true,
+          "direct_cost_a_equivalent": "0.0005281536",
+          "direct_lp_net_a_equivalent": "0.857962237561694849",
+          "direct_over_backrun_lp_net": "1.00014556465460508297838688944000269625048887380815142889045",
+          "gas_price_gwei": "1",
+          "lp_net_uplift_percent": "0.01455646546050829783868894400026962504888738081514288904500"
+        },
+        {
+          "backrun_cost_a_equivalent": "0.006530244",
+          "backrun_lp_net_a_equivalent": "0.851960147161694849",
+          "both_lp_net_values_positive": true,
+          "direct_cost_a_equivalent": "0.005281536",
+          "direct_lp_net_a_equivalent": "0.853208855161694849",
+          "direct_over_backrun_lp_net": "1.00146568827680504843544159054518965165688170575774351658334",
+          "gas_price_gwei": "10",
+          "lp_net_uplift_percent": "0.14656882768050484354415905451896516568817057577435165833400"
+        },
+        {
+          "backrun_cost_a_equivalent": "0.06530244",
+          "backrun_lp_net_a_equivalent": "0.793187951161694849",
+          "both_lp_net_values_positive": true,
+          "direct_cost_a_equivalent": "0.05281536",
+          "direct_lp_net_a_equivalent": "0.805675031161694849",
+          "direct_over_backrun_lp_net": "1.01574290176963927919719035667214952947972937542183379696889",
+          "gas_price_gwei": "100",
+          "lp_net_uplift_percent": "1.57429017696392791971903566721495294797293754218337969688900"
+        },
+        {
+          "backrun_cost_a_equivalent": "0.19590732",
+          "backrun_lp_net_a_equivalent": "0.662583071161694849",
+          "both_lp_net_values_positive": true,
+          "direct_cost_a_equivalent": "0.15844608",
+          "direct_lp_net_a_equivalent": "0.700044311161694849",
+          "direct_over_backrun_lp_net": "1.05653817857784970143331591063552075006228461016975205719311",
+          "gas_price_gwei": "300",
+          "lp_net_uplift_percent": "5.65381785778497014333159106355207500622846101697520571931100"
+        }
+      ],
+      "status": "sensitivity_only_not_implemented"
+    },
+    "gross_cyclic_surplus_a": "0.858490391161694849"
+  },
+  "decision_ledger": {
+    "execution_efficiency_universal": "falsified_by_25k_release_regression",
+    "execution_efficiency_workload_dependent": "supported",
+    "general_defensive_rebalancing_optimizer": "not_implemented",
+    "historical_opportunity_frequency": "not_tested_because_v0_gate_failed_first",
+    "mechanical_equivalence_fixed_grid": "supported",
+    "production_readiness": "not_established",
+    "ten_percent_lp_net_uplift": "falsified"
+  },
+  "delivered_residual_sample": {
+    "interpretation": "No sampled valid fold ended above the threshold. This is empirical evidence, not a contract postcondition: fold() records the residual after eight rounds but does not revert solely because it remains above threshold.",
+    "maximum_delivered_residual_wei_a": 999206326100,
+    "rejected_fold_domain": 7662,
+    "rejected_fold_domain_percent": "15.324",
+    "residual_above_threshold": 0,
+    "samples": 50000,
+    "seed": 1057,
+    "valid_fold_pairs": 42338
+  },
+  "release_grid": [
+    {
+      "backrun_total_gas": 407272,
+      "direct_is_cheaper": true,
+      "direct_over_backrun": "0.955852599736785244259364748865622974326739869178337818460390",
+      "direct_total_gas": 389292,
+      "fold_rounds_from_v0_same_state": 1,
+      "gas_reduction_percent": "4.41474002632147557406352511343770256732601308216621815396099",
+      "gas_saved": 17980,
+      "gross_surplus_wei_a_from_v0_same_state": "3257833909054450",
+      "origin_input_wei": "10000000000000000000000",
+      "residual_wei_a_from_v0_same_state": "0"
+    },
+    {
+      "backrun_total_gas": 409381,
+      "direct_is_cheaper": false,
+      "direct_over_backrun": "1.00983924510419389273073249613440780104596940258585523021342",
+      "direct_total_gas": 413409,
+      "fold_rounds_from_v0_same_state": 1,
+      "gas_reduction_percent": "-0.983924510419389273073249613440780104596940258585523021341977",
+      "gas_saved": -4028,
+      "gross_surplus_wei_a_from_v0_same_state": "44441591895230403",
+      "origin_input_wei": "25000000000000000000000",
+      "residual_wei_a_from_v0_same_state": "99728437921"
+    },
+    {
+      "backrun_total_gas": 544186,
+      "direct_is_cheaper": true,
+      "direct_over_backrun": "0.808780453741919123240950704354761055962483415596873127937874",
+      "direct_total_gas": 440127,
+      "fold_rounds_from_v0_same_state": 2,
+      "gas_reduction_percent": "19.1219546258080876759049295645238944037516584403126872062126",
+      "gas_saved": 104059,
+      "gross_surplus_wei_a_from_v0_same_state": "210562800145472471",
+      "origin_input_wei": "50000000000000000000000",
+      "residual_wei_a_from_v0_same_state": "0"
+    },
+    {
+      "backrun_total_gas": 544187,
+      "direct_is_cheaper": true,
+      "direct_over_backrun": "0.808780805127649135315617609387949362994705863976904997730560",
+      "direct_total_gas": 440128,
+      "fold_rounds_from_v0_same_state": 2,
+      "gas_reduction_percent": "19.1219194872350864684382390612050637005294136023095002269440",
+      "gas_saved": 104059,
+      "gross_surplus_wei_a_from_v0_same_state": "858490391161694849",
+      "origin_input_wei": "100000000000000000000000",
+      "residual_wei_a_from_v0_same_state": "0"
+    },
+    {
+      "backrun_total_gas": 544177,
+      "direct_is_cheaper": true,
+      "direct_over_backrun": "0.808775453574847889565343629003063341523070618567120624355678",
+      "direct_total_gas": 440117,
+      "fold_rounds_from_v0_same_state": 2,
+      "gas_reduction_percent": "19.1224546425152110434656370996936658476929381432879375644322",
+      "gas_saved": 104060,
+      "gross_surplus_wei_a_from_v0_same_state": "3106920722345480484",
+      "origin_input_wei": "200000000000000000000000",
+      "residual_wei_a_from_v0_same_state": "0"
+    }
+  ],
+  "schema": "arbfold-thesis-reassessment-v1",
+  "scope": "frozen v0 experiment, delivered release-candidate core, and deterministic local evidence"
+}

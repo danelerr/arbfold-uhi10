@@ -1,0 +1,2395 @@
+{
+  "compiler_matrix": [
+    {
+      "canonical_direct_total_gas": 375171,
+      "canonical_gas_reduction_percent": "31.062495",
+      "canonical_reference_total_gas": 544219,
+      "deployed_bytecode_bytes": {
+        "coordinator": 10058,
+        "hook": 14728,
+        "reference_router": 6982,
+        "router": 4489
+      },
+      "name": "no-ir-runs-200",
+      "optimizer_runs": 200,
+      "status": "measured",
+      "via_ir": false
+    },
+    {
+      "canonical_direct_total_gas": 373059,
+      "canonical_gas_reduction_percent": "30.790936",
+      "canonical_reference_total_gas": 539032,
+      "deployed_bytecode_bytes": {
+        "coordinator": 10703,
+        "hook": 15624,
+        "reference_router": 7422,
+        "router": 4910
+      },
+      "name": "no-ir-runs-1000",
+      "optimizer_runs": 1000,
+      "status": "measured",
+      "via_ir": false
+    },
+    {
+      "canonical_direct_total_gas": 373253,
+      "canonical_gas_reduction_percent": "28.679906",
+      "canonical_reference_total_gas": 523349,
+      "deployed_bytecode_bytes": {
+        "coordinator": 8686,
+        "hook": 11236,
+        "reference_router": 5664,
+        "router": 3218
+      },
+      "name": "via-ir-runs-200",
+      "optimizer_runs": 200,
+      "status": "measured",
+      "via_ir": true
+    },
+    {
+      "error": "memoryguard was present.",
+      "error_sha256": "d93755cf520ca3d897a68b17421bae55b501f0373bd67c842cf8af6f82a821e7",
+      "name": "via-ir-runs-1000",
+      "optimizer_runs": 1000,
+      "status": "compile-failed",
+      "via_ir": true
+    }
+  ],
+  "dense_sweep": [
+    {
+      "absolute_gas_saved": -31503,
+      "direct_rounds": 0,
+      "direct_total_gas": 221568,
+      "gas_reduction_percent": "-16.574856",
+      "input_tokens": 1000,
+      "input_wei": "1000000000000000000000",
+      "reference_total_gas": 190065
+    },
+    {
+      "absolute_gas_saved": -31504,
+      "direct_rounds": 0,
+      "direct_total_gas": 221569,
+      "gas_reduction_percent": "-16.575382",
+      "input_tokens": 2000,
+      "input_wei": "2000000000000000000000",
+      "reference_total_gas": 190065
+    },
+    {
+      "absolute_gas_saved": -31504,
+      "direct_rounds": 0,
+      "direct_total_gas": 221570,
+      "gas_reduction_percent": "-16.575295",
+      "input_tokens": 3000,
+      "input_wei": "3000000000000000000000",
+      "reference_total_gas": 190066
+    },
+    {
+      "absolute_gas_saved": -31503,
+      "direct_rounds": 0,
+      "direct_total_gas": 221570,
+      "gas_reduction_percent": "-16.574682",
+      "input_tokens": 4000,
+      "input_wei": "4000000000000000000000",
+      "reference_total_gas": 190067
+    },
+    {
+      "absolute_gas_saved": 79623,
+      "direct_rounds": 1,
+      "direct_total_gas": 327673,
+      "gas_reduction_percent": "19.549173",
+      "input_tokens": 5000,
+      "input_wei": "5000000000000000000000",
+      "reference_total_gas": 407296
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 327673,
+      "gas_reduction_percent": "19.549371",
+      "input_tokens": 6000,
+      "input_wei": "6000000000000000000000",
+      "reference_total_gas": 407297
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 327674,
+      "gas_reduction_percent": "19.549323",
+      "input_tokens": 7000,
+      "input_wei": "7000000000000000000000",
+      "reference_total_gas": 407298
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 327663,
+      "gas_reduction_percent": "19.549851",
+      "input_tokens": 8000,
+      "input_wei": "8000000000000000000000",
+      "reference_total_gas": 407287
+    },
+    {
+      "absolute_gas_saved": 79623,
+      "direct_rounds": 1,
+      "direct_total_gas": 327677,
+      "gas_reduction_percent": "19.548981",
+      "input_tokens": 9000,
+      "input_wei": "9000000000000000000000",
+      "reference_total_gas": 407300
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 327677,
+      "gas_reduction_percent": "19.549179",
+      "input_tokens": 10000,
+      "input_wei": "10000000000000000000000",
+      "reference_total_gas": 407301
+    },
+    {
+      "absolute_gas_saved": 79623,
+      "direct_rounds": 1,
+      "direct_total_gas": 327679,
+      "gas_reduction_percent": "19.548885",
+      "input_tokens": 11000,
+      "input_wei": "11000000000000000000000",
+      "reference_total_gas": 407302
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 327679,
+      "gas_reduction_percent": "19.549083",
+      "input_tokens": 12000,
+      "input_wei": "12000000000000000000000",
+      "reference_total_gas": 407303
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 327680,
+      "gas_reduction_percent": "19.549035",
+      "input_tokens": 13000,
+      "input_wei": "13000000000000000000000",
+      "reference_total_gas": 407304
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 327681,
+      "gas_reduction_percent": "19.548987",
+      "input_tokens": 14000,
+      "input_wei": "14000000000000000000000",
+      "reference_total_gas": 407305
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 329790,
+      "gas_reduction_percent": "19.448285",
+      "input_tokens": 15000,
+      "input_wei": "15000000000000000000000",
+      "reference_total_gas": 409414
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 329779,
+      "gas_reduction_percent": "19.448807",
+      "input_tokens": 16000,
+      "input_wei": "16000000000000000000000",
+      "reference_total_gas": 409403
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 329792,
+      "gas_reduction_percent": "19.448190",
+      "input_tokens": 17000,
+      "input_wei": "17000000000000000000000",
+      "reference_total_gas": 409416
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 329793,
+      "gas_reduction_percent": "19.448142",
+      "input_tokens": 18000,
+      "input_wei": "18000000000000000000000",
+      "reference_total_gas": 409417
+    },
+    {
+      "absolute_gas_saved": 79623,
+      "direct_rounds": 1,
+      "direct_total_gas": 329794,
+      "gas_reduction_percent": "19.447898",
+      "input_tokens": 19000,
+      "input_wei": "19000000000000000000000",
+      "reference_total_gas": 409417
+    },
+    {
+      "absolute_gas_saved": 79623,
+      "direct_rounds": 1,
+      "direct_total_gas": 329795,
+      "gas_reduction_percent": "19.447850",
+      "input_tokens": 20000,
+      "input_wei": "20000000000000000000000",
+      "reference_total_gas": 409418
+    },
+    {
+      "absolute_gas_saved": 79623,
+      "direct_rounds": 1,
+      "direct_total_gas": 329796,
+      "gas_reduction_percent": "19.447803",
+      "input_tokens": 21000,
+      "input_wei": "21000000000000000000000",
+      "reference_total_gas": 409419
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 329797,
+      "gas_reduction_percent": "19.447952",
+      "input_tokens": 22000,
+      "input_wei": "22000000000000000000000",
+      "reference_total_gas": 409421
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 329786,
+      "gas_reduction_percent": "19.448475",
+      "input_tokens": 23000,
+      "input_wei": "23000000000000000000000",
+      "reference_total_gas": 409410
+    },
+    {
+      "absolute_gas_saved": 79623,
+      "direct_rounds": 1,
+      "direct_total_gas": 329787,
+      "gas_reduction_percent": "19.448230",
+      "input_tokens": 24000,
+      "input_wei": "24000000000000000000000",
+      "reference_total_gas": 409410
+    },
+    {
+      "absolute_gas_saved": 79623,
+      "direct_rounds": 1,
+      "direct_total_gas": 329800,
+      "gas_reduction_percent": "19.447613",
+      "input_tokens": 25000,
+      "input_wei": "25000000000000000000000",
+      "reference_total_gas": 409423
+    },
+    {
+      "absolute_gas_saved": 79625,
+      "direct_rounds": 1,
+      "direct_total_gas": 329800,
+      "gas_reduction_percent": "19.448006",
+      "input_tokens": 26000,
+      "input_wei": "26000000000000000000000",
+      "reference_total_gas": 409425
+    },
+    {
+      "absolute_gas_saved": 79623,
+      "direct_rounds": 1,
+      "direct_total_gas": 329802,
+      "gas_reduction_percent": "19.447518",
+      "input_tokens": 27000,
+      "input_wei": "27000000000000000000000",
+      "reference_total_gas": 409425
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 329803,
+      "gas_reduction_percent": "19.447667",
+      "input_tokens": 28000,
+      "input_wei": "28000000000000000000000",
+      "reference_total_gas": 409427
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 329803,
+      "gas_reduction_percent": "19.447667",
+      "input_tokens": 29000,
+      "input_wei": "29000000000000000000000",
+      "reference_total_gas": 409427
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 329805,
+      "gas_reduction_percent": "19.447572",
+      "input_tokens": 30000,
+      "input_wei": "30000000000000000000000",
+      "reference_total_gas": 409429
+    },
+    {
+      "absolute_gas_saved": 79623,
+      "direct_rounds": 1,
+      "direct_total_gas": 329806,
+      "gas_reduction_percent": "19.447328",
+      "input_tokens": 31000,
+      "input_wei": "31000000000000000000000",
+      "reference_total_gas": 409429
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 329794,
+      "gas_reduction_percent": "19.448095",
+      "input_tokens": 32000,
+      "input_wei": "32000000000000000000000",
+      "reference_total_gas": 409418
+    },
+    {
+      "absolute_gas_saved": 79625,
+      "direct_rounds": 1,
+      "direct_total_gas": 329807,
+      "gas_reduction_percent": "19.447674",
+      "input_tokens": 33000,
+      "input_wei": "33000000000000000000000",
+      "reference_total_gas": 409432
+    },
+    {
+      "absolute_gas_saved": 79623,
+      "direct_rounds": 1,
+      "direct_total_gas": 329809,
+      "gas_reduction_percent": "19.447185",
+      "input_tokens": 34000,
+      "input_wei": "34000000000000000000000",
+      "reference_total_gas": 409432
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 329809,
+      "gas_reduction_percent": "19.447382",
+      "input_tokens": 35000,
+      "input_wei": "35000000000000000000000",
+      "reference_total_gas": 409433
+    },
+    {
+      "absolute_gas_saved": 79624,
+      "direct_rounds": 1,
+      "direct_total_gas": 329810,
+      "gas_reduction_percent": "19.447335",
+      "input_tokens": 36000,
+      "input_wei": "36000000000000000000000",
+      "reference_total_gas": 409434
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375203,
+      "gas_reduction_percent": "31.060669",
+      "input_tokens": 37000,
+      "input_wei": "37000000000000000000000",
+      "reference_total_gas": 544251
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375205,
+      "gas_reduction_percent": "31.060428",
+      "input_tokens": 38000,
+      "input_wei": "38000000000000000000000",
+      "reference_total_gas": 544252
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375205,
+      "gas_reduction_percent": "31.060555",
+      "input_tokens": 39000,
+      "input_wei": "39000000000000000000000",
+      "reference_total_gas": 544253
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375194,
+      "gas_reduction_percent": "31.061182",
+      "input_tokens": 40000,
+      "input_wei": "40000000000000000000000",
+      "reference_total_gas": 544242
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375207,
+      "gas_reduction_percent": "31.060440",
+      "input_tokens": 41000,
+      "input_wei": "41000000000000000000000",
+      "reference_total_gas": 544255
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375208,
+      "gas_reduction_percent": "31.060383",
+      "input_tokens": 42000,
+      "input_wei": "42000000000000000000000",
+      "reference_total_gas": 544256
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375209,
+      "gas_reduction_percent": "31.060326",
+      "input_tokens": 43000,
+      "input_wei": "43000000000000000000000",
+      "reference_total_gas": 544257
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375210,
+      "gas_reduction_percent": "31.060269",
+      "input_tokens": 44000,
+      "input_wei": "44000000000000000000000",
+      "reference_total_gas": 544258
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375211,
+      "gas_reduction_percent": "31.060212",
+      "input_tokens": 45000,
+      "input_wei": "45000000000000000000000",
+      "reference_total_gas": 544259
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375200,
+      "gas_reduction_percent": "31.060840",
+      "input_tokens": 46000,
+      "input_wei": "46000000000000000000000",
+      "reference_total_gas": 544248
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375213,
+      "gas_reduction_percent": "31.059971",
+      "input_tokens": 47000,
+      "input_wei": "47000000000000000000000",
+      "reference_total_gas": 544260
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375202,
+      "gas_reduction_percent": "31.060726",
+      "input_tokens": 48000,
+      "input_wei": "48000000000000000000000",
+      "reference_total_gas": 544250
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375215,
+      "gas_reduction_percent": "31.059984",
+      "input_tokens": 49000,
+      "input_wei": "49000000000000000000000",
+      "reference_total_gas": 544263
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375216,
+      "gas_reduction_percent": "31.059800",
+      "input_tokens": 50000,
+      "input_wei": "50000000000000000000000",
+      "reference_total_gas": 544263
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375217,
+      "gas_reduction_percent": "31.059870",
+      "input_tokens": 51000,
+      "input_wei": "51000000000000000000000",
+      "reference_total_gas": 544265
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375218,
+      "gas_reduction_percent": "31.059686",
+      "input_tokens": 52000,
+      "input_wei": "52000000000000000000000",
+      "reference_total_gas": 544265
+    },
+    {
+      "absolute_gas_saved": 169049,
+      "direct_rounds": 2,
+      "direct_total_gas": 375218,
+      "gas_reduction_percent": "31.059939",
+      "input_tokens": 53000,
+      "input_wei": "53000000000000000000000",
+      "reference_total_gas": 544267
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375220,
+      "gas_reduction_percent": "31.059572",
+      "input_tokens": 54000,
+      "input_wei": "54000000000000000000000",
+      "reference_total_gas": 544267
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375221,
+      "gas_reduction_percent": "31.059641",
+      "input_tokens": 55000,
+      "input_wei": "55000000000000000000000",
+      "reference_total_gas": 544269
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375210,
+      "gas_reduction_percent": "31.060269",
+      "input_tokens": 56000,
+      "input_wei": "56000000000000000000000",
+      "reference_total_gas": 544258
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375222,
+      "gas_reduction_percent": "31.059584",
+      "input_tokens": 57000,
+      "input_wei": "57000000000000000000000",
+      "reference_total_gas": 544270
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375223,
+      "gas_reduction_percent": "31.059527",
+      "input_tokens": 58000,
+      "input_wei": "58000000000000000000000",
+      "reference_total_gas": 544271
+    },
+    {
+      "absolute_gas_saved": 169049,
+      "direct_rounds": 2,
+      "direct_total_gas": 375224,
+      "gas_reduction_percent": "31.059597",
+      "input_tokens": 59000,
+      "input_wei": "59000000000000000000000",
+      "reference_total_gas": 544273
+    },
+    {
+      "absolute_gas_saved": 169049,
+      "direct_rounds": 2,
+      "direct_total_gas": 375225,
+      "gas_reduction_percent": "31.059540",
+      "input_tokens": 60000,
+      "input_wei": "60000000000000000000000",
+      "reference_total_gas": 544274
+    },
+    {
+      "absolute_gas_saved": 169049,
+      "direct_rounds": 2,
+      "direct_total_gas": 375226,
+      "gas_reduction_percent": "31.059483",
+      "input_tokens": 61000,
+      "input_wei": "61000000000000000000000",
+      "reference_total_gas": 544275
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375227,
+      "gas_reduction_percent": "31.059299",
+      "input_tokens": 62000,
+      "input_wei": "62000000000000000000000",
+      "reference_total_gas": 544275
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375228,
+      "gas_reduction_percent": "31.059242",
+      "input_tokens": 63000,
+      "input_wei": "63000000000000000000000",
+      "reference_total_gas": 544276
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375217,
+      "gas_reduction_percent": "31.059870",
+      "input_tokens": 64000,
+      "input_wei": "64000000000000000000000",
+      "reference_total_gas": 544265
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375231,
+      "gas_reduction_percent": "31.058944",
+      "input_tokens": 65000,
+      "input_wei": "65000000000000000000000",
+      "reference_total_gas": 544278
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375232,
+      "gas_reduction_percent": "31.058887",
+      "input_tokens": 66000,
+      "input_wei": "66000000000000000000000",
+      "reference_total_gas": 544279
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375232,
+      "gas_reduction_percent": "31.059014",
+      "input_tokens": 67000,
+      "input_wei": "67000000000000000000000",
+      "reference_total_gas": 544280
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375233,
+      "gas_reduction_percent": "31.058957",
+      "input_tokens": 68000,
+      "input_wei": "68000000000000000000000",
+      "reference_total_gas": 544281
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375235,
+      "gas_reduction_percent": "31.058716",
+      "input_tokens": 69000,
+      "input_wei": "69000000000000000000000",
+      "reference_total_gas": 544282
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375235,
+      "gas_reduction_percent": "31.058843",
+      "input_tokens": 70000,
+      "input_wei": "70000000000000000000000",
+      "reference_total_gas": 544283
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375236,
+      "gas_reduction_percent": "31.058785",
+      "input_tokens": 71000,
+      "input_wei": "71000000000000000000000",
+      "reference_total_gas": 544284
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375225,
+      "gas_reduction_percent": "31.059413",
+      "input_tokens": 72000,
+      "input_wei": "72000000000000000000000",
+      "reference_total_gas": 544273
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375238,
+      "gas_reduction_percent": "31.058671",
+      "input_tokens": 73000,
+      "input_wei": "73000000000000000000000",
+      "reference_total_gas": 544286
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375239,
+      "gas_reduction_percent": "31.058488",
+      "input_tokens": 74000,
+      "input_wei": "74000000000000000000000",
+      "reference_total_gas": 544286
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375240,
+      "gas_reduction_percent": "31.058557",
+      "input_tokens": 75000,
+      "input_wei": "75000000000000000000000",
+      "reference_total_gas": 544288
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375241,
+      "gas_reduction_percent": "31.058500",
+      "input_tokens": 76000,
+      "input_wei": "76000000000000000000000",
+      "reference_total_gas": 544289
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375242,
+      "gas_reduction_percent": "31.058443",
+      "input_tokens": 77000,
+      "input_wei": "77000000000000000000000",
+      "reference_total_gas": 544290
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375243,
+      "gas_reduction_percent": "31.058259",
+      "input_tokens": 78000,
+      "input_wei": "78000000000000000000000",
+      "reference_total_gas": 544290
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375244,
+      "gas_reduction_percent": "31.058202",
+      "input_tokens": 79000,
+      "input_wei": "79000000000000000000000",
+      "reference_total_gas": 544291
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375233,
+      "gas_reduction_percent": "31.058957",
+      "input_tokens": 80000,
+      "input_wei": "80000000000000000000000",
+      "reference_total_gas": 544281
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375246,
+      "gas_reduction_percent": "31.058215",
+      "input_tokens": 81000,
+      "input_wei": "81000000000000000000000",
+      "reference_total_gas": 544294
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375247,
+      "gas_reduction_percent": "31.058031",
+      "input_tokens": 82000,
+      "input_wei": "82000000000000000000000",
+      "reference_total_gas": 544294
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375248,
+      "gas_reduction_percent": "31.057974",
+      "input_tokens": 83000,
+      "input_wei": "83000000000000000000000",
+      "reference_total_gas": 544295
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375249,
+      "gas_reduction_percent": "31.057917",
+      "input_tokens": 84000,
+      "input_wei": "84000000000000000000000",
+      "reference_total_gas": 544296
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375250,
+      "gas_reduction_percent": "31.057860",
+      "input_tokens": 85000,
+      "input_wei": "85000000000000000000000",
+      "reference_total_gas": 544297
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375251,
+      "gas_reduction_percent": "31.057930",
+      "input_tokens": 86000,
+      "input_wei": "86000000000000000000000",
+      "reference_total_gas": 544299
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375252,
+      "gas_reduction_percent": "31.057872",
+      "input_tokens": 87000,
+      "input_wei": "87000000000000000000000",
+      "reference_total_gas": 544300
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375240,
+      "gas_reduction_percent": "31.058557",
+      "input_tokens": 88000,
+      "input_wei": "88000000000000000000000",
+      "reference_total_gas": 544288
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375253,
+      "gas_reduction_percent": "31.057815",
+      "input_tokens": 89000,
+      "input_wei": "89000000000000000000000",
+      "reference_total_gas": 544301
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375255,
+      "gas_reduction_percent": "31.057701",
+      "input_tokens": 90000,
+      "input_wei": "90000000000000000000000",
+      "reference_total_gas": 544303
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375256,
+      "gas_reduction_percent": "31.057518",
+      "input_tokens": 91000,
+      "input_wei": "91000000000000000000000",
+      "reference_total_gas": 544303
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375256,
+      "gas_reduction_percent": "31.057644",
+      "input_tokens": 92000,
+      "input_wei": "92000000000000000000000",
+      "reference_total_gas": 544304
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375258,
+      "gas_reduction_percent": "31.057403",
+      "input_tokens": 93000,
+      "input_wei": "93000000000000000000000",
+      "reference_total_gas": 544305
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375258,
+      "gas_reduction_percent": "31.057530",
+      "input_tokens": 94000,
+      "input_wei": "94000000000000000000000",
+      "reference_total_gas": 544306
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375259,
+      "gas_reduction_percent": "31.057473",
+      "input_tokens": 95000,
+      "input_wei": "95000000000000000000000",
+      "reference_total_gas": 544307
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375248,
+      "gas_reduction_percent": "31.058101",
+      "input_tokens": 96000,
+      "input_wei": "96000000000000000000000",
+      "reference_total_gas": 544296
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375262,
+      "gas_reduction_percent": "31.057175",
+      "input_tokens": 97000,
+      "input_wei": "97000000000000000000000",
+      "reference_total_gas": 544309
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375262,
+      "gas_reduction_percent": "31.057302",
+      "input_tokens": 98000,
+      "input_wei": "98000000000000000000000",
+      "reference_total_gas": 544310
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375264,
+      "gas_reduction_percent": "31.057061",
+      "input_tokens": 99000,
+      "input_wei": "99000000000000000000000",
+      "reference_total_gas": 544311
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375264,
+      "gas_reduction_percent": "31.057188",
+      "input_tokens": 100000,
+      "input_wei": "100000000000000000000000",
+      "reference_total_gas": 544312
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375265,
+      "gas_reduction_percent": "31.057131",
+      "input_tokens": 101000,
+      "input_wei": "101000000000000000000000",
+      "reference_total_gas": 544313
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375266,
+      "gas_reduction_percent": "31.057074",
+      "input_tokens": 102000,
+      "input_wei": "102000000000000000000000",
+      "reference_total_gas": 544314
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375267,
+      "gas_reduction_percent": "31.057017",
+      "input_tokens": 103000,
+      "input_wei": "103000000000000000000000",
+      "reference_total_gas": 544315
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375256,
+      "gas_reduction_percent": "31.057644",
+      "input_tokens": 104000,
+      "input_wei": "104000000000000000000000",
+      "reference_total_gas": 544304
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375269,
+      "gas_reduction_percent": "31.056903",
+      "input_tokens": 105000,
+      "input_wei": "105000000000000000000000",
+      "reference_total_gas": 544317
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375270,
+      "gas_reduction_percent": "31.056845",
+      "input_tokens": 106000,
+      "input_wei": "106000000000000000000000",
+      "reference_total_gas": 544318
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375271,
+      "gas_reduction_percent": "31.056788",
+      "input_tokens": 107000,
+      "input_wei": "107000000000000000000000",
+      "reference_total_gas": 544319
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375272,
+      "gas_reduction_percent": "31.056731",
+      "input_tokens": 108000,
+      "input_wei": "108000000000000000000000",
+      "reference_total_gas": 544320
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375272,
+      "gas_reduction_percent": "31.056731",
+      "input_tokens": 109000,
+      "input_wei": "109000000000000000000000",
+      "reference_total_gas": 544320
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375274,
+      "gas_reduction_percent": "31.056491",
+      "input_tokens": 110000,
+      "input_wei": "110000000000000000000000",
+      "reference_total_gas": 544321
+    },
+    {
+      "absolute_gas_saved": 169049,
+      "direct_rounds": 2,
+      "direct_total_gas": 375274,
+      "gas_reduction_percent": "31.056744",
+      "input_tokens": 111000,
+      "input_wei": "111000000000000000000000",
+      "reference_total_gas": 544323
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375264,
+      "gas_reduction_percent": "31.057188",
+      "input_tokens": 112000,
+      "input_wei": "112000000000000000000000",
+      "reference_total_gas": 544312
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375277,
+      "gas_reduction_percent": "31.056319",
+      "input_tokens": 113000,
+      "input_wei": "113000000000000000000000",
+      "reference_total_gas": 544324
+    },
+    {
+      "absolute_gas_saved": 169049,
+      "direct_rounds": 2,
+      "direct_total_gas": 375277,
+      "gas_reduction_percent": "31.056573",
+      "input_tokens": 114000,
+      "input_wei": "114000000000000000000000",
+      "reference_total_gas": 544326
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375278,
+      "gas_reduction_percent": "31.056389",
+      "input_tokens": 115000,
+      "input_wei": "115000000000000000000000",
+      "reference_total_gas": 544326
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375280,
+      "gas_reduction_percent": "31.056275",
+      "input_tokens": 116000,
+      "input_wei": "116000000000000000000000",
+      "reference_total_gas": 544328
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375280,
+      "gas_reduction_percent": "31.056275",
+      "input_tokens": 117000,
+      "input_wei": "117000000000000000000000",
+      "reference_total_gas": 544328
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375282,
+      "gas_reduction_percent": "31.056161",
+      "input_tokens": 118000,
+      "input_wei": "118000000000000000000000",
+      "reference_total_gas": 544330
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375271,
+      "gas_reduction_percent": "31.056662",
+      "input_tokens": 119000,
+      "input_wei": "119000000000000000000000",
+      "reference_total_gas": 544318
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375272,
+      "gas_reduction_percent": "31.056605",
+      "input_tokens": 120000,
+      "input_wei": "120000000000000000000000",
+      "reference_total_gas": 544319
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375284,
+      "gas_reduction_percent": "31.056047",
+      "input_tokens": 121000,
+      "input_wei": "121000000000000000000000",
+      "reference_total_gas": 544332
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375285,
+      "gas_reduction_percent": "31.055990",
+      "input_tokens": 122000,
+      "input_wei": "122000000000000000000000",
+      "reference_total_gas": 544333
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375286,
+      "gas_reduction_percent": "31.055933",
+      "input_tokens": 123000,
+      "input_wei": "123000000000000000000000",
+      "reference_total_gas": 544334
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375287,
+      "gas_reduction_percent": "31.055876",
+      "input_tokens": 124000,
+      "input_wei": "124000000000000000000000",
+      "reference_total_gas": 544335
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375288,
+      "gas_reduction_percent": "31.055818",
+      "input_tokens": 125000,
+      "input_wei": "125000000000000000000000",
+      "reference_total_gas": 544336
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375289,
+      "gas_reduction_percent": "31.055761",
+      "input_tokens": 126000,
+      "input_wei": "126000000000000000000000",
+      "reference_total_gas": 544337
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375290,
+      "gas_reduction_percent": "31.055704",
+      "input_tokens": 127000,
+      "input_wei": "127000000000000000000000",
+      "reference_total_gas": 544338
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375279,
+      "gas_reduction_percent": "31.056332",
+      "input_tokens": 128000,
+      "input_wei": "128000000000000000000000",
+      "reference_total_gas": 544327
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375292,
+      "gas_reduction_percent": "31.055590",
+      "input_tokens": 129000,
+      "input_wei": "129000000000000000000000",
+      "reference_total_gas": 544340
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375293,
+      "gas_reduction_percent": "31.055407",
+      "input_tokens": 130000,
+      "input_wei": "130000000000000000000000",
+      "reference_total_gas": 544340
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375294,
+      "gas_reduction_percent": "31.055476",
+      "input_tokens": 131000,
+      "input_wei": "131000000000000000000000",
+      "reference_total_gas": 544342
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375295,
+      "gas_reduction_percent": "31.055419",
+      "input_tokens": 132000,
+      "input_wei": "132000000000000000000000",
+      "reference_total_gas": 544343
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375296,
+      "gas_reduction_percent": "31.055362",
+      "input_tokens": 133000,
+      "input_wei": "133000000000000000000000",
+      "reference_total_gas": 544344
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375297,
+      "gas_reduction_percent": "31.055305",
+      "input_tokens": 134000,
+      "input_wei": "134000000000000000000000",
+      "reference_total_gas": 544345
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375298,
+      "gas_reduction_percent": "31.055121",
+      "input_tokens": 135000,
+      "input_wei": "135000000000000000000000",
+      "reference_total_gas": 544345
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375287,
+      "gas_reduction_percent": "31.055876",
+      "input_tokens": 136000,
+      "input_wei": "136000000000000000000000",
+      "reference_total_gas": 544335
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375300,
+      "gas_reduction_percent": "31.055134",
+      "input_tokens": 137000,
+      "input_wei": "137000000000000000000000",
+      "reference_total_gas": 544348
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375301,
+      "gas_reduction_percent": "31.054950",
+      "input_tokens": 138000,
+      "input_wei": "138000000000000000000000",
+      "reference_total_gas": 544348
+    },
+    {
+      "absolute_gas_saved": 169049,
+      "direct_rounds": 2,
+      "direct_total_gas": 375301,
+      "gas_reduction_percent": "31.055203",
+      "input_tokens": 139000,
+      "input_wei": "139000000000000000000000",
+      "reference_total_gas": 544350
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375303,
+      "gas_reduction_percent": "31.054836",
+      "input_tokens": 140000,
+      "input_wei": "140000000000000000000000",
+      "reference_total_gas": 544350
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375304,
+      "gas_reduction_percent": "31.054906",
+      "input_tokens": 141000,
+      "input_wei": "141000000000000000000000",
+      "reference_total_gas": 544352
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375304,
+      "gas_reduction_percent": "31.054906",
+      "input_tokens": 142000,
+      "input_wei": "142000000000000000000000",
+      "reference_total_gas": 544352
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375305,
+      "gas_reduction_percent": "31.054849",
+      "input_tokens": 143000,
+      "input_wei": "143000000000000000000000",
+      "reference_total_gas": 544353
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375295,
+      "gas_reduction_percent": "31.055419",
+      "input_tokens": 144000,
+      "input_wei": "144000000000000000000000",
+      "reference_total_gas": 544343
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375308,
+      "gas_reduction_percent": "31.054551",
+      "input_tokens": 145000,
+      "input_wei": "145000000000000000000000",
+      "reference_total_gas": 544355
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375308,
+      "gas_reduction_percent": "31.054677",
+      "input_tokens": 146000,
+      "input_wei": "146000000000000000000000",
+      "reference_total_gas": 544356
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375310,
+      "gas_reduction_percent": "31.054437",
+      "input_tokens": 147000,
+      "input_wei": "147000000000000000000000",
+      "reference_total_gas": 544357
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375311,
+      "gas_reduction_percent": "31.054380",
+      "input_tokens": 148000,
+      "input_wei": "148000000000000000000000",
+      "reference_total_gas": 544358
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375312,
+      "gas_reduction_percent": "31.054449",
+      "input_tokens": 149000,
+      "input_wei": "149000000000000000000000",
+      "reference_total_gas": 544360
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375312,
+      "gas_reduction_percent": "31.054449",
+      "input_tokens": 150000,
+      "input_wei": "150000000000000000000000",
+      "reference_total_gas": 544360
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375314,
+      "gas_reduction_percent": "31.054209",
+      "input_tokens": 151000,
+      "input_wei": "151000000000000000000000",
+      "reference_total_gas": 544361
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375302,
+      "gas_reduction_percent": "31.055020",
+      "input_tokens": 152000,
+      "input_wei": "152000000000000000000000",
+      "reference_total_gas": 544350
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375315,
+      "gas_reduction_percent": "31.054278",
+      "input_tokens": 153000,
+      "input_wei": "153000000000000000000000",
+      "reference_total_gas": 544363
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375316,
+      "gas_reduction_percent": "31.054221",
+      "input_tokens": 154000,
+      "input_wei": "154000000000000000000000",
+      "reference_total_gas": 544364
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375318,
+      "gas_reduction_percent": "31.053980",
+      "input_tokens": 155000,
+      "input_wei": "155000000000000000000000",
+      "reference_total_gas": 544365
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375318,
+      "gas_reduction_percent": "31.054107",
+      "input_tokens": 156000,
+      "input_wei": "156000000000000000000000",
+      "reference_total_gas": 544366
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375319,
+      "gas_reduction_percent": "31.054050",
+      "input_tokens": 157000,
+      "input_wei": "157000000000000000000000",
+      "reference_total_gas": 544367
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375320,
+      "gas_reduction_percent": "31.053993",
+      "input_tokens": 158000,
+      "input_wei": "158000000000000000000000",
+      "reference_total_gas": 544368
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375321,
+      "gas_reduction_percent": "31.053936",
+      "input_tokens": 159000,
+      "input_wei": "159000000000000000000000",
+      "reference_total_gas": 544369
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375310,
+      "gas_reduction_percent": "31.054563",
+      "input_tokens": 160000,
+      "input_wei": "160000000000000000000000",
+      "reference_total_gas": 544358
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375323,
+      "gas_reduction_percent": "31.053695",
+      "input_tokens": 161000,
+      "input_wei": "161000000000000000000000",
+      "reference_total_gas": 544370
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375324,
+      "gas_reduction_percent": "31.053765",
+      "input_tokens": 162000,
+      "input_wei": "162000000000000000000000",
+      "reference_total_gas": 544372
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375325,
+      "gas_reduction_percent": "31.053581",
+      "input_tokens": 163000,
+      "input_wei": "163000000000000000000000",
+      "reference_total_gas": 544372
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375326,
+      "gas_reduction_percent": "31.053651",
+      "input_tokens": 164000,
+      "input_wei": "164000000000000000000000",
+      "reference_total_gas": 544374
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375315,
+      "gas_reduction_percent": "31.054151",
+      "input_tokens": 165000,
+      "input_wei": "165000000000000000000000",
+      "reference_total_gas": 544362
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375328,
+      "gas_reduction_percent": "31.053537",
+      "input_tokens": 166000,
+      "input_wei": "166000000000000000000000",
+      "reference_total_gas": 544376
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375329,
+      "gas_reduction_percent": "31.053353",
+      "input_tokens": 167000,
+      "input_wei": "167000000000000000000000",
+      "reference_total_gas": 544376
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375318,
+      "gas_reduction_percent": "31.053980",
+      "input_tokens": 168000,
+      "input_wei": "168000000000000000000000",
+      "reference_total_gas": 544365
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375331,
+      "gas_reduction_percent": "31.053365",
+      "input_tokens": 169000,
+      "input_wei": "169000000000000000000000",
+      "reference_total_gas": 544379
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375332,
+      "gas_reduction_percent": "31.053308",
+      "input_tokens": 170000,
+      "input_wei": "170000000000000000000000",
+      "reference_total_gas": 544380
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375333,
+      "gas_reduction_percent": "31.053125",
+      "input_tokens": 171000,
+      "input_wei": "171000000000000000000000",
+      "reference_total_gas": 544380
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375334,
+      "gas_reduction_percent": "31.053068",
+      "input_tokens": 172000,
+      "input_wei": "172000000000000000000000",
+      "reference_total_gas": 544381
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375335,
+      "gas_reduction_percent": "31.053011",
+      "input_tokens": 173000,
+      "input_wei": "173000000000000000000000",
+      "reference_total_gas": 544382
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375336,
+      "gas_reduction_percent": "31.052954",
+      "input_tokens": 174000,
+      "input_wei": "174000000000000000000000",
+      "reference_total_gas": 544383
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375337,
+      "gas_reduction_percent": "31.052896",
+      "input_tokens": 175000,
+      "input_wei": "175000000000000000000000",
+      "reference_total_gas": 544384
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375326,
+      "gas_reduction_percent": "31.053524",
+      "input_tokens": 176000,
+      "input_wei": "176000000000000000000000",
+      "reference_total_gas": 544373
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375338,
+      "gas_reduction_percent": "31.052966",
+      "input_tokens": 177000,
+      "input_wei": "177000000000000000000000",
+      "reference_total_gas": 544386
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375339,
+      "gas_reduction_percent": "31.052909",
+      "input_tokens": 178000,
+      "input_wei": "178000000000000000000000",
+      "reference_total_gas": 544387
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375341,
+      "gas_reduction_percent": "31.052668",
+      "input_tokens": 179000,
+      "input_wei": "179000000000000000000000",
+      "reference_total_gas": 544388
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375341,
+      "gas_reduction_percent": "31.052795",
+      "input_tokens": 180000,
+      "input_wei": "180000000000000000000000",
+      "reference_total_gas": 544389
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375342,
+      "gas_reduction_percent": "31.052738",
+      "input_tokens": 181000,
+      "input_wei": "181000000000000000000000",
+      "reference_total_gas": 544390
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375343,
+      "gas_reduction_percent": "31.052681",
+      "input_tokens": 182000,
+      "input_wei": "182000000000000000000000",
+      "reference_total_gas": 544391
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375344,
+      "gas_reduction_percent": "31.052624",
+      "input_tokens": 183000,
+      "input_wei": "183000000000000000000000",
+      "reference_total_gas": 544392
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375333,
+      "gas_reduction_percent": "31.053251",
+      "input_tokens": 184000,
+      "input_wei": "184000000000000000000000",
+      "reference_total_gas": 544381
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375346,
+      "gas_reduction_percent": "31.052510",
+      "input_tokens": 185000,
+      "input_wei": "185000000000000000000000",
+      "reference_total_gas": 544394
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375347,
+      "gas_reduction_percent": "31.052453",
+      "input_tokens": 186000,
+      "input_wei": "186000000000000000000000",
+      "reference_total_gas": 544395
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375348,
+      "gas_reduction_percent": "31.052396",
+      "input_tokens": 187000,
+      "input_wei": "187000000000000000000000",
+      "reference_total_gas": 544396
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375349,
+      "gas_reduction_percent": "31.052339",
+      "input_tokens": 188000,
+      "input_wei": "188000000000000000000000",
+      "reference_total_gas": 544397
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375350,
+      "gas_reduction_percent": "31.052155",
+      "input_tokens": 189000,
+      "input_wei": "189000000000000000000000",
+      "reference_total_gas": 544397
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375351,
+      "gas_reduction_percent": "31.052225",
+      "input_tokens": 190000,
+      "input_wei": "190000000000000000000000",
+      "reference_total_gas": 544399
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375352,
+      "gas_reduction_percent": "31.052168",
+      "input_tokens": 191000,
+      "input_wei": "191000000000000000000000",
+      "reference_total_gas": 544400
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375341,
+      "gas_reduction_percent": "31.052668",
+      "input_tokens": 192000,
+      "input_wei": "192000000000000000000000",
+      "reference_total_gas": 544388
+    },
+    {
+      "absolute_gas_saved": 169047,
+      "direct_rounds": 2,
+      "direct_total_gas": 375354,
+      "gas_reduction_percent": "31.051927",
+      "input_tokens": 193000,
+      "input_wei": "193000000000000000000000",
+      "reference_total_gas": 544401
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375355,
+      "gas_reduction_percent": "31.051996",
+      "input_tokens": 194000,
+      "input_wei": "194000000000000000000000",
+      "reference_total_gas": 544403
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375356,
+      "gas_reduction_percent": "31.051939",
+      "input_tokens": 195000,
+      "input_wei": "195000000000000000000000",
+      "reference_total_gas": 544404
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375357,
+      "gas_reduction_percent": "31.051882",
+      "input_tokens": 196000,
+      "input_wei": "196000000000000000000000",
+      "reference_total_gas": 544405
+    },
+    {
+      "absolute_gas_saved": 169049,
+      "direct_rounds": 2,
+      "direct_total_gas": 375357,
+      "gas_reduction_percent": "31.052009",
+      "input_tokens": 197000,
+      "input_wei": "197000000000000000000000",
+      "reference_total_gas": 544406
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375358,
+      "gas_reduction_percent": "31.051825",
+      "input_tokens": 198000,
+      "input_wei": "198000000000000000000000",
+      "reference_total_gas": 544406
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375359,
+      "gas_reduction_percent": "31.051768",
+      "input_tokens": 199000,
+      "input_wei": "199000000000000000000000",
+      "reference_total_gas": 544407
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_rounds": 2,
+      "direct_total_gas": 375349,
+      "gas_reduction_percent": "31.052339",
+      "input_tokens": 200000,
+      "input_wei": "200000000000000000000000",
+      "reference_total_gas": 544397
+    }
+  ],
+  "dense_sweep_summary": {
+    "actionable_rows": 196,
+    "cheaper_actionable_rows": 196,
+    "first_actionable_tokens": 5000,
+    "regression_ranges": [
+      {
+        "end_tokens": 4000,
+        "start_tokens": 1000
+      }
+    ],
+    "round_regions": {
+      "0": [
+        {
+          "end_tokens": 4000,
+          "start_tokens": 1000
+        }
+      ],
+      "1": [
+        {
+          "end_tokens": 36000,
+          "start_tokens": 5000
+        }
+      ],
+      "2": [
+        {
+          "end_tokens": 200000,
+          "start_tokens": 37000
+        }
+      ]
+    },
+    "zero_round_ranges": [
+      {
+        "end_tokens": 4000,
+        "start_tokens": 1000
+      }
+    ]
+  },
+  "frozen_grid": [
+    {
+      "absolute_gas_saved": 79623,
+      "direct_calldata_gas": 1408,
+      "direct_execution_gas": 305261,
+      "direct_external_recipient_reward": "325783390905445",
+      "direct_final_reserves": {
+        "ab_a": 330641290468338554407,
+        "ab_b": 1008177303805779970593973,
+        "ac_a": 332734523633613669152,
+        "ac_c": 1001813931777828989717351,
+        "bc_b": 1001822696194220029406027,
+        "bc_c": 998186068222171010282649
+      },
+      "direct_fold_calls": 1,
+      "direct_residual": 0,
+      "direct_rounds": 1,
+      "direct_to_reference_bps": 8045,
+      "direct_total_gas": 327669,
+      "direct_user_output": "3290526781323537662",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "19.549365",
+      "input_tokens": 10000,
+      "input_wei": "10000000000000000000000",
+      "kind": "grid",
+      "path": 1,
+      "path_label": "ARFX -> ARFY (internal B -> A)",
+      "reference_arbitrage_swaps": 3,
+      "reference_calldata_gas": 1408,
+      "reference_execution_gas": 384884,
+      "reference_external_recipient_reward": "325783390905445",
+      "reference_final_reserves": {
+        "ab_a": 330641290468338554407,
+        "ab_b": 1008177303805779970593973,
+        "ac_a": 332734523633613669152,
+        "ac_c": 1001813931777828989717351,
+        "bc_b": 1001822696194220029406027,
+        "bc_c": 998186068222171010282649
+      },
+      "reference_reinjections": 1,
+      "reference_residual": 0,
+      "reference_rounds": 1,
+      "reference_total_gas": 407292,
+      "reference_user_output": "3290526781323537662"
+    },
+    {
+      "absolute_gas_saved": 79625,
+      "direct_calldata_gas": 1408,
+      "direct_execution_gas": 307369,
+      "direct_external_recipient_reward": "4444159189523040",
+      "direct_final_reserves": {
+        "ab_a": 327410521761206737556,
+        "ab_b": 1018184733661800803914627,
+        "ac_a": 331145416546613520607,
+        "ac_c": 1006748962549832806881558,
+        "bc_b": 1006815266338199196085373,
+        "bc_c": 993251037450167193118442
+      },
+      "direct_fold_calls": 1,
+      "direct_residual": 99728437921,
+      "direct_rounds": 1,
+      "direct_to_reference_bps": 8055,
+      "direct_total_gas": 329777,
+      "direct_user_output": "8106284199656885463",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "19.449099",
+      "input_tokens": 25000,
+      "input_wei": "25000000000000000000000",
+      "kind": "grid",
+      "path": 1,
+      "path_label": "ARFX -> ARFY (internal B -> A)",
+      "reference_arbitrage_swaps": 3,
+      "reference_calldata_gas": 1408,
+      "reference_execution_gas": 386994,
+      "reference_external_recipient_reward": "4444159189523040",
+      "reference_final_reserves": {
+        "ab_a": 327410521761206737556,
+        "ab_b": 1018184733661800803914627,
+        "ac_a": 331145416546613520607,
+        "ac_c": 1006748962549832806881558,
+        "bc_b": 1006815266338199196085373,
+        "bc_c": 993251037450167193118442
+      },
+      "reference_reinjections": 1,
+      "reference_residual": 99728437921,
+      "reference_rounds": 1,
+      "reference_total_gas": 409402,
+      "reference_user_output": "8106284199656885463"
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_calldata_gas": 1408,
+      "direct_execution_gas": 352763,
+      "direct_external_recipient_reward": "21056280014547246",
+      "direct_final_reserves": {
+        "ab_a": 322187579325085305409,
+        "ab_b": 1034786925286680425094090,
+        "ac_a": 328630373142181504999,
+        "ac_c": 1014940818222876624786438,
+        "bc_b": 1015213074713319574905910,
+        "bc_c": 985059181777123375213562
+      },
+      "direct_fold_calls": 1,
+      "direct_residual": 0,
+      "direct_rounds": 2,
+      "direct_to_reference_bps": 6893,
+      "direct_total_gas": 375171,
+      "direct_user_output": "15827657919385309012",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "31.062495",
+      "input_tokens": 50000,
+      "input_wei": "50000000000000000000000",
+      "kind": "grid",
+      "path": 1,
+      "path_label": "ARFX -> ARFY (internal B -> A)",
+      "reference_arbitrage_swaps": 6,
+      "reference_calldata_gas": 1408,
+      "reference_execution_gas": 521811,
+      "reference_external_recipient_reward": "21056280014547246",
+      "reference_final_reserves": {
+        "ab_a": 322187579325085305409,
+        "ab_b": 1034786925286680425094090,
+        "ac_a": 328630373142181504999,
+        "ac_c": 1014940818222876624786438,
+        "bc_b": 1015213074713319574905910,
+        "bc_c": 985059181777123375213562
+      },
+      "reference_reinjections": 2,
+      "reference_residual": 0,
+      "reference_rounds": 2,
+      "reference_total_gas": 544219,
+      "reference_user_output": "15827657919385309012"
+    },
+    {
+      "absolute_gas_saved": 169048,
+      "direct_calldata_gas": 1408,
+      "direct_execution_gas": 352763,
+      "direct_external_recipient_reward": "85849039116169484",
+      "direct_final_reserves": {
+        "ab_a": 312268112026399995277,
+        "ab_b": 1067843924494458942956337,
+        "ac_a": 324092342471812197519,
+        "ac_c": 1031063684116546105166935,
+        "bc_b": 1032156075505541057043663,
+        "bc_c": 968936315883453894833065
+      },
+      "direct_fold_calls": 1,
+      "direct_residual": 0,
+      "direct_rounds": 2,
+      "direct_to_reference_bps": 6893,
+      "direct_total_gas": 375171,
+      "direct_user_output": "30220363129338304386",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "31.062495",
+      "input_tokens": 100000,
+      "input_wei": "100000000000000000000000",
+      "kind": "grid",
+      "path": 1,
+      "path_label": "ARFX -> ARFY (internal B -> A)",
+      "reference_arbitrage_swaps": 6,
+      "reference_calldata_gas": 1408,
+      "reference_execution_gas": 521811,
+      "reference_external_recipient_reward": "85849039116169484",
+      "reference_final_reserves": {
+        "ab_a": 312268112026399995277,
+        "ab_b": 1067843924494458942956337,
+        "ac_a": 324092342471812197519,
+        "ac_c": 1031063684116546105166935,
+        "bc_b": 1032156075505541057043663,
+        "bc_c": 968936315883453894833065
+      },
+      "reference_reinjections": 2,
+      "reference_residual": 0,
+      "reference_rounds": 2,
+      "reference_total_gas": 544219,
+      "reference_user_output": "30220363129338304386"
+    },
+    {
+      "absolute_gas_saved": 169049,
+      "direct_calldata_gas": 1396,
+      "direct_execution_gas": 352764,
+      "direct_external_recipient_reward": "310692072234548048",
+      "direct_final_reserves": {
+        "ab_a": 294308174361140329184,
+        "ab_b": 1133355849661429459575773,
+        "ac_a": 316631203045809159231,
+        "ac_c": 1062304194104790137785698,
+        "bc_b": 1066644150338570540424227,
+        "bc_c": 937695805895209862214302
+      },
+      "direct_fold_calls": 1,
+      "direct_residual": 0,
+      "direct_rounds": 2,
+      "direct_to_reference_bps": 6893,
+      "direct_total_gas": 375160,
+      "direct_user_output": "55416597187482630203",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "31.063250",
+      "input_tokens": 200000,
+      "input_wei": "200000000000000000000000",
+      "kind": "grid",
+      "path": 1,
+      "path_label": "ARFX -> ARFY (internal B -> A)",
+      "reference_arbitrage_swaps": 6,
+      "reference_calldata_gas": 1396,
+      "reference_execution_gas": 521813,
+      "reference_external_recipient_reward": "310692072234548048",
+      "reference_final_reserves": {
+        "ab_a": 294308174361140329184,
+        "ab_b": 1133355849661429459575773,
+        "ac_a": 316631203045809159231,
+        "ac_c": 1062304194104790137785698,
+        "bc_b": 1066644150338570540424227,
+        "bc_c": 937695805895209862214302
+      },
+      "reference_reinjections": 2,
+      "reference_residual": 0,
+      "reference_rounds": 2,
+      "reference_total_gas": 544209,
+      "reference_user_output": "55416597187482630203"
+    }
+  ],
+  "mechanical_gates": {
+    "all_five_cheaper": true,
+    "all_frozen_final_reserves_within_one_wei": true,
+    "all_frozen_outputs_equal": true,
+    "all_frozen_residuals_equal_and_within_threshold": true,
+    "all_frozen_rewards_equal": true,
+    "twenty_five_k_cheaper": true
+  },
+  "residual_threshold_wei_a": "1000000000000",
+  "schema": "arbfold-v0.1-optimized-release-candidate-v4",
+  "six_path_matrix": [
+    {
+      "absolute_gas_saved": 79509,
+      "direct_calldata_gas": 1396,
+      "direct_execution_gas": 303128,
+      "direct_external_recipient_reward": "24022737533150",
+      "direct_final_reserves": {
+        "ab_a": 335169603943158714397,
+        "ab_b": 994541268482658242394581,
+        "ac_a": 333497038700770419119,
+        "ac_c": 999510596878687814024885,
+        "bc_b": 999512303052418925984172,
+        "bc_c": 1000489403121312185975115
+      },
+      "direct_fold_calls": 1,
+      "direct_residual": 0,
+      "direct_rounds": 1,
+      "direct_to_reference_bps": 8036,
+      "direct_total_gas": 325524,
+      "direct_user_output": "5946428464922831621247",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "19.630252",
+      "input_tokens": 2,
+      "input_wei": "2000000000000000000",
+      "kind": "path",
+      "path": 0,
+      "path_label": "ARFY -> ARFX (internal A -> B)",
+      "reference_arbitrage_swaps": 3,
+      "reference_calldata_gas": 1396,
+      "reference_execution_gas": 382637,
+      "reference_external_recipient_reward": "24022737533150",
+      "reference_final_reserves": {
+        "ab_a": 335169603943158714397,
+        "ab_b": 994541268482658242394581,
+        "ac_a": 333497038700770419119,
+        "ac_c": 999510596878687814024885,
+        "bc_b": 999512303052418925984172,
+        "bc_c": 1000489403121312185975115
+      },
+      "reference_reinjections": 1,
+      "reference_residual": 0,
+      "reference_rounds": 1,
+      "reference_total_gas": 405033,
+      "reference_user_output": "5946428464922831621247"
+    },
+    {
+      "absolute_gas_saved": 79621,
+      "direct_calldata_gas": 1408,
+      "direct_execution_gas": 303179,
+      "direct_external_recipient_reward": "2484675942259",
+      "direct_final_reserves": {
+        "ab_a": 331732391725174033793,
+        "ab_b": 1004841477821741116668186,
+        "ac_a": 333280848110516331239,
+        "ac_c": 1000158021636939809248032,
+        "bc_b": 1000158522178258883331814,
+        "bc_c": 999841978363060190751968
+      },
+      "direct_fold_calls": 1,
+      "direct_residual": 0,
+      "direct_rounds": 1,
+      "direct_to_reference_bps": 8035,
+      "direct_total_gas": 325587,
+      "direct_user_output": "1653424346300359375",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "19.649415",
+      "input_tokens": 5000,
+      "input_wei": "5000000000000000000000",
+      "kind": "path",
+      "path": 1,
+      "path_label": "ARFX -> ARFY (internal B -> A)",
+      "reference_arbitrage_swaps": 3,
+      "reference_calldata_gas": 1408,
+      "reference_execution_gas": 382800,
+      "reference_external_recipient_reward": "2484675942259",
+      "reference_final_reserves": {
+        "ab_a": 331732391725174033793,
+        "ab_b": 1004841477821741116668186,
+        "ac_a": 333280848110516331239,
+        "ac_c": 1000158021636939809248032,
+        "bc_b": 1000158522178258883331814,
+        "bc_c": 999841978363060190751968
+      },
+      "reference_reinjections": 1,
+      "reference_residual": 0,
+      "reference_rounds": 1,
+      "reference_total_gas": 405208,
+      "reference_user_output": "1653424346300359375"
+    },
+    {
+      "absolute_gas_saved": 79371,
+      "direct_calldata_gas": 1420,
+      "direct_execution_gas": 303426,
+      "direct_external_recipient_reward": "2492937602430",
+      "direct_final_reserves": {
+        "ab_a": 333280673594770619063,
+        "ab_b": 1000158547149103205112768,
+        "ac_a": 333385990578958445173,
+        "ac_c": 999842526979992912566050,
+        "bc_b": 1004841452850896794887232,
+        "bc_c": 995197199981106009308406
+      },
+      "direct_fold_calls": 1,
+      "direct_residual": 0,
+      "direct_rounds": 1,
+      "direct_to_reference_bps": 8041,
+      "direct_total_gas": 325846,
+      "direct_user_output": "4960273038901078125544",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "19.587283",
+      "input_tokens": 5000,
+      "input_wei": "5000000000000000000000",
+      "kind": "path",
+      "path": 2,
+      "path_label": "ARFX -> ARFZ (internal B -> C)",
+      "reference_arbitrage_swaps": 3,
+      "reference_calldata_gas": 1420,
+      "reference_execution_gas": 382797,
+      "reference_external_recipient_reward": "2492937602430",
+      "reference_final_reserves": {
+        "ab_a": 333280673594770619063,
+        "ab_b": 1000158547149103205112768,
+        "ac_a": 333385990578958445173,
+        "ac_c": 999842526979992912566050,
+        "bc_b": 1004841452850896794887232,
+        "bc_c": 995197199981106009308406
+      },
+      "reference_reinjections": 1,
+      "reference_residual": 0,
+      "reference_rounds": 1,
+      "reference_total_gas": 405217,
+      "reference_user_output": "4960273038901078125544"
+    },
+    {
+      "absolute_gas_saved": 79485,
+      "direct_calldata_gas": 1408,
+      "direct_execution_gas": 303476,
+      "direct_external_recipient_reward": "2492937602430",
+      "direct_final_reserves": {
+        "ab_a": 333385990578958445173,
+        "ab_b": 999842526979992912566050,
+        "ac_a": 333280673594770619063,
+        "ac_c": 1000158547149103205112768,
+        "bc_b": 995197199981106009308406,
+        "bc_c": 1004841452850896794887232
+      },
+      "direct_fold_calls": 1,
+      "direct_residual": 0,
+      "direct_rounds": 1,
+      "direct_to_reference_bps": 8039,
+      "direct_total_gas": 325884,
+      "direct_user_output": "4960273038901078125544",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "19.608061",
+      "input_tokens": 5000,
+      "input_wei": "5000000000000000000000",
+      "kind": "path",
+      "path": 3,
+      "path_label": "ARFZ -> ARFX (internal C -> B)",
+      "reference_arbitrage_swaps": 3,
+      "reference_calldata_gas": 1408,
+      "reference_execution_gas": 382961,
+      "reference_external_recipient_reward": "2492937602430",
+      "reference_final_reserves": {
+        "ab_a": 333385990578958445173,
+        "ab_b": 999842526979992912566050,
+        "ac_a": 333280673594770619063,
+        "ac_c": 1000158547149103205112768,
+        "bc_b": 995197199981106009308406,
+        "bc_c": 1004841452850896794887232
+      },
+      "reference_reinjections": 1,
+      "reference_residual": 0,
+      "reference_rounds": 1,
+      "reference_total_gas": 405369,
+      "reference_user_output": "4960273038901078125544"
+    },
+    {
+      "absolute_gas_saved": 79346,
+      "direct_calldata_gas": 1396,
+      "direct_execution_gas": 303730,
+      "direct_external_recipient_reward": "24022737533150",
+      "direct_final_reserves": {
+        "ab_a": 333497038700770419119,
+        "ab_b": 999510596878687814024885,
+        "ac_a": 335169603943158714397,
+        "ac_c": 994541268482658242394581,
+        "bc_b": 1000489403121312185975115,
+        "bc_c": 999512303052418925984172
+      },
+      "direct_fold_calls": 1,
+      "direct_residual": 0,
+      "direct_rounds": 1,
+      "direct_to_reference_bps": 8043,
+      "direct_total_gas": 326126,
+      "direct_user_output": "5946428464922831621247",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "19.568799",
+      "input_tokens": 2,
+      "input_wei": "2000000000000000000",
+      "kind": "path",
+      "path": 4,
+      "path_label": "ARFY -> ARFZ (internal A -> C)",
+      "reference_arbitrage_swaps": 3,
+      "reference_calldata_gas": 1396,
+      "reference_execution_gas": 383076,
+      "reference_external_recipient_reward": "24022737533150",
+      "reference_final_reserves": {
+        "ab_a": 333497038700770419119,
+        "ab_b": 999510596878687814024885,
+        "ac_a": 335169603943158714397,
+        "ac_c": 994541268482658242394581,
+        "bc_b": 1000489403121312185975115,
+        "bc_c": 999512303052418925984172
+      },
+      "reference_reinjections": 1,
+      "reference_residual": 0,
+      "reference_rounds": 1,
+      "reference_total_gas": 405472,
+      "reference_user_output": "5946428464922831621247"
+    },
+    {
+      "absolute_gas_saved": 79233,
+      "direct_calldata_gas": 1408,
+      "direct_execution_gas": 303768,
+      "direct_external_recipient_reward": "2484675942259",
+      "direct_final_reserves": {
+        "ab_a": 333280848110516331239,
+        "ab_b": 1000158021636939809248032,
+        "ac_a": 331732391725174033793,
+        "ac_c": 1004841477821741116668186,
+        "bc_b": 999841978363060190751968,
+        "bc_c": 1000158522178258883331814
+      },
+      "direct_fold_calls": 1,
+      "direct_residual": 0,
+      "direct_rounds": 1,
+      "direct_to_reference_bps": 8045,
+      "direct_total_gas": 326176,
+      "direct_user_output": "1653424346300359375",
+      "equivalence_tolerance_wei": 0,
+      "gas_reduction_percent": "19.543967",
+      "input_tokens": 5000,
+      "input_wei": "5000000000000000000000",
+      "kind": "path",
+      "path": 5,
+      "path_label": "ARFZ -> ARFY (internal C -> A)",
+      "reference_arbitrage_swaps": 3,
+      "reference_calldata_gas": 1408,
+      "reference_execution_gas": 383001,
+      "reference_external_recipient_reward": "2484675942259",
+      "reference_final_reserves": {
+        "ab_a": 333280848110516331239,
+        "ab_b": 1000158021636939809248032,
+        "ac_a": 331732391725174033793,
+        "ac_c": 1004841477821741116668186,
+        "bc_b": 999841978363060190751968,
+        "bc_c": 1000158522178258883331814
+      },
+      "reference_reinjections": 1,
+      "reference_residual": 0,
+      "reference_rounds": 1,
+      "reference_total_gas": 405409,
+      "reference_user_output": "1653424346300359375"
+    }
+  ],
+  "source_tree_sha256": "d41622745ff2b64fc807bc8ee5070981bbe029813b1debfc889301dc9a836618"
+}

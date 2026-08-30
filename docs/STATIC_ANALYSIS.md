@@ -6,14 +6,27 @@ ARBFOLD runs Slither `0.11.3` against project-owned `contracts/src` code with de
 make slither
 ```
 
+The release gate resolves Slither in this order: the explicit `SLITHER`
+environment variable, a global `slither` executable, then
+`.venv/bin/slither`. To reproduce the repository-local toolchain:
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r requirements-ci.txt
+make verify-release
+```
+
+An explicit but invalid `SLITHER` value fails closed; it is never silently
+replaced by another binary.
+
 Release-candidate result:
 
 | Impact | Count | Unresolved high/medium |
 |---|---:|---:|
 | High | 0 | 0 |
-| Medium | 10 | 0 |
+| Medium | 9 | 0 |
 | Low | 16 | n/a |
-| Informational | 1 | n/a |
+| Informational | 0 | n/a |
 
 `scripts/check-slither.py` uses a narrow detector/file/operation allowlist. Any other high or medium finding fails CI.
 
