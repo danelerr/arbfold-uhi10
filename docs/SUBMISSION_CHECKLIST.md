@@ -17,6 +17,7 @@ This matrix separates completed repository work from manual publication tasks. I
 | Future plans | Drafted | [`LIMITATIONS.md`](LIMITATIONS.md) |
 | Partner integrations with exact locations | Complete | Unichain Sepolia deployment and official v4 `PoolManager` are documented in [`README.md`](../README.md) and the public manifest; no unsupported partner claims. |
 | Final form copy | Complete | [`FINAL_SUBMISSION.md`](FINAL_SUBMISSION.md) contains copy-ready answers and leaves personal fields to Daniel. |
+| Progress Update 2 copy | Complete | [`PROGRESS_UPDATE_2.md`](PROGRESS_UPDATE_2.md) is bound to the public v0.1 deployment, benchmark and canonical transaction. |
 | Originality and credits | Complete | Paper, Uniswap, OpenZeppelin and Homelander credited in README. |
 | Returning cohort declaration | Manual form step | Select **UHI7** in the final submission form. |
 | Submission deadline | Manual form step | Submit before **2026-09-03 23:59 PDT**. |

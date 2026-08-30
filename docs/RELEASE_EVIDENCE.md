@@ -13,7 +13,7 @@ external artifact is marked pending rather than inferred or fabricated.
 | v0.1 deployment source | [`6670e626a836db82a2810497812009c1394b0b20`](https://github.com/danelerr/arbfold-uhi10/commit/6670e626a836db82a2810497812009c1394b0b20) |
 | Historical v0 source commit | [`9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b`](https://github.com/danelerr/arbfold-uhi10/commit/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b) |
 | Testnet deployment | v0.1 manifest binds the source commit, addresses, 28 deployment transactions and canonical demo transaction |
-| Final release tag | [`uhi10-final`](https://github.com/danelerr/arbfold-uhi10/releases/tag/uhi10-final) |
+| Final release tag | [`uhi10-final`](https://github.com/danelerr/arbfold-uhi10/tree/uhi10-final) |
 
 ## Commit-pinned judge links
 

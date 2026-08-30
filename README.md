@@ -262,6 +262,7 @@ claimed.
 | [`docs/DEPLOYMENT_RUNBOOK.md`](docs/DEPLOYMENT_RUNBOOK.md) | Official-manager resolution, deployment, demo, verification and manifest finalization. |
 | [`docs/NEXT_ITERATION_PLAN.md`](docs/NEXT_ITERATION_PLAN.md) | Archived execution plan; current evidence lives in the release evidence and final-submission copy. |
 | [`docs/FINAL_SUBMISSION.md`](docs/FINAL_SUBMISSION.md) | Copy-ready final form answers, public proof links and claim boundaries. |
+| [`docs/PROGRESS_UPDATE_2.md`](docs/PROGRESS_UPDATE_2.md) | Copy-ready second progress update bound to the public v0.1 release. |
 | [`docs/VIDEO_RECORDING_RUNBOOK.md`](docs/VIDEO_RECORDING_RUNBOOK.md) | Four-minute recording sequence, preflight and publication gate. |
 | [`docs/LIVE_DEMO_GUIDE.md`](docs/LIVE_DEMO_GUIDE.md) | Exact no-wallet and signed testnet walkthrough. |
 | [`assets/arbfold-demo-en.srt`](assets/arbfold-demo-en.srt) | Retimable English subtitle template for the human-narrated demo. |

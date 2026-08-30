@@ -6,15 +6,13 @@
     "forge test --offline",
     "FOUNDRY_PROFILE=release forge test --offline"
   ],
-  "commit_base": "6670e626a836db82a2810497812009c1394b0b20",
+  "commit_base": "9d3c8c2d6afd4f5e34a4685a0c4254759d76b988",
   "dense_sweep": {
     "end_tokens": 200000,
     "start_tokens": 1000,
     "step_tokens": 1000
   },
-  "dirty_state_relevant_to_measurement": [
-    "M scripts/generate-v01-benchmark.py"
-  ],
+  "dirty_state_relevant_to_measurement": [],
   "evm_target": "cancun",
   "forge_version": "forge Version: 1.5.1-stable",
   "frozen_grid_token_units": [
@@ -38,6 +36,6 @@
   "source_tree_sha256": "9e643942e0cb19716875297847e6c3d73be810f882cac59abb04b0c57bf6c772",
   "state_tolerance_wei": 1,
   "timezone": "America/La_Paz",
-  "tracked_measurement_diff_sha256": "83a948ae4ba78be9e8635d769dd80670d6a6139a05ed970e86eba277cf8b3bc5",
+  "tracked_measurement_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "via_ir": false
 }
