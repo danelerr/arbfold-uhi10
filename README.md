@@ -93,7 +93,7 @@ used as an apples-to-apples gas benchmark.
 ## Public evidence
 
 - **Network:** Unichain Sepolia, chain ID 1301.
-- **PoolManager:** official Uniswap v4 deployment at [`0x00B036B58a818B1BC34d502D3fE730Db729e62AC`](https://sepolia.uniscan.xyz/address/0x00B036B58a818B1BC34d502D3fE730Db729e62AC).
+- **PoolManager:** official Uniswap v4 deployment at [`0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95`](https://sepolia.uniscan.xyz/address/0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95).
 - **Coordinator:** [`0x59e52300560ceDb4FC452e6D629c852a9C6fae30`](https://sepolia.uniscan.xyz/address/0x59e52300560ceDb4FC452e6D629c852a9C6fae30).
 - **Router:** [`0xe817DFB3d1F7cd07f165cb5FDa83CD63179996aE`](https://sepolia.uniscan.xyz/address/0xe817DFB3d1F7cd07f165cb5FDa83CD63179996aE).
 - **Canonical transaction:** [`0x3429…2022`](https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022), one `fold()` call, two direct rounds, final residual zero.

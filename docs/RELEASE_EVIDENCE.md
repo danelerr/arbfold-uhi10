@@ -1,7 +1,7 @@
 # ARBFOLD Release Evidence
 
-This is the judge-facing index for the UHI10 v0.1 release candidate. A pending
-external artifact is marked pending rather than inferred or fabricated.
+This is the judge-facing index for the final UHI10 v0.1 release. A pending
+human-provided artifact is marked pending rather than inferred or fabricated.
 
 ## Identity
 
@@ -13,7 +13,7 @@ external artifact is marked pending rather than inferred or fabricated.
 | v0.1 deployment source | [`6670e626a836db82a2810497812009c1394b0b20`](https://github.com/danelerr/arbfold-uhi10/commit/6670e626a836db82a2810497812009c1394b0b20) |
 | Historical v0 source commit | [`9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b`](https://github.com/danelerr/arbfold-uhi10/commit/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b) |
 | Testnet deployment | v0.1 manifest binds the source commit, addresses, 28 deployment transactions and canonical demo transaction |
-| Final release tag | [`uhi10-final`](https://github.com/danelerr/arbfold-uhi10/tree/uhi10-final) |
+| Final release | [`uhi10-final`](https://github.com/danelerr/arbfold-uhi10/releases/tag/uhi10-final), source commit [`2abc236665ee8a3de314de70e700497760a841bc`](https://github.com/danelerr/arbfold-uhi10/commit/2abc236665ee8a3de314de70e700497760a841bc) |
 
 ## Commit-pinned judge links
 
@@ -67,10 +67,10 @@ first-call grid above.
 | Deployment path | Local deploy, canonical swap and read-only verifier pass | `make test-deployment` |
 | Complete gate | Fail-closed verification command | `make verify-release` |
 
-The public release workflow passed all 23 steps for head `1c7d7ed`, including
-the generated `lcov.info` and complete Slither JSON artifact:
+The frozen `uhi10-final` source passed the public verification workflow,
+including the generated `lcov.info` and complete Slither JSON artifact:
 
-- [Successful ARBFOLD verification run 32815343056](https://github.com/danelerr/arbfold-uhi10/actions/runs/32815343056)
+- [Final-tag verification run 33341073908](https://github.com/danelerr/arbfold-uhi10/actions/runs/33341073908)
 
 ## Public evidence — v0.1 deployment
 
