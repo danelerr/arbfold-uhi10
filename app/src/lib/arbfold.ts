@@ -52,6 +52,20 @@ export const coordinatorAbi = parseAbi([
 export const routerAbi = parseAbi([
   "function swapExactInput(address hook, bool zeroForOne, uint256 amountIn, uint256 minAmountOut, address solver, uint256 deadline) returns (uint256 amountOut)",
   "event SwapAndFold(address indexed payer, address indexed hook, address indexed solver, bool zeroForOne, uint256 amountIn, uint256 amountOut)",
+  "error DeadlineExpired()",
+  "error InvalidAmount()",
+  "error InvalidSolver()",
+  "error UnregisteredHook()",
+  "error TooLittleReceived(uint256 minimum, uint256 actual)",
+  "error ERC20InsufficientAllowance(address spender, uint256 allowance, uint256 needed)",
+  "error ERC20InsufficientBalance(address sender, uint256 balance, uint256 needed)",
+  "error ExactInputOnly()",
+  "error InvalidHookData()",
+  "error UnsupportedAmount()",
+  "error StateDrift()",
+  "error InvariantDecreased()",
+  "error NoInvariantIncrease()",
+  "error ConservationFailed(uint8 tokenIndex, uint256 beforeTotal, uint256 afterTotal)",
 ]);
 
 export const tokenAbi = parseAbi([
@@ -213,14 +227,41 @@ export async function verifyDeployment(manifest: DeploymentManifest): Promise<Li
 }
 
 export function describeError(error: unknown): string {
-  const candidate = error as { shortMessage?: string; details?: string; message?: string; cause?: { code?: number }; code?: number };
-  const message = candidate.shortMessage || candidate.details || candidate.message || String(error);
+  type ErrorLike = {
+    shortMessage?: string;
+    details?: string;
+    message?: string;
+    errorName?: string;
+    data?: { errorName?: string };
+    cause?: unknown;
+  };
+  const messages: string[] = [];
+  const seen = new Set<unknown>();
+  let current: unknown = error;
+  while (current && !seen.has(current)) {
+    seen.add(current);
+    const candidate = current as ErrorLike;
+    for (const value of [candidate.errorName, candidate.data?.errorName, candidate.shortMessage, candidate.details, candidate.message]) {
+      if (typeof value === "string" && value.length > 0) messages.push(value);
+    }
+    current = candidate.cause;
+  }
+  const message = messages.join("\n") || String(error);
   if (/User rejected|user rejected|denied transaction signature/i.test(message)) return "You rejected the wallet request. No action was taken.";
   if (/insufficient funds/i.test(message)) return "Your wallet needs Unichain Sepolia test ETH to pay for gas.";
+  if (/ERC20InsufficientAllowance|0xfb8f41b2/i.test(message)) {
+    return "The one-use test-token permission is missing or was already consumed. Allow this demo swap again, then run ARBFOLD.";
+  }
+  if (/ERC20InsufficientBalance|0xe450d38c/i.test(message)) {
+    return "Your test-token balance changed. Get the missing test tokens, then continue.";
+  }
   if (/TooLittleReceived|slippage/i.test(message)) return "The quote changed before confirmation. Refresh the quote and try again.";
+  if (/StateDrift|InvariantDecreased|NoInvariantIncrease|ConservationFailed/i.test(message)) {
+    return "The public pool state changed while the transaction was being prepared. Refresh the quote and try again.";
+  }
   if (/chain|network/i.test(message) && /wrong|switch|expected|mismatch/i.test(message)) return "Switch your wallet to Unichain Sepolia to continue.";
   if (/returned no data|returned an invalid response/i.test(message)) {
     return "The public RPC could not refresh the data. Try again shortly; a confirmed transaction remains valid.";
   }
-  return message.split("\n")[0].slice(0, 220);
+  return messages[0]?.split("\n")[0].slice(0, 220) || String(error).slice(0, 220);
 }

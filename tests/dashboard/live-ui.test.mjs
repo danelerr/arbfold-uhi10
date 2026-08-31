@@ -63,6 +63,8 @@ test("Swap Lab explains the tokens, pools, cycle and contextual signed path", ()
   assert.match(composer, /Explore another route/);
   assert.match(composer, /Allow this demo swap/);
   assert.match(composer, /Run swap \+ ARBFOLD/);
+  assert.match(composer, /button steps remain/);
+  assert.match(composer, /Final button step/);
   assert.match(benchmark, /Controlled Foundry Benchmark/);
   assert.match(benchmark, /iterative reference/);
   assert.match(benchmark, /Round \$\{index \+ 1\}: 3 arbitrage swaps/);
@@ -95,6 +97,14 @@ test("live application treats the signed receipt as final and refreshes state be
   assert.match(hook, /gas: bufferedGasLimit\(estimatedGas\)/);
   assert.match(hook, /sendTokenTransaction\("approve", inputToken, \[router, parsedAmount\]\)/);
   assert.match(hook, /parsedAmount - balances\[inputRole\]/);
+  assert.match(hook, /actionLock\.current/);
+  assert.match(hook, /Checking your current balance and one-use permission/);
+  assert.match(hook, /latestAllowance < parsedAmount/);
+  assert.match(hook, /latestBalance < parsedAmount/);
+  assert.match(hook, /latestAllowance - parsedAmount/);
+  assert.match(hook, /\[inputRole\]: parsedAmount/);
+  assert.match(live, /ERC20InsufficientAllowance/);
+  assert.match(live, /0xfb8f41b2/);
   assert.doesNotMatch(hook, /uint256\.max|MaxUint256|DEMO_ALLOWANCE/);
   assert.match(labCore, /a: "ARFX"/);
   assert.match(labCore, /b: "ARFY"/);
@@ -106,7 +116,9 @@ test("live application treats the signed receipt as final and refreshes state be
   assert.match(live, /functionName: "hookAB"/);
   assert.match(live, /token and hook roles do not match/);
   assert.match(hook, /Promise\.allSettled/);
-  assert.ok(hook.indexOf("setResult(nextResult)") < hook.indexOf("Promise.allSettled"));
+  const resultIndex = hook.indexOf("setResult(nextResult)");
+  assert.ok(resultIndex >= 0);
+  assert.ok(resultIndex < hook.indexOf("Promise.allSettled", resultIndex));
   assert.doesNotMatch(hook, /readLiveState\(manifest, receipt\.blockNumber\)/);
   assert.match(result, /Runtime-checked fold round/);
   assert.match(result, /Residual remained above the threshold/);

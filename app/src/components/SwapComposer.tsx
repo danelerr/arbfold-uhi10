@@ -94,6 +94,7 @@ export function SwapComposer({ lab, liveReady }: SwapComposerProps) {
               id="lab-amount"
               inputMode="decimal"
               value={lab.amount}
+              disabled={lab.busy}
               onChange={(event) => lab.setAmount(event.target.value)}
               aria-describedby="lab-amount-help"
             />
@@ -119,14 +120,14 @@ export function SwapComposer({ lab, liveReady }: SwapComposerProps) {
         <div className="route-controls">
           <label>
             Input token
-            <select value={lab.inputRole} onChange={(event) => lab.setInputRole(event.target.value as TokenRole)}>
+            <select disabled={lab.busy} value={lab.inputRole} onChange={(event) => lab.setInputRole(event.target.value as TokenRole)}>
               {inputOptions.map((role) => <option value={role} key={role}>{TOKEN_SYMBOLS[role]}</option>)}
             </select>
           </label>
-          <button className="invert-route" type="button" onClick={lab.invertRoute} aria-label="Reverse route">⇄</button>
+          <button disabled={lab.busy} className="invert-route" type="button" onClick={lab.invertRoute} aria-label="Reverse route">⇄</button>
           <label>
             Output token
-            <select value={lab.outputRole} onChange={(event) => lab.setOutputRole(event.target.value as TokenRole)}>
+            <select disabled={lab.busy} value={lab.outputRole} onChange={(event) => lab.setOutputRole(event.target.value as TokenRole)}>
               {outputOptions.map((role) => <option value={role} key={role}>{TOKEN_SYMBOLS[role]}</option>)}
             </select>
           </label>
@@ -150,11 +151,14 @@ export function SwapComposer({ lab, liveReady }: SwapComposerProps) {
         </ol>
       </section>
 
-      {lab.confirmationCount === 2 && lab.actionKind === "mint" && (
-        <p className="confirmation-note">Two wallet confirmations are required: get the test tokens, then allow the swap. They are requested one at a time.</p>
-      )}
-
       <div className="primary-action-area">
+        {lab.transactionStepsRemaining > 0 && (
+          <p className="action-step-count">
+            {lab.transactionStepsRemaining === 1
+              ? "Final button step · one wallet confirmation"
+              : `${lab.transactionStepsRemaining} button steps remain · one wallet confirmation at a time`}
+          </p>
+        )}
         {actionIsLink ? (
           <a className="button primary lab-primary" href="https://metamask.io/download/" target="_blank" rel="noreferrer">{copy.label}</a>
         ) : (

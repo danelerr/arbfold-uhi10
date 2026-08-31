@@ -115,6 +115,7 @@ function sameAddress(left?: string, right?: string): boolean {
 export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapLabOptions) {
   const announced = useRef<WalletCandidate[]>([]);
   const quoteSequence = useRef(0);
+  const actionLock = useRef(false);
   const [candidate, setCandidate] = useState<WalletCandidate | null>(() => chooseCandidate(legacyCandidates()));
   const [walletClient, setWalletClient] = useState<WalletClient | null>(null);
   const [account, setAccount] = useState<Address | null>(null);
@@ -290,7 +291,8 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
 
   const busy = activeAction !== null;
   const runAction = useCallback(async (name: LabBusyAction, action: () => Promise<void>) => {
-    if (activeAction) return;
+    if (actionLock.current) return;
+    actionLock.current = true;
     setActiveAction(name);
     setError("");
     try {
@@ -300,9 +302,10 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
       setError(message);
       setStatus(message);
     } finally {
+      actionLock.current = false;
       setActiveAction(null);
     }
-  }, [activeAction]);
+  }, []);
 
   const connect = () => runAction("connect", async () => {
     if (!liveReady || !metadata) throw new Error("Wait for the deployment verification to finish.");
@@ -376,7 +379,9 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
     if (deficit === 0n) return;
     setStatus(`Confirm the creation of ${tokenAmount(deficit, 6, inputToken.decimals)} valueless test ${inputToken.symbol} in your wallet.`);
     await sendTokenTransaction("mint", inputToken, [account, deficit]);
-    await refreshWalletState(account);
+    // A confirmed receipt remains authoritative even if the follow-up RPC read fails.
+    setBalances((current) => ({ ...current, [inputRole]: current[inputRole] + deficit }));
+    await Promise.allSettled([refreshWalletState(account)]);
     setStatus(`Test ${inputToken.symbol} received. The swap permission is requested separately.`);
   });
 
@@ -385,7 +390,10 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
     const router = canonicalAddress(manifest.router);
     setStatus(`Confirm the exact permission for ${tokenAmount(parsedAmount, 6, inputToken.decimals)} ${inputToken.symbol}.`);
     await sendTokenTransaction("approve", inputToken, [router, parsedAmount]);
-    await refreshWalletState();
+    // Advance from preparation using the confirmed approval. The full refresh is
+    // best-effort and must not strand the UI on a transaction that succeeded.
+    setAllowances((current) => ({ ...current, [inputRole]: parsedAmount }));
+    await Promise.allSettled([refreshWalletState()]);
     setStatus("Permission confirmed. The swap is ready.");
   });
 
@@ -408,6 +416,29 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
     const coordinatorAddress = canonicalAddress(manifest.coordinator);
     const hookAddress = canonicalAddress(manifest.hooks[route.hook]);
     const deadline = BigInt(Math.floor(Date.now() / 1_000) + 900);
+    setStatus("Checking your current balance and one-use permission…");
+    const [latestBalance, latestAllowance] = await Promise.all([
+      publicClient.readContract({
+        address: inputToken.address,
+        abi: tokenAbi,
+        functionName: "balanceOf",
+        args: [account],
+      }),
+      publicClient.readContract({
+        address: inputToken.address,
+        abi: tokenAbi,
+        functionName: "allowance",
+        args: [account, routerAddress],
+      }),
+    ]);
+    setBalances((current) => ({ ...current, [inputRole]: latestBalance }));
+    setAllowances((current) => ({ ...current, [inputRole]: latestAllowance }));
+    if (latestBalance < parsedAmount) {
+      throw new Error(`Your ${inputToken.symbol} balance changed. Get the missing test tokens, then continue.`);
+    }
+    if (latestAllowance < parsedAmount) {
+      throw new Error(`Your one-use ${inputToken.symbol} permission is no longer available. The button has returned to “Allow this demo swap”; confirm it once, then run ARBFOLD.`);
+    }
     setStatus("Refreshing the quote before you sign…");
     const freshQuote = await publicClient.simulateContract({
       account,
@@ -431,6 +462,11 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
     setStatus(`Transaction ${abbreviated(hash)} submitted. Waiting for confirmation…`);
     const receipt = await publicClient.waitForTransactionReceipt({ hash, confirmations: 1 });
     if (receipt.status !== "success") throw new Error("The swap + ARBFOLD transaction reverted.");
+
+    // transferFrom consumes this exact approval. Update the known post-receipt
+    // state before any best-effort RPC refresh so another swap cannot reuse it.
+    setBalances((current) => ({ ...current, [inputRole]: latestBalance - parsedAmount }));
+    setAllowances((current) => ({ ...current, [inputRole]: latestAllowance - parsedAmount }));
 
     let nextResult: SwapLabResult = {
       hash,
@@ -527,7 +563,9 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
   }) as LabActionKind;
 
   const missingAmount = parsedAmount > balances[inputRole] ? parsedAmount - balances[inputRole] : 0n;
-  const confirmationCount = Number(missingAmount > 0n) + Number(allowances[inputRole] < parsedAmount);
+  const transactionStepsRemaining = ["mint", "approve", "execute"].includes(actionKind)
+    ? Number(missingAmount > 0n) + Number(allowances[inputRole] < parsedAmount) + 1
+    : 0;
   const cycle = cycleRoles(inputRole, outputRole) as TokenRole[];
   const [poolLeft, poolRight] = poolSymbols(route.hook);
 
@@ -583,7 +621,6 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
     busy,
     candidate,
     candidateName: providerName(candidate),
-    confirmationCount,
     cycle,
     error: metadataError || error,
     gasBalance,
@@ -606,10 +643,11 @@ export function useSwapLab({ manifest, liveReady, onLiveStateChanged }: UseSwapL
     setInputRole,
     setOutputRole,
     status,
+    transactionStepsRemaining,
     resetResult: () => {
       setResult(null);
       setError("");
-      void updateQuote();
+      void Promise.allSettled([refreshWalletState(), updateQuote()]);
     },
   };
 }

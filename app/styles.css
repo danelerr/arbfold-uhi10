@@ -531,6 +531,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 .primary-action-area { display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center; margin-top: 20px; }
 .lab-primary { min-width: 240px; }
 .primary-action-area > p { max-width: 500px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.primary-action-area > .action-step-count { grid-column: 1 / -1; max-width: none; color: var(--lime); font-family: var(--mono); font-size: 10px; letter-spacing: .04em; text-transform: uppercase; }
+.route-controls :disabled,
+.asset-input input:disabled { cursor: wait; opacity: .58; }
 .lab-error { margin: 14px 0 0; color: var(--coral); font-size: 12px; line-height: 1.55; }
 
 .swap-result h3 { margin: 10px 0 0; color: var(--lime); font-size: clamp(30px, 5vw, 46px); line-height: 1; letter-spacing: -0.045em; }
