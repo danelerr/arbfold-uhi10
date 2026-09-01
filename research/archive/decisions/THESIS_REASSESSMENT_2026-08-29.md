@@ -9,7 +9,7 @@ external sources available on the review date.
 
 This is a thesis and evidence audit, not a production security audit. The
 per-function code-context record is maintained separately in
-[`audit-context/DOSSIER.md`](../audit-context/DOSSIER.md).
+[`research/generated/audit-context/DOSSIER.md`](../../generated/audit-context/DOSSIER.md).
 
 ## Executive verdict
 
@@ -141,7 +141,7 @@ Three composed legs retain that form. The continuous stationary input is:
 x* = max((sqrt(A*B) - B) / C, 0)
 ```
 
-[`CycleMath.sol`](../contracts/src/CycleMath.sol) evaluates forward and reverse
+[`CycleMath.sol`](../../../contracts/src/CycleMath.sol) evaluates forward and reverse
 cycles, selects the larger A-denominated quoted profit, and applies bounded
 integer normalization so the coefficient arithmetic fits in `uint256`.
 
@@ -357,7 +357,7 @@ Canonical public transaction            status and bytecode checks passed
 ```
 
 Machine-readable recalculation is in
-[`research/results/arbfold-thesis-reassessment-2026-08-29.json`](../research/results/arbfold-thesis-reassessment-2026-08-29.json).
+[`research/results/arbfold-thesis-reassessment-2026-08-29.json`](../../results/arbfold-thesis-reassessment-2026-08-29.json).
 
 ## 6. Benchmark audit
 
@@ -736,7 +736,7 @@ blocker for the frozen core, not a reason to rewrite the already measured
 benchmark silently.
 
 The one-test Foundry reproduction is
-[`ArbFoldResearchFindings.t.sol`](../contracts/test/ArbFoldResearchFindings.t.sol).
+[`ArbFoldResearchFindings.t.sol`](../../../contracts/test/ArbFoldResearchFindings.t.sol).
 It executes a profitable canonical fold with `hookAB` as the reward recipient,
 shows that the hook's token-A claim exceeds its recorded reserve by exactly the
 cumulative reward, and separately confirms that `PoolManager` custody still
@@ -839,7 +839,7 @@ pools under a coordinated architecture.
 The official Atrium UHI directory was pinned at commit
 `3660c054f9d7e9a0cfbf5c27cc2845f55852df05`; the 2,354,898-byte snapshot has
 SHA-256 `3fd9...5848`. The reproducible scan is
-[`research/scan_uhi_directory.py`](../research/scan_uhi_directory.py).
+[`research/scan_uhi_directory.py`](../../scan_uhi_directory.py).
 
 | Exact/bounded pattern | Matches |
 | --- | ---: |
@@ -1051,22 +1051,22 @@ the original 10% gate, was correctly rejected.
 ## Appendix A — auditable files
 
 - [Frozen v0 specification](BENCHMARK_FREEZE_V0.md)
-- [Frozen v0 raw results](../benchmark/arbfold-results/raw_v0.json)
-- [Frozen v0 decision](../benchmark/arbfold-results/decision_v0.json)
-- [Release report](../benchmark/release-candidate-results/REPORT.md)
-- [Release raw results](../benchmark/release-candidate-results/raw.json)
-- [Release source manifest](../benchmark/release-candidate-results/source-manifest.sha256)
-- [Arithmetic differential](../benchmark/arithmetic-differential-v1.json)
-- [Deterministic reassessment script](../research/reassess_arbfold.py)
-- [Deterministic reassessment output](../research/results/arbfold-thesis-reassessment-2026-08-29.json)
-- [Reassessment regression tests](../tests/test_arbfold_reassessment.py)
-- [Reward-address aliasing EVM regression](../contracts/test/ArbFoldResearchFindings.t.sol)
-- [Pinned UHI scan script](../research/scan_uhi_directory.py)
-- [Pinned UHI scan output](../research/results/uhi-directory-keyword-scan-2026-08-29.json)
-- [External-source manifest](../research/external-sources-2026-08-29.json)
-- [Research artifact checksums](../research/CHECKSUMS.sha256)
-- [Contract context dossier](../audit-context/DOSSIER.md)
-- [36 per-function context records](../audit-context/functions)
+- [Frozen v0 raw results](../../../benchmark/arbfold-results/raw_v0.json)
+- [Frozen v0 decision](../../../benchmark/arbfold-results/decision_v0.json)
+- [Release report](../../../benchmark/release-candidate-results/REPORT.md)
+- [Release raw results](../../../benchmark/release-candidate-results/raw.json)
+- [Release source manifest](../../../benchmark/release-candidate-results/source-manifest.sha256)
+- [Arithmetic differential](../../../benchmark/arithmetic-differential-v1.json)
+- [Deterministic reassessment script](../../reassess_arbfold.py)
+- [Deterministic reassessment output](../../results/arbfold-thesis-reassessment-2026-08-29.json)
+- [Reassessment regression tests](../../../tests/test_arbfold_reassessment.py)
+- [Reward-address aliasing EVM regression](../../../contracts/test/ArbFoldResearchFindings.t.sol)
+- [Pinned UHI scan script](../../scan_uhi_directory.py)
+- [Pinned UHI scan output](../../results/uhi-directory-keyword-scan-2026-08-29.json)
+- [External-source manifest](../../external-sources-2026-08-29.json)
+- [Research artifact checksums](../../CHECKSUMS.sha256)
+- [Contract context dossier](../../generated/audit-context/DOSSIER.md)
+- [36 per-function context records](../../generated/audit-context/functions)
 
 ## Appendix B — primary external sources
 
@@ -1088,4 +1088,4 @@ the original 10% gate, was correctly rejected.
   [pinned UHI Hook Directory snapshot](https://raw.githubusercontent.com/AtriumAcademy/UHI-Hook-Data/3660c054f9d7e9a0cfbf5c27cc2845f55852df05/hook_directory.md)
 
 External source versions and retrieval boundaries are recorded in
-[`research/external-sources-2026-08-29.json`](../research/external-sources-2026-08-29.json).
+[`research/external-sources-2026-08-29.json`](../../external-sources-2026-08-29.json).

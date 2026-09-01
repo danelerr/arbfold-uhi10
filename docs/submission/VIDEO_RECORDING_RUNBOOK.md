@@ -5,7 +5,7 @@ below the five-minute limit. This runbook turns [`DEMO_SCRIPT.md`](DEMO_SCRIPT.m
 into a repeatable recording sequence; it does not add claims or features.
 
 An import-ready English subtitle template is available at
-[`assets/arbfold-demo-en.srt`](../assets/arbfold-demo-en.srt). Its current
+[`assets/arbfold-demo-en.srt`](../../assets/arbfold-demo-en.srt). Its current
 timeline runs to 4:12 and matches the planned sequence. After recording, retime
 it to the actual human narration rather than speeding up or cutting the
 required disclosures.

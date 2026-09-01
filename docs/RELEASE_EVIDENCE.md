@@ -62,8 +62,8 @@ first-call grid above.
 | Stateful invariants | 8 properties × 20,480 calls; six paths; zero unexpected reverts | [`ArbFoldInvariant.t.sol`](../contracts/test/ArbFoldInvariant.t.sol) |
 | Negative paths | 30 explicit tests | [`ArbFoldNegativePaths.t.sol`](../contracts/test/ArbFoldNegativePaths.t.sol) |
 | Arithmetic | 50,000 Foundry cases + 50,000 arbitrary-precision differential cases, seed `1057` | [Arithmetic specification](ARITHMETIC_SPEC.md) |
-| v0.1 coverage | 98.61% lines; 91.07% branches; 100% functions | [Coverage report](COVERAGE.md) |
-| Slither 0.11.3 | 0 unreviewed High/Medium findings | [Static-analysis review](STATIC_ANALYSIS.md) |
+| v0.1 coverage | 98.61% lines; 91.07% branches; 100% functions | [Coverage report](evidence/COVERAGE.md) |
+| Slither 0.11.3 | 0 unreviewed High/Medium findings | [Static-analysis review](evidence/STATIC_ANALYSIS.md) |
 | Deployment path | Local deploy, canonical swap and read-only verifier pass | `make test-deployment` |
 | Complete gate | Fail-closed verification command | `make verify-release` |
 

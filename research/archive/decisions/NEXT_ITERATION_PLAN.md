@@ -3,8 +3,8 @@
 > **Archived execution plan.** The public Unichain Sepolia deployment, proof
 > panel and Progress Update 1 are complete. Historical pending language and
 > earlier 18.86% planning numbers below are retained only as a dated work
-> record. The current sources of truth are [`RELEASE_EVIDENCE.md`](RELEASE_EVIDENCE.md),
-> [`FINAL_SUBMISSION.md`](FINAL_SUBMISSION.md) and the root README. No further
+> record. The current sources of truth are [`RELEASE_EVIDENCE.md`](../../../docs/RELEASE_EVIDENCE.md),
+> [`FINAL_SUBMISSION.md`](../../../docs/submission/FINAL_SUBMISSION.md) and the root README. No further
 > Progress Update 1 action is required.
 
 **Project ID:** `HK-UHI10-1057`  

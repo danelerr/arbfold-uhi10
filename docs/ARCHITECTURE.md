@@ -124,7 +124,7 @@ Tokens B and C remain completely inside hook claims. The underlying ERC-20 balan
 
 The immutable v0 deployment did not enforce that separation. Its reproducible
 counterexample remains documented in
-[`THESIS_REASSESSMENT_2026-08-29.md`](THESIS_REASSESSMENT_2026-08-29.md#84-reward-address-aliasing-counterexample).
+[`THESIS_REASSESSMENT_2026-08-29.md`](../research/archive/decisions/THESIS_REASSESSMENT_2026-08-29.md#84-reward-address-aliasing-counterexample).
 v0.1 preserves that historical result and adds atomic alias-rejection tests;
 it does not reinterpret the old benchmark.
 

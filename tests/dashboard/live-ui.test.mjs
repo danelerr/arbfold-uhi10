@@ -18,9 +18,9 @@ const [html, packageText, main, app, benchmark, dialog, composer, result, hook, 
   read("../../app/src/hooks/useSwapLab.ts"),
   read("../../app/src/lib/arbfold.ts"),
   read("../../app/swap-lab-core.js"),
-  read("../../docs/FINAL_SUBMISSION.md"),
-  read("../../docs/DEMO_SCRIPT.md"),
-  read("../../docs/VIDEO_RECORDING_RUNBOOK.md"),
+  read("../../docs/submission/FINAL_SUBMISSION.md"),
+  read("../../docs/submission/DEMO_SCRIPT.md"),
+  read("../../docs/submission/VIDEO_RECORDING_RUNBOOK.md"),
   read("../../assets/arbfold-demo-en.srt"),
 ]);
 const pkg = JSON.parse(packageText);

@@ -19,7 +19,7 @@ evidence-driven pivot to ARBFOLD is documented in the repository.
 | Partner | `Unichain` |
 | Public repository | `https://github.com/danelerr/arbfold-uhi10` |
 | Frontend | `https://danelerr.github.io/arbfold-uhi10/` |
-| Thumbnail | [`assets/arbfold-uhi10-thumbnail.png`](../assets/arbfold-uhi10-thumbnail.png) |
+| Thumbnail | [`assets/arbfold-uhi10-thumbnail.png`](../../assets/arbfold-uhi10-thumbnail.png) |
 | Demo video | `[DANIEL: paste final public video URL]` |
 | Email | `[DANIEL: enter cohort email]` |
 | X handle | `[DANIEL: enter X handle]` |
@@ -114,7 +114,7 @@ an audited protocol or a production deployment.
 
 A later claim-by-claim audit found that v0 allowed the public reward address to
 alias a registered hook and break claim/reserve continuity. The finding remains
-preserved in the [historical thesis reassessment](THESIS_REASSESSMENT_2026-08-29.md).
+preserved in the [historical thesis reassessment](../../research/archive/decisions/THESIS_REASSESSMENT_2026-08-29.md).
 v0.1 rejects zero, coordinator, PoolManager and hook aliases atomically and
 measures that hardening as a new release rather than silently changing v0.
 

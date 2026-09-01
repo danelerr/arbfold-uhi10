@@ -1,7 +1,7 @@
 # ARBFOLD research audit artifacts
 
-This directory contains reproducible evidence used by
-[`docs/THESIS_REASSESSMENT_2026-08-29.md`](../docs/THESIS_REASSESSMENT_2026-08-29.md).
+This directory contains reproducible evidence used by the historical
+[`THESIS_REASSESSMENT_2026-08-29.md`](archive/decisions/THESIS_REASSESSMENT_2026-08-29.md).
 
 ## Deterministic local reassessment
 
@@ -44,18 +44,19 @@ The following material explains how the release was reached and is not a second
 set of current product claims:
 
 - thesis and build decisions: dated freeze, reassessment and decision documents
-  under [`docs/`](../docs/);
+  under [`archive/decisions/`](archive/decisions/);
 - independent reviews and remediation trail: dated `ARBFOLD_V01_*` documents
-  under [`docs/`](../docs/);
+  under [`archive/audits/`](archive/audits/);
+- historical submission operations under
+  [`archive/submission/`](archive/submission/);
 - historical measurements: the packages listed in
   [`benchmark/README.md`](../benchmark/README.md);
-- generated contract context: [`audit-context/`](../audit-context/);
+- generated contract context: [`generated/audit-context/`](generated/audit-context/);
 - the original deterministic model: [`arbfold_sim/`](../arbfold_sim/).
 
-The last two directories intentionally remain at repository root because tests,
-provenance manifests and checksum records refer to their current paths. Moving
-them for appearance alone would weaken reproducibility without changing the
-judge-facing path.
+The deterministic model remains at repository root because tests and release
+commands import it directly. Historical and generated Markdown is grouped here
+so that it does not compete with the judge-facing release documentation.
 
 ## Pinned UHI directory scan
 

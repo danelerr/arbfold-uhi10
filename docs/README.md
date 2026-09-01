@@ -1,7 +1,9 @@
 # ARBFOLD documentation
 
-This directory contains both the current v0.1 release documentation and the
-dated review trail that produced it. Judges only need the first section.
+This directory is the compact entry point for the current v0.1 release.
+Historical decisions, reviews and remediation records live under
+[`research/archive/`](../research/archive/); generated audit context lives
+under [`research/generated/`](../research/generated/).
 
 ## Judge-facing documentation
 
@@ -14,23 +16,21 @@ dated review trail that produced it. Judges only need the first section.
 | [LIMITATIONS.md](LIMITATIONS.md) | Explicit scope and claims ARBFOLD does not make. |
 | [THREAT_MODEL.md](THREAT_MODEL.md) | Assets, adversaries, failure modes and mitigations. |
 | [ARITHMETIC_SPEC.md](ARITHMETIC_SPEC.md) | State transition and rounding specification. |
-| [FINAL_SUBMISSION.md](FINAL_SUBMISSION.md) | Submission-ready project description. |
-| [VIDEO_RECORDING_RUNBOOK.md](VIDEO_RECORDING_RUNBOOK.md) | Final video sequence and evidence checks. |
-| [DEPLOYMENT_RUNBOOK.md](DEPLOYMENT_RUNBOOK.md) | Reproduce and verify the v0.1 deployment. |
+| [deployment/DEPLOYMENT_RUNBOOK.md](deployment/DEPLOYMENT_RUNBOOK.md) | Reproduce and verify the v0.1 deployment. |
 
-## Submission operations
+## Supporting material
 
-- [PROGRESS_UPDATE_2.md](PROGRESS_UPDATE_2.md)
-- [SUBMISSION_CHECKLIST.md](SUBMISSION_CHECKLIST.md)
-- [DEMO_SCRIPT.md](DEMO_SCRIPT.md)
-- [COVERAGE.md](COVERAGE.md)
-- [STATIC_ANALYSIS.md](STATIC_ANALYSIS.md)
+- [`submission/`](submission/) contains the form copy, video script and final checklist.
+- [`evidence/`](evidence/) contains coverage and static-analysis summaries.
 
 ## Research and review archive
 
-The remaining dated documents preserve preregistration decisions, validation
-freezes, independent reviews, reaudits and their resolutions. They are retained
-for auditability and are not required to understand the current release.
+Preregistration decisions and validation freezes remain under
+[`research/archive/decisions/`](../research/archive/decisions/) with their links
+updated for the new location. Independent review and re-audit records remain
+byte-preserved under [`research/archive/audits/`](../research/archive/audits/).
+They are retained for auditability and are not required to understand the
+current release.
 
 Use [the research index](../research/README.md) for the experiment history and
 [the benchmark index](../benchmark/README.md) to distinguish the v0.1 package

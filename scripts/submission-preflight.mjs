@@ -49,11 +49,11 @@ const [readme, page, packageText, reactApp, benchmarkDemo, swapResult, swapLabDi
   read("app/src/components/SwapLabDialog.tsx"),
   read("app/src/components/SwapComposer.tsx"),
   read("app/src/hooks/useSwapLab.ts"),
-  read("docs/FINAL_SUBMISSION.md"),
-  read("docs/DEMO_SCRIPT.md"),
-  read("docs/VIDEO_RECORDING_RUNBOOK.md"),
+  read("docs/submission/FINAL_SUBMISSION.md"),
+  read("docs/submission/DEMO_SCRIPT.md"),
+  read("docs/submission/VIDEO_RECORDING_RUNBOOK.md"),
   read("assets/arbfold-demo-en.srt"),
-  read("docs/SUBMISSION_CHECKLIST.md"),
+  read("docs/submission/SUBMISSION_CHECKLIST.md"),
   benchmarkOverride
     ? readFile(resolve(benchmarkOverride), "utf8")
     : read("benchmark/optimized-release-candidate-results/raw.json"),

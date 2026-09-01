@@ -26,15 +26,15 @@ mechanical equivalence and a 39.58% canonical gas reduction, but only a 0.000287
 LP net-value improvement against the required 10%. A separate publication check
 against the delivered release candidate measured 19.12% less canonical gas
 and one 25k case with 0.98% more gas. It remains unauthorized for production.
-See the [frozen v0 report](../benchmark/arbfold-results/REPORT.md) and the
-[clean-core report](../benchmark/clean-core-results/REPORT.md).
+See the [frozen v0 report](../../../benchmark/arbfold-results/REPORT.md) and the
+[clean-core report](../../../benchmark/clean-core-results/REPORT.md).
 
 ARBFOLD v0.1 is a new conservative optimization release. It preserves the
 events and public telemetry getters, computes residual on demand, caches the
 network state between runtime-checked rounds, compares the cached result with a
 fresh final network read, packs telemetry, and rejects aliased reward
 recipients. Its five-point benchmark and dense sweep are versioned under
-[`benchmark/optimized-release-candidate-results/`](../benchmark/optimized-release-candidate-results/).
+[`benchmark/optimized-release-candidate-results/`](../../../benchmark/optimized-release-candidate-results/).
 
 ## Canonical question
 
@@ -122,7 +122,7 @@ No generic convex solver is required for the MVP. The first two reserve transiti
 
 ## Exploratory mechanical evidence
 
-The derivation is implemented in [`arbfold_sim/mechanism.py`](../arbfold_sim/mechanism.py). This is an exploratory property screen, not a pre-registered economic simulation.
+The derivation is implemented in [`arbfold_sim/mechanism.py`](../../../arbfold_sim/mechanism.py). This is an exploratory property screen, not a pre-registered economic simulation.
 
 The current tests establish:
 

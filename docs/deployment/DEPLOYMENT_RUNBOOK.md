@@ -186,4 +186,4 @@ the finalized manifest contains its `demo` object.
 
 If the official manager rejects the pinned core after four focused hours, use
 the isolated-manager fallback described in
-[`NEXT_ITERATION_PLAN.md`](NEXT_ITERATION_PLAN.md), and label it prominently.
+[`NEXT_ITERATION_PLAN.md`](../../research/archive/decisions/NEXT_ITERATION_PLAN.md), and label it prominently.
