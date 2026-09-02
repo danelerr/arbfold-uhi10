@@ -107,8 +107,8 @@ Provides the stable CREATE2 deployer address needed by `HookMiner`. The deploy s
 
 ## Accounting model
 
-Along every accepted v0.1 path, the reward recipient is external to the
-coordinator, PoolManager and all three registered hooks:
+From an exactly funded starting state, every tested accepted v0.1 swap/fold and
+liquidity path preserves:
 
 ```text
 virtualReserve(hook, token) == PoolManager.balanceOf(hook, tokenId)
@@ -120,7 +120,14 @@ For token A during one such direct round:
 hookAClaimsBefore == hookAClaimsAfter + solverReward
 ```
 
-Tokens B and C remain completely inside hook claims. The underlying ERC-20 balance held by PoolManager equals the sum of all outstanding hook and solver claims.
+Tokens B and C remain completely inside hook claims. The underlying ERC-20
+balance held by PoolManager equals the sum of all outstanding hook and solver
+claims. An arbitrary ERC-6909 holder can donate claims directly to a hook; that
+creates unaccounted surplus rather than unbacked reserves. Therefore the
+general solvency relation is `virtualReserve <= claimBalance`, while strict
+equality is a verified property of the configured deployment and tested paths,
+not a universal invariant against unsolicited claim donations. v0.1 has no
+surplus-recovery mechanism, so donated claims may remain stranded.
 
 The immutable v0 deployment did not enforce that separation. Its reproducible
 counterexample remains documented in

@@ -89,6 +89,10 @@
     "maximumInput": "25000000000000000000000"
   },
   "runtimeBytecode": {
+    "poolManager": {
+      "bytes": 24009,
+      "keccak256": "0x2566e42d45723eef05d7253a7b7c140a6da61992594525fc66d06b4a973b5d0b"
+    },
     "coordinator": {
       "bytes": 10058,
       "keccak256": "0xb9c0ae81a34c9c63399ea16149e03b1e1f816f90e33b899673993681cf6ebd19"

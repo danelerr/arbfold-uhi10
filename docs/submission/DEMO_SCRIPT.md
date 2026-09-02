@@ -29,8 +29,10 @@ pool state without signing or changing state.
 > time: connect, obtain only missing valueless test tokens, approve only this
 > swap, then submit the deployed protocol path and produce an explorer receipt.
 
-Open the latest interactive validation transaction and show its `SwapAndFold`,
-`FoldRound` and `FoldCompleted` evidence.
+Open the canonical v0.1 transaction and show its `SwapAndFold`, two
+`FoldRound` events and `FoldCompleted` evidence. This immutable receipt is the
+published transaction proof; the Swap Lab remains available for an optional
+fresh judge-signed testnet transaction.
 
 ## 1:20–1:50 — Workload honesty
 

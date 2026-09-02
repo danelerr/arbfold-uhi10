@@ -1,5 +1,6 @@
 import {
   createPublicClient,
+  decodeEventLog,
   formatUnits,
   getAddress,
   http,
@@ -8,6 +9,7 @@ import {
   type Address,
 } from "viem";
 import {
+  assertNetworkSnapshot,
   assertRuntimeBytecodeIdentity,
   normalizeNetwork,
   reductionPercent,
@@ -42,6 +44,7 @@ export const unichainSepolia = {
 } as const;
 
 export const coordinatorAbi = parseAbi([
+  "function manager() view returns (address)",
   "function tokenA() view returns (address)",
   "function tokenB() view returns (address)",
   "function tokenC() view returns (address)",
@@ -57,6 +60,8 @@ export const coordinatorAbi = parseAbi([
 ]);
 
 export const routerAbi = parseAbi([
+  "function manager() view returns (address)",
+  "function coordinator() view returns (address)",
   "function swapExactInput(address hook, bool zeroForOne, uint256 amountIn, uint256 minAmountOut, address solver, uint256 deadline) returns (uint256 amountOut)",
   "event SwapAndFold(address indexed payer, address indexed hook, address indexed solver, bool zeroForOne, uint256 amountIn, uint256 amountOut)",
   "error DeadlineExpired()",
@@ -74,6 +79,50 @@ export const routerAbi = parseAbi([
   "error NoInvariantIncrease()",
   "error ConservationFailed(uint8 tokenIndex, uint256 beforeTotal, uint256 afterTotal)",
 ]);
+
+function decodedEvents(receipt: { logs: readonly any[] }): any[] {
+  const events: any[] = [];
+  for (const log of receipt.logs) {
+    for (const abi of [routerAbi, coordinatorAbi]) {
+      try {
+        events.push(decodeEventLog({ abi, data: log.data, topics: log.topics, strict: true }));
+        break;
+      } catch {
+        // Ignore PoolManager, hook and ERC-20 logs.
+      }
+    }
+  }
+  return events;
+}
+
+function assertCanonicalReceipt(receipt: any, manifest: DeploymentManifest): void {
+  const events = decodedEvents(receipt);
+  const swaps = events.filter((event) => event.eventName === "SwapAndFold");
+  const foldRounds = events.filter((event) => event.eventName === "FoldRound");
+  const completed = events.filter((event) => event.eventName === "FoldCompleted");
+  if (swaps.length !== 1 || completed.length !== 1 || foldRounds.length !== manifest.demo.foldRounds) {
+    throw new Error("Canonical transaction does not contain the published ARBFOLD event topology");
+  }
+  const swap = swaps[0];
+  const completion = completed[0];
+  const reward = foldRounds.reduce((sum, event) => sum + event.args.solverReward, 0n);
+  if (receipt.from.toLowerCase() !== manifest.demo.user.toLowerCase()
+    || receipt.to?.toLowerCase() !== manifest.router.toLowerCase()
+    || receipt.blockNumber !== BigInt(manifest.blockNumber)
+    || swap.args.payer.toLowerCase() !== manifest.demo.user.toLowerCase()
+    || swap.args.hook.toLowerCase() !== manifest.demo.originHook.toLowerCase()
+    || swap.args.solver.toLowerCase() !== manifest.demo.solver.toLowerCase()
+    || swap.args.zeroForOne !== manifest.demo.zeroForOne
+    || swap.args.amountIn !== BigInt(manifest.demo.amountIn)
+    || swap.args.amountOut !== BigInt(manifest.demo.amountOut)
+    || completion.args.originHook.toLowerCase() !== manifest.demo.originHook.toLowerCase()
+    || completion.args.solver.toLowerCase() !== manifest.demo.solver.toLowerCase()
+    || completion.args.rounds !== BigInt(manifest.demo.foldRounds)
+    || completion.args.residualProfit !== BigInt(manifest.demo.residualProfit)
+    || reward !== BigInt(manifest.demo.solverReward)) {
+    throw new Error("Canonical transaction semantics do not match the published manifest");
+  }
+}
 
 export const tokenAbi = parseAbi([
   "function mint(address to, uint256 amount)",
@@ -198,13 +247,12 @@ export async function verifyDeployment(manifest: DeploymentManifest): Promise<Li
     ...target,
     address: canonicalAddress(target.address),
   }));
-  const [chainId, canonicalReceipt, interactiveReceipt, managerCode, ...codes] = await Promise.all([
+  const [chainId, canonicalReceipt, interactiveReceipt, ...codes] = await Promise.all([
     publicClient.getChainId(),
     publicClient.getTransactionReceipt({ hash: manifest.canonicalDemoTransaction }),
     manifest.interactiveDemo?.transaction
       ? publicClient.getTransactionReceipt({ hash: manifest.interactiveDemo.transaction })
       : Promise.resolve(null),
-    publicClient.getCode({ address: canonicalAddress(manifest.poolManager) }),
     ...targets.map(({ address }) => publicClient.getCode({ address })),
   ]);
   if (chainId !== CHAIN_ID) throw new Error(`RPC returned chain ${chainId}, expected ${CHAIN_ID}`);
@@ -212,24 +260,37 @@ export async function verifyDeployment(manifest: DeploymentManifest): Promise<Li
   if (interactiveReceipt && interactiveReceipt.status !== "success") {
     throw new Error("Browser-signed validation transaction did not succeed");
   }
-  if (!managerCode || managerCode === "0x") throw new Error("The official PoolManager has no bytecode");
   codes.forEach((code, index) => {
     assertRuntimeBytecodeIdentity(targets[index], code, keccak256(code ?? "0x"));
   });
+  assertCanonicalReceipt(canonicalReceipt, manifest);
   const coordinator = canonicalAddress(manifest.coordinator);
-  const [tokenA, tokenB, tokenC, hookAB, hookBC, hookAC] = await Promise.all([
+  const canonicalBlock = BigInt(manifest.blockNumber);
+  const [coordinatorManager, routerManager, routerCoordinator, tokenA, tokenB, tokenC, hookAB, hookBC, hookAC, preNetwork, postNetwork] = await Promise.all([
+    publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "manager" }),
+    publicClient.readContract({ address: canonicalAddress(manifest.router), abi: routerAbi, functionName: "manager" }),
+    publicClient.readContract({ address: canonicalAddress(manifest.router), abi: routerAbi, functionName: "coordinator" }),
     publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "tokenA" }),
     publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "tokenB" }),
     publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "tokenC" }),
     publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "hookAB" }),
     publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "hookBC" }),
     publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "hookAC" }),
+    publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "network", blockNumber: canonicalBlock - 1n }),
+    publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "network", blockNumber: canonicalBlock }),
   ]);
+  if (canonicalAddress(coordinatorManager) !== canonicalAddress(manifest.poolManager)
+    || canonicalAddress(routerManager) !== canonicalAddress(manifest.poolManager)
+    || canonicalAddress(routerCoordinator) !== coordinator) {
+    throw new Error("Coordinator/router bindings do not match the official PoolManager deployment");
+  }
   const expected = [manifest.tokens.a, manifest.tokens.b, manifest.tokens.c, manifest.hooks.ab, manifest.hooks.bc, manifest.hooks.ac].map(canonicalAddress);
   const observed = [tokenA, tokenB, tokenC, hookAB, hookBC, hookAC].map(canonicalAddress);
   if (observed.some((address, index) => address !== expected[index])) {
     throw new Error("The coordinator token and hook roles do not match the published deployment manifest");
   }
+  assertNetworkSnapshot("Canonical pre-state", normalizeNetwork(preNetwork), manifest.demo.preReserves);
+  assertNetworkSnapshot("Canonical post-state", normalizeNetwork(postNetwork), manifest.demo.postReserves);
   return readLiveState(manifest);
 }
 

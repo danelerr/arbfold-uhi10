@@ -98,7 +98,8 @@ demo_broadcast="$contracts_root/broadcast/RunArbFoldDemo.s.sol/31337/run-latest.
   "$deploy_broadcast" \
   "$demo_broadcast" \
   not-available \
-  "$demo_evidence"
+  "$demo_evidence" \
+  "$rpc_url"
 
 jq -e '
   .chainId == 31337

@@ -182,6 +182,7 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
             "VerifyArbFoldDeployment",
             "RunArbFoldDemo",
             "finalize-manifest.sh",
+            '"$rpc_url"',
             "never paste it into chat",
         ):
             self.assertIn(required_guard, source)
@@ -189,6 +190,18 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
         ignore = (ROOT / ".gitignore").read_text().splitlines()
         self.assertIn(".env", ignore)
         self.assertIn(".env.*", ignore)
+
+        finalizer = (ROOT / "scripts/finalize-manifest.sh").read_text()
+        for required_runtime_target in (
+            "poolManager|.poolManager",
+            "coordinator|.coordinator",
+            "hookAB|.hooks.ab",
+            "router|.router",
+            "tokenC|.tokens.c",
+            "cast code",
+            "cast keccak",
+        ):
+            self.assertIn(required_runtime_target, finalizer)
 
 
 if __name__ == "__main__":

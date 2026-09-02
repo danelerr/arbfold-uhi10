@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { createPublicClient, decodeEventLog, getAddress, http, keccak256, parseAbi } from "viem";
 import {
+  assertNetworkSnapshot,
   assertRuntimeBytecodeIdentity,
   bufferedGasLimit,
   normalizeNetwork,
@@ -21,6 +22,13 @@ const chain = {
 };
 const client = createPublicClient({ chain, transport: http(rpcUrl, { retryCount: 3 }) });
 const coordinatorAbi = parseAbi([
+  "function manager() view returns (address)",
+  "function tokenA() view returns (address)",
+  "function tokenB() view returns (address)",
+  "function tokenC() view returns (address)",
+  "function hookAB() view returns (address)",
+  "function hookBC() view returns (address)",
+  "function hookAC() view returns (address)",
   "function network() view returns (uint256 abA, uint256 abB, uint256 bcB, uint256 bcC, uint256 acA, uint256 acC)",
   "function totalFoldCalls() view returns (uint256)",
   "function totalFoldRounds() view returns (uint256)",
@@ -33,6 +41,8 @@ const tokenAbi = parseAbi([
   "function allowance(address owner, address spender) view returns (uint256)",
 ]);
 const routerAbi = parseAbi([
+  "function manager() view returns (address)",
+  "function coordinator() view returns (address)",
   "function swapExactInput(address hook, bool zeroForOne, uint256 amountIn, uint256 minAmountOut, address solver, uint256 deadline) returns (uint256 amountOut)",
   "event SwapAndFold(address indexed payer, address indexed hook, address indexed solver, bool zeroForOne, uint256 amountIn, uint256 amountOut)",
 ]);
@@ -57,7 +67,7 @@ const bytecodeTargets = runtimeBytecodeTargets(manifest).map((target) => ({
   address: getAddress(target.address.toLowerCase()),
 }));
 
-const [chainId, receipt, interactiveReceipt, allowanceReceipt, managerCode, ...codes] = await Promise.all([
+const [chainId, receipt, interactiveReceipt, allowanceReceipt, ...codes] = await Promise.all([
   client.getChainId(),
   client.getTransactionReceipt({ hash: manifest.canonicalDemoTransaction }),
   manifest.interactiveDemo?.transaction
@@ -66,14 +76,12 @@ const [chainId, receipt, interactiveReceipt, allowanceReceipt, managerCode, ...c
   manifest.rpcSimulation?.allowanceTransaction
     ? client.getTransactionReceipt({ hash: manifest.rpcSimulation.allowanceTransaction })
     : Promise.resolve(null),
-  client.getCode({ address: getAddress(manifest.poolManager.toLowerCase()) }),
   ...bytecodeTargets.map(({ address }) => client.getCode({ address })),
 ]);
 if (chainId !== manifest.chainId) throw new Error(`chain mismatch: ${chainId}`);
 if (receipt.status !== "success") throw new Error("canonical transaction is not successful");
 if (interactiveReceipt && interactiveReceipt.status !== "success") throw new Error("interactive validation is not successful");
 if (allowanceReceipt && allowanceReceipt.status !== "success") throw new Error("public RPC allowance transaction is not successful");
-if (!managerCode || managerCode === "0x") throw new Error("official PoolManager has no deployed bytecode");
 codes.forEach((code, index) => {
   assertRuntimeBytecodeIdentity(bytecodeTargets[index], code, keccak256(code ?? "0x"));
 });
@@ -83,6 +91,34 @@ if (allowanceReceipt && (
   || Number(allowanceReceipt.blockNumber) !== manifest.rpcSimulation.allowanceBlock
 )) {
   throw new Error("public RPC allowance evidence mismatch");
+}
+const canonicalEvents = decodedEvents(receipt);
+const canonicalSwaps = canonicalEvents.filter((event) => event.eventName === "SwapAndFold");
+const canonicalRounds = canonicalEvents.filter((event) => event.eventName === "FoldRound");
+const canonicalCompletions = canonicalEvents.filter((event) => event.eventName === "FoldCompleted");
+const canonicalReward = canonicalRounds.reduce((sum, event) => sum + event.args.solverReward, 0n);
+if (canonicalSwaps.length !== 1
+  || canonicalCompletions.length !== 1
+  || canonicalRounds.length !== manifest.demo.foldRounds) {
+  throw new Error("canonical transaction has the wrong ARBFOLD event topology");
+}
+const canonicalSwap = canonicalSwaps[0];
+const canonicalCompleted = canonicalCompletions[0];
+if (receipt.from.toLowerCase() !== manifest.demo.user.toLowerCase()
+  || receipt.to?.toLowerCase() !== manifest.router.toLowerCase()
+  || Number(receipt.blockNumber) !== manifest.blockNumber
+  || canonicalSwap.args.payer.toLowerCase() !== manifest.demo.user.toLowerCase()
+  || canonicalSwap.args.hook.toLowerCase() !== manifest.demo.originHook.toLowerCase()
+  || canonicalSwap.args.solver.toLowerCase() !== manifest.demo.solver.toLowerCase()
+  || canonicalSwap.args.zeroForOne !== manifest.demo.zeroForOne
+  || canonicalSwap.args.amountIn !== BigInt(manifest.demo.amountIn)
+  || canonicalSwap.args.amountOut !== BigInt(manifest.demo.amountOut)
+  || canonicalCompleted.args.originHook.toLowerCase() !== manifest.demo.originHook.toLowerCase()
+  || canonicalCompleted.args.solver.toLowerCase() !== manifest.demo.solver.toLowerCase()
+  || canonicalCompleted.args.rounds !== BigInt(manifest.demo.foldRounds)
+  || canonicalCompleted.args.residualProfit !== BigInt(manifest.demo.residualProfit)
+  || canonicalReward !== BigInt(manifest.demo.solverReward)) {
+  throw new Error("canonical transaction semantics mismatch");
 }
 if (interactiveReceipt) {
   const evidence = manifest.interactiveDemo;
@@ -114,13 +150,54 @@ if (interactiveReceipt) {
   }
 }
 
-const [network, calls, rounds, residual, block] = await Promise.all([
-  client.readContract({ address: getAddress(manifest.coordinator.toLowerCase()), abi: coordinatorAbi, functionName: "network" }),
-  client.readContract({ address: getAddress(manifest.coordinator.toLowerCase()), abi: coordinatorAbi, functionName: "totalFoldCalls" }),
-  client.readContract({ address: getAddress(manifest.coordinator.toLowerCase()), abi: coordinatorAbi, functionName: "totalFoldRounds" }),
-  client.readContract({ address: getAddress(manifest.coordinator.toLowerCase()), abi: coordinatorAbi, functionName: "lastResidualProfit" }),
+const canonicalBlock = BigInt(manifest.blockNumber);
+const coordinator = getAddress(manifest.coordinator.toLowerCase());
+const router = getAddress(manifest.router.toLowerCase());
+const [network, calls, rounds, residual, block, coordinatorManager, routerManager, routerCoordinator, tokenA, tokenB, tokenC, hookAB, hookBC, hookAC, preNetwork, postNetwork] = await Promise.all([
+  client.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "network" }),
+  client.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "totalFoldCalls" }),
+  client.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "totalFoldRounds" }),
+  client.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "lastResidualProfit" }),
   client.getBlockNumber(),
+  client.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "manager" }),
+  client.readContract({ address: router, abi: routerAbi, functionName: "manager" }),
+  client.readContract({ address: router, abi: routerAbi, functionName: "coordinator" }),
+  client.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "tokenA" }),
+  client.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "tokenB" }),
+  client.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "tokenC" }),
+  client.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "hookAB" }),
+  client.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "hookBC" }),
+  client.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "hookAC" }),
+  client.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "network", blockNumber: canonicalBlock - 1n }),
+  client.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "network", blockNumber: canonicalBlock }),
 ]);
+const expectedBindings = [
+  manifest.poolManager,
+  manifest.poolManager,
+  manifest.coordinator,
+  manifest.tokens.a,
+  manifest.tokens.b,
+  manifest.tokens.c,
+  manifest.hooks.ab,
+  manifest.hooks.bc,
+  manifest.hooks.ac,
+].map((address) => getAddress(address.toLowerCase()));
+const observedBindings = [
+  coordinatorManager,
+  routerManager,
+  routerCoordinator,
+  tokenA,
+  tokenB,
+  tokenC,
+  hookAB,
+  hookBC,
+  hookAC,
+].map((address) => getAddress(address.toLowerCase()));
+if (observedBindings.some((address, index) => address !== expectedBindings[index])) {
+  throw new Error("live coordinator/router bindings mismatch");
+}
+assertNetworkSnapshot("Canonical pre-state", normalizeNetwork(preNetwork), manifest.demo.preReserves);
+assertNetworkSnapshot("Canonical post-state", normalizeNetwork(postNetwork), manifest.demo.postReserves);
 const state = normalizeNetwork(network);
 const simulationAccount = getAddress(manifest.rpcSimulation.account.toLowerCase());
 const simulationAmount = 1_000n * 10n ** 18n;

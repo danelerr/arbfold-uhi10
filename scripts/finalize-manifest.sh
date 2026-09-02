@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ "$#" -lt 4 || "$#" -gt 5 ]]; then
-  echo "usage: $0 <manifest> <deploy-broadcast-json> <demo-broadcast-json> <source-verification> [demo-evidence-json]" >&2
+if [[ "$#" -ne 6 ]]; then
+  echo "usage: $0 <manifest> <deploy-broadcast-json> <demo-broadcast-json> <source-verification> <demo-evidence-json> <rpc-url>" >&2
   exit 64
 fi
 
@@ -10,7 +10,8 @@ manifest=$1
 deploy_broadcast=$2
 demo_broadcast=$3
 source_verification=$4
-demo_evidence=${5:-}
+demo_evidence=$5
+rpc_url=$6
 
 for required_file in "$manifest" "$deploy_broadcast" "$demo_broadcast"; do
   if [[ ! -f "$required_file" ]]; then
@@ -71,10 +72,42 @@ else
     "$manifest" > "$temporary_manifest"
 fi
 
+runtime_json='{}'
+while IFS='|' read -r key address_path; do
+    address=$(jq -er "$address_path" "$temporary_manifest")
+    code=$(cast code "$address" --rpc-url "$rpc_url")
+    if [[ -z "$code" || "$code" == "0x" ]]; then
+      echo "missing runtime bytecode for $key at $address" >&2
+      exit 65
+    fi
+    bytes=$(( (${#code} - 2) / 2 ))
+    code_hash=$(cast keccak "$code")
+    runtime_json=$(jq -cn \
+      --argjson current "$runtime_json" \
+      --arg key "$key" \
+      --argjson bytes "$bytes" \
+      --arg hash "$code_hash" \
+      '$current + {($key): {bytes: $bytes, keccak256: $hash}}')
+done <<'EOF'
+poolManager|.poolManager
+coordinator|.coordinator
+hookAB|.hooks.ab
+hookBC|.hooks.bc
+hookAC|.hooks.ac
+router|.router
+tokenA|.tokens.a
+tokenB|.tokens.b
+tokenC|.tokens.c
+EOF
+runtime_manifest="${manifest}.runtime.tmp"
+jq --argjson runtime "$runtime_json" '.runtimeBytecode = $runtime' "$temporary_manifest" > "$runtime_manifest"
+mv "$runtime_manifest" "$temporary_manifest"
+
 mv "$temporary_manifest" "$manifest"
 jq -e '
   .researchOnly == true
   and (.deploymentTransactions | length > 0)
   and (.canonicalDemoTransaction | startswith("0x"))
+  and ((.runtimeBytecode // {}) | length == 9)
   and ((has("demo") | not) or (.demo.chainId == .chainId and .demo.foldRounds > 0))
 ' "$manifest" >/dev/null

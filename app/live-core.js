@@ -2,7 +2,10 @@ const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/;
 const BYTECODE_HASH_PATTERN = /^0x[a-fA-F0-9]{64}$/;
 const MAX_DEMO_AMOUNT = 25_000;
 const MIN_DEMO_AMOUNT = 1_000;
+export const OFFICIAL_UNICHAIN_SEPOLIA_POOL_MANAGER = "0x9cb26a7183b2f4515945dc52cb4195b0d2d06c95";
+const NETWORK_FIELDS = ["abA", "abB", "bcB", "bcC", "acA", "acC"];
 export const RUNTIME_BYTECODE_KEYS = [
+  "poolManager",
   "coordinator",
   "hookAB",
   "hookBC",
@@ -33,6 +36,13 @@ export function validateManifest(manifest) {
   if (addresses.some((value) => !ADDRESS_PATTERN.test(value ?? ""))) {
     throw new Error("manifest contains an invalid contract address");
   }
+  if (manifest.poolManager.toLowerCase() !== OFFICIAL_UNICHAIN_SEPOLIA_POOL_MANAGER
+    || manifest.officialPoolManager.toLowerCase() !== OFFICIAL_UNICHAIN_SEPOLIA_POOL_MANAGER) {
+    throw new Error("manifest does not bind the frozen official Unichain Sepolia PoolManager");
+  }
+  if (!Number.isSafeInteger(manifest.blockNumber) || manifest.blockNumber <= 0) {
+    throw new Error("manifest contains an invalid canonical block number");
+  }
   if (!/^0x[a-fA-F0-9]{64}$/.test(manifest.canonicalDemoTransaction ?? "")) {
     throw new Error("manifest contains an invalid canonical transaction");
   }
@@ -46,6 +56,22 @@ export function validateManifest(manifest) {
       || manifest.interactiveDemo.foldRounds < 0) {
       throw new Error("manifest contains invalid interactive-demo evidence");
     }
+  }
+  const demo = manifest.demo;
+  if (demo.chainId !== manifest.chainId
+    || !ADDRESS_PATTERN.test(demo.originHook ?? "")
+    || !ADDRESS_PATTERN.test(demo.solver ?? "")
+    || !ADDRESS_PATTERN.test(demo.user ?? "")
+    || typeof demo.zeroForOne !== "boolean"
+    || !["amountIn", "amountOut", "residualProfit", "solverReward"].every(
+      (field) => /^(0|[1-9]\d*)$/.test(demo[field] ?? ""),
+    )
+    || !Number.isSafeInteger(demo.foldRounds)
+    || demo.foldRounds < 0
+    || ![demo.preReserves, demo.postReserves].every((snapshot) => snapshot
+      && Object.keys(snapshot).sort().join(",") === [...NETWORK_FIELDS].sort().join(",")
+      && NETWORK_FIELDS.every((field) => /^(0|[1-9]\d*)$/.test(snapshot[field] ?? "")))) {
+    throw new Error("manifest contains invalid canonical-demo evidence");
   }
   if (!manifest.rpcSimulation
     || !ADDRESS_PATTERN.test(manifest.rpcSimulation.account ?? "")
@@ -71,6 +97,7 @@ export function validateManifest(manifest) {
 
 export function runtimeBytecodeTargets(manifest) {
   return [
+    ["poolManager", manifest.poolManager],
     ["coordinator", manifest.coordinator],
     ["hookAB", manifest.hooks.ab],
     ["hookBC", manifest.hooks.bc],
@@ -80,6 +107,14 @@ export function runtimeBytecodeTargets(manifest) {
     ["tokenB", manifest.tokens.b],
     ["tokenC", manifest.tokens.c],
   ].map(([key, address]) => ({ key, address, expected: manifest.runtimeBytecode[key] }));
+}
+
+export function assertNetworkSnapshot(label, actual, expected) {
+  for (const field of NETWORK_FIELDS) {
+    if (actual[field] !== BigInt(expected[field])) {
+      throw new Error(`${label} ${field} does not match the published canonical snapshot`);
+    }
+  }
 }
 
 export function assertRuntimeBytecodeIdentity(target, code, observedHash) {

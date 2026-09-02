@@ -168,12 +168,15 @@ scripts/finalize-manifest.sh \
   contracts/broadcast/DeployArbFold.s.sol/1301/run-latest.json \
   contracts/broadcast/RunArbFoldDemo.s.sol/1301/run-latest.json \
   not-available \
-  deployments/unichain-sepolia-1301-demo.json
+  deployments/unichain-sepolia-1301-demo.json \
+  "$ARBFOLD_UNICHAIN_RPC"
 ```
 
 Replace `not-available` with `partial` or `verified` only after explorer source
 verification actually succeeds. Remove the intermediate `*-demo.json` after
-the finalized manifest contains its `demo` object.
+the finalized manifest contains its `demo` object. The finalizer reads all
+nine runtime bytecodes through that RPC, records exact sizes and `keccak256`
+hashes, and fails if any target has no code.
 
 ## 7. Publication checks
 

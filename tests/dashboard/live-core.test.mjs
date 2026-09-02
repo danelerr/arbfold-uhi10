@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   assertRuntimeBytecodeIdentity,
+  assertNetworkSnapshot,
   bufferedGasLimit,
   networkChanged,
   normalizeNetwork,
@@ -18,9 +19,23 @@ function manifest() {
   return {
     researchOnly: true,
     chainId: 1301,
-    demo: {},
-    poolManager: address,
-    officialPoolManager: address,
+    blockNumber: 1,
+    demo: {
+      amountIn: "1",
+      amountOut: "1",
+      chainId: 1301,
+      foldRounds: 1,
+      originHook: address,
+      residualProfit: "0",
+      solver: address,
+      solverReward: "1",
+      user: address,
+      zeroForOne: false,
+      preReserves: { abA: "1", abB: "1", bcB: "1", bcC: "1", acA: "1", acC: "1" },
+      postReserves: { abA: "1", abB: "1", bcB: "1", bcC: "1", acA: "1", acC: "1" },
+    },
+    poolManager: "0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95",
+    officialPoolManager: "0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95",
     coordinator: address,
     router: address,
     tokens: { a: address, b: address, c: address },
@@ -33,7 +48,7 @@ function manifest() {
       maximumInput: "1",
     },
     runtimeBytecode: Object.fromEntries([
-      "coordinator", "hookAB", "hookBC", "hookAC", "router", "tokenA", "tokenB", "tokenC",
+      "poolManager", "coordinator", "hookAB", "hookBC", "hookAC", "router", "tokenA", "tokenB", "tokenC",
     ].map((key) => [key, { bytes: 1, keccak256: bytecodeHash }])),
   };
 }
@@ -56,6 +71,14 @@ test("runtime bytecode identity requires the published size and hash", () => {
   assert.throws(() => assertRuntimeBytecodeIdentity(target, "0x", bytecodeHash), /no deployed bytecode/);
 });
 
+test("canonical network snapshots are compared losslessly", () => {
+  const actual = { abA: 1n, abB: 2n, bcB: 3n, bcC: 4n, acA: 5n, acC: 6n };
+  const expected = Object.fromEntries(Object.entries(actual).map(([key, value]) => [key, String(value)]));
+  assert.doesNotThrow(() => assertNetworkSnapshot("canonical", actual, expected));
+  expected.acC = "7";
+  assert.throws(() => assertNetworkSnapshot("canonical", actual, expected), /acC does not match/);
+});
+
 test("validateManifest rejects the wrong chain and malformed addresses", () => {
   const wrongChain = manifest();
   wrongChain.chainId = 1;
@@ -64,6 +87,10 @@ test("validateManifest rejects the wrong chain and malformed addresses", () => {
   const malformed = manifest();
   malformed.router = "0x1234";
   assert.throws(() => validateManifest(malformed), /invalid contract address/);
+
+  const mismatchedManager = manifest();
+  mismatchedManager.poolManager = address;
+  assert.throws(() => validateManifest(mismatchedManager), /official Unichain Sepolia PoolManager/);
 
   const invalidSimulation = manifest();
   invalidSimulation.rpcSimulation = {
@@ -94,6 +121,10 @@ test("validateManifest rejects the wrong chain and malformed addresses", () => {
   const malformedBytecode = manifest();
   malformedBytecode.runtimeBytecode.router.keccak256 = "0x12";
   assert.throws(() => validateManifest(malformedBytecode), /invalid runtime-bytecode evidence/);
+
+  const malformedDemo = manifest();
+  malformedDemo.demo.preReserves.abA = "01";
+  assert.throws(() => validateManifest(malformedDemo), /invalid canonical-demo evidence/);
 });
 
 test("parseDemoAmount enforces the public-demo range", () => {

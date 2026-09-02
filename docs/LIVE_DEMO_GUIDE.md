@@ -84,5 +84,8 @@ on 2026-08-30:
 - fold rounds: 2 in one `fold()` call;
 - residual cyclic profit: 0 wei A.
 
-Run `npm run check:live` to verify bytecode, receipts, current reserves, public
-simulation funding/allowance and a fresh end-to-end RPC dry-run.
+Run `npm run check:live` to verify the exact runtime size/hash of the official
+PoolManager and all eight ARBFOLD contracts, manager/token/hook bindings, the
+canonical receipt's decoded swap/fold semantics, its historical pre/post
+reserve snapshots, current reserves, public simulation funding/allowance and a
+fresh end-to-end RPC dry-run.

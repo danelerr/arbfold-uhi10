@@ -13,18 +13,19 @@ human-provided artifact is marked pending rather than inferred or fabricated.
 | v0.1 deployment source | [`6670e626a836db82a2810497812009c1394b0b20`](https://github.com/danelerr/arbfold-uhi10/commit/6670e626a836db82a2810497812009c1394b0b20) |
 | Historical v0 source commit | [`9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b`](https://github.com/danelerr/arbfold-uhi10/commit/9cbc16ed55c8bcbee2a3bbb05c95d049a0127c1b) |
 | Testnet deployment | v0.1 manifest binds the source commit, addresses, 28 deployment transactions and canonical demo transaction |
-| Final release | [`uhi10-final`](https://github.com/danelerr/arbfold-uhi10/releases/tag/uhi10-final), source commit [`2abc236665ee8a3de314de70e700497760a841bc`](https://github.com/danelerr/arbfold-uhi10/commit/2abc236665ee8a3de314de70e700497760a841bc) |
+| Complete submission release | [`uhi10-submission`](https://github.com/danelerr/arbfold-uhi10/tree/uhi10-submission) — one tag for contracts, benchmark, UI and verification tooling |
+| Historical pre-submission release | [`uhi10-final`](https://github.com/danelerr/arbfold-uhi10/releases/tag/uhi10-final), source commit [`2abc236665ee8a3de314de70e700497760a841bc`](https://github.com/danelerr/arbfold-uhi10/commit/2abc236665ee8a3de314de70e700497760a841bc) |
 
 ## Commit-pinned judge links
 
-- [Hook callback](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldHook.sol#L72)
-- [Coordinator direct transition](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldCoordinator.sol#L144)
-- [Router unlock settlement](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldRouter.sol#L93)
-- [Six-path invariant handler](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/test/ArbFoldInvariant.t.sol#L17)
-- [Deployment script](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/script/DeployArbFold.s.sol)
-- [Post-deployment verifier](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/script/VerifyArbFoldDeployment.s.sol)
-- [Clean-core comparison](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/test/ArbFoldCleanCoreBenchmark.t.sol)
-- [Threat model](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/docs/THREAT_MODEL.md)
+- [Hook callback](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/src/ArbFoldHook.sol#L72)
+- [Coordinator direct transition](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/src/ArbFoldCoordinator.sol#L144)
+- [Router unlock settlement](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/src/ArbFoldRouter.sol#L93)
+- [Six-path invariant handler](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/test/ArbFoldInvariant.t.sol#L17)
+- [Deployment script](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/script/DeployArbFold.s.sol)
+- [Post-deployment verifier](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/script/VerifyArbFoldDeployment.s.sol)
+- [Clean-core comparison](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/test/ArbFoldCleanCoreBenchmark.t.sol)
+- [Threat model](https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/docs/THREAT_MODEL.md)
 - [Public v0.1 deployment manifest](../deployments/unichain-sepolia-1301-v0.1.json)
 - [Canonical v0.1 transaction](https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022)
 
@@ -67,7 +68,7 @@ first-call grid above.
 | Deployment path | Local deploy, canonical swap and read-only verifier pass | `make test-deployment` |
 | Complete gate | Fail-closed verification command | `make verify-release` |
 
-The frozen `uhi10-final` source passed the public verification workflow,
+The historical `uhi10-final` source passed the public verification workflow,
 including the generated `lcov.info` and complete Slither JSON artifact:
 
 - [Final-tag verification run 33341073908](https://github.com/danelerr/arbfold-uhi10/actions/runs/33341073908)
@@ -81,7 +82,7 @@ including the generated `lcov.info` and complete Slither JSON artifact:
 | PoolManager | Official v4 manager `0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95` |
 | Deployment manifest | [`deployments/unichain-sepolia-1301-v0.1.json`](../deployments/unichain-sepolia-1301-v0.1.json) — 28 successful deployment receipts |
 | Canonical transaction | [`0x3429…2022`](https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022) — 100,000 ARFY→ARFX; two rounds; zero residual |
-| Runtime bytecode | Sizes and onchain `keccak256` values for coordinator, three hooks, router and three test tokens are recorded in the v0.1 manifest |
+| Runtime bytecode | Sizes and onchain `keccak256` values for the official PoolManager, coordinator, three hooks, router and three test tokens are recorded in the v0.1 manifest |
 | Explorer links | Manager, coordinator, router, three hooks and canonical transaction are encoded in the manifest |
 | Source verification | `not-available`; no explorer-verification claim is made |
 | Video | Pending recording |
@@ -89,14 +90,16 @@ including the generated `lcov.info` and complete Slither JSON artifact:
 
 The current public deployment is v0.1. The dashboard fails closed unless the
 committed v0.1 manifest passes its schema gate and live RPC checks confirm chain
-ID, the canonical receipt, deployed bytecode, current
-counters and reserves. It does not substitute local values for public evidence.
+ID, exact deployed-bytecode identities, manager/token/hook bindings, decoded
+canonical receipt semantics, historical pre/post snapshots, current counters
+and reserves. It does not substitute local values for public evidence.
 It also exposes a wallet-free end-to-end `eth_call` and an optional signed
 testnet execution path. `npm run check:live` verifies the same public dry-run
 prerequisites from the command line.
 
-`make submission-preflight` additionally binds the public dashboard, manifest,
-repository copy, Project ID, five-point benchmark and final-form claims into one
+`make submission-preflight` additionally binds the public dashboard bundle,
+manifest, served lossless benchmark, repository copy, Project ID, five-point
+benchmark and final-form claims into one
 fail-closed release check. The final public video URL remains deliberately
 outside automation.
 

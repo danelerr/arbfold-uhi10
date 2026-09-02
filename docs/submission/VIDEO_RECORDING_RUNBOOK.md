@@ -36,10 +36,10 @@ volume before recording the actual take.
 
 1. Dashboard hero: https://danelerr.github.io/arbfold-uhi10/
 2. Canonical v0.1 transaction: https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022
-3. Hook callback: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldHook.sol#L72
-4. Direct transition: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldCoordinator.sol#L144
-5. Atomic settlement: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldRouter.sol#L93
-6. v0.1 report: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/benchmark/optimized-release-candidate-results/REPORT.md
+3. Hook callback: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/src/ArbFoldHook.sol#L72
+4. Direct transition: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/src/ArbFoldCoordinator.sol#L144
+5. Atomic settlement: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/src/ArbFoldRouter.sol#L93
+6. v0.1 report: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/benchmark/optimized-release-candidate-results/REPORT.md
 
 Set the browser zoom so the complete benchmark cards fit without horizontal
 scrolling. Keep one terminal window ready with the completed `make video-proof`

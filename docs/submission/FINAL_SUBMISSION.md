@@ -132,12 +132,12 @@ independent audit and a separate authorization decision.
 - Repository: https://github.com/danelerr/arbfold-uhi10
 - Canonical v0.1 transaction: https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022
 - Deployment manifest: https://danelerr.github.io/arbfold-uhi10/deployments/unichain-sepolia-1301-v0.1.json
-- v0.1 benchmark: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/benchmark/optimized-release-candidate-results/REPORT.md
+- v0.1 benchmark: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/benchmark/optimized-release-candidate-results/REPORT.md
 - Historical v0 release benchmark: https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md
-- Hook: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldHook.sol#L72
-- Coordinator: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldCoordinator.sol#L144
-- Router: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/src/ArbFoldRouter.sol#L93
-- Invariant suite: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-final/contracts/test/ArbFoldInvariant.t.sol#L17
+- Hook: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/src/ArbFoldHook.sol#L72
+- Coordinator: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/src/ArbFoldCoordinator.sol#L144
+- Router: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/src/ArbFoldRouter.sol#L93
+- Invariant suite: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/test/ArbFoldInvariant.t.sol#L17
 
 ## Claims boundary
 

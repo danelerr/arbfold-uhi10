@@ -20,9 +20,14 @@ export interface LiveState {
 export interface DemoSnapshot {
   amountIn: string;
   amountOut: string;
+  chainId: number;
   foldRounds: number;
+  originHook: Address;
   residualProfit: string;
+  solver: Address;
   solverReward: string;
+  user: Address;
+  zeroForOne: boolean;
   preReserves: Record<keyof ReserveState, string>;
   postReserves: Record<keyof ReserveState, string>;
 }
@@ -57,7 +62,7 @@ export interface DeploymentManifest {
     maximumInput: string;
   };
   runtimeBytecode: Record<
-    "coordinator" | "hookAB" | "hookBC" | "hookAC" | "router" | "tokenA" | "tokenB" | "tokenC",
+    "poolManager" | "coordinator" | "hookAB" | "hookBC" | "hookAC" | "router" | "tokenA" | "tokenB" | "tokenC",
     { bytes: number; keccak256: Hash }
   >;
   sourceVerification: string;

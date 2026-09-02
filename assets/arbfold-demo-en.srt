@@ -1,157 +1,149 @@
 1
-00:00:00,000 --> 00:00:07,200
+00:00:00,000 --> 00:00:08,000
 A cyclic arbitrage normally reconciles three
 inconsistent pools by executing three swaps.
 
 2
-00:00:07,200 --> 00:00:14,850
-Even when the profit is reinjected, the EVM
-still pays to replay every leg.
+00:00:08,000 --> 00:00:16,000
+Even when profit is reinjected, the EVM still
+pays to replay every leg.
 
 3
-00:00:14,850 --> 00:00:22,500
+00:00:16,000 --> 00:00:25,000
 ARBFOLD asks whether cooperating v4 pools can
 settle the equivalent state directly.
 
 4
-00:00:22,500 --> 00:00:30,150
-This controlled v0.1 benchmark starts both paths
-from the same pool state.
+00:00:25,000 --> 00:00:35,000
+At canonical 100k, the reference executes two rounds:
+six arbitrage swaps and two reinjections.
 
 5
-00:00:30,150 --> 00:00:39,600
-At canonical 100k, the iterative reference
-executes two cyclic arbitrage rounds.
+00:00:35,000 --> 00:00:45,000
+One fold() call applies two direct rounds. At 100k:
+544,219 gas versus 375,171, or 31.06% less.
 
 6
-00:00:39,600 --> 00:00:48,150
-That means six arbitrage swaps and two
-profit reinjections after the user swap.
+00:00:45,000 --> 00:00:54,000
+The Swap Lab uses three explicitly valueless test tokens:
+ARFX, ARFY and ARFZ.
 
 7
-00:00:48,150 --> 00:00:58,050
-One ARBFOLD fold() call instead processes
-two runtime-checked direct settlement rounds.
+00:00:54,000 --> 00:01:03,000
+It reads the deployed quote without a signature and
+shows the complete three-pool cycle.
 
 8
-00:00:58,050 --> 00:01:05,250
-At 100k: 544,219 gas versus 375,171.
-ARBFOLD uses 31.06% less in this benchmark.
+00:01:03,000 --> 00:01:12,000
+Wallet preparation mints only a deficit and approves
+only the selected amount.
 
 9
-00:01:05,250 --> 00:01:12,450
-The user output is exactly equal in both paths.
+00:01:12,000 --> 00:01:20,000
+The final action sends one real swap plus fold to the
+public v0.1 deployment.
 
 10
-00:01:12,450 --> 00:01:20,550
-The fixed external-recipient reward is also
-exactly equal.
+00:01:20,000 --> 00:01:28,000
+The user output and fixed external-recipient reward
+are exactly equal in both controlled paths.
 
 11
-00:01:20,550 --> 00:01:28,200
-The six final reserves are equivalent within
-the measured one-wei tolerance.
+00:01:28,000 --> 00:01:36,000
+The six final reserves are compared losslessly and
+are equivalent within the measured one-wei tolerance.
 
 12
-00:01:28,200 --> 00:01:35,850
-At 25k: 409,402 gas versus 329,777.
+00:01:36,000 --> 00:01:43,000
+At 25k: 409,402 gas versus 329,777,
+or 19.45% less.
 
 13
-00:01:35,850 --> 00:01:43,500
-That is 19.45% less gas, removing the
-historical v0 regression at this workload.
+00:01:43,000 --> 00:01:50,000
+The 1k through 4k execute zero fold rounds and
+remain more expensive.
 
 14
-00:01:43,500 --> 00:01:51,600
-The dense sweep also shows the boundary:
-1k through 4k execute zero fold rounds.
-
-15
-00:01:51,600 --> 00:01:59,250
-Those zero-round calls cost more because there
-is no actionable settlement to perform.
-
-16
-00:01:59,250 --> 00:02:06,450
+00:01:50,000 --> 00:01:58,000
 From 5k through 200k, 196 of 196 actionable
 workloads were cheaper in the tested canonical path.
 
+15
+00:01:58,000 --> 00:02:06,000
+That is path-specific experimental evidence,
+not a universal savings claim.
+
+16
+00:02:06,000 --> 00:02:15,000
+The controlled benchmark alone compares identical
+starting states and supplies the gas result.
+
 17
-00:02:06,450 --> 00:02:15,000
-That is a path-specific experimental result,
-not a universal claim that ARBFOLD is always cheaper.
+00:02:15,000 --> 00:02:24,000
+The public Unichain Sepolia receipt proves execution
+of the public v0.1 deployment.
 
 18
-00:02:15,000 --> 00:02:23,550
-The public Unichain Sepolia demo executes the
-public v0.1 deployment.
+00:02:24,000 --> 00:02:32,000
+It contains one SwapAndFold, two FoldRound events and
+FoldCompleted with zero residual.
 
 19
-00:02:23,550 --> 00:02:32,100
-The historical v0 research deployment remains
-archived and is not a primary submission link.
+00:02:32,000 --> 00:02:40,000
+The historical v0 research deployment remains archived
+and is not the primary submission deployment.
 
 20
-00:02:32,100 --> 00:02:39,750
-The public demo uses the official v4 PoolManager
-with hook-owned custom-curve pools.
+00:02:40,000 --> 00:02:50,000
+The hook computes user output first, then invokes the
+fixed coordinator in the same PoolManager unlock.
 
 21
-00:02:39,750 --> 00:02:47,850
-Every virtual reserve remains backed by its
-PoolManager ERC-6909 claim balance.
+00:02:50,000 --> 00:03:00,000
+The coordinator transfers backed ERC-6909 claims and
+checks conservation and non-decreasing invariants.
 
 22
-00:02:47,850 --> 00:02:55,950
-Conservation, reserve bounds and non-decreasing
-pool invariants are checked at runtime.
+00:03:00,000 --> 00:03:09,000
+The current suite contains 82 Solidity tests in both
+default and 10,000-run release profiles.
 
 23
-00:02:55,950 --> 00:03:03,600
-The current suite contains 82 Solidity tests
-across default and release profiles.
-
-24
-00:03:03,600 --> 00:03:11,700
+00:03:09,000 --> 00:03:17,000
 It covers all six paths, stateful invariants,
 negative cases and exact PoolManager backing.
 
+24
+00:03:17,000 --> 00:03:25,000
+The proof command also checks the lossless benchmark,
+source manifest and public deployment facts.
+
 25
-00:03:11,700 --> 00:03:18,450
-We preregistered a stronger economic claim:
-10% more LP net value.
+00:03:25,000 --> 00:03:34,000
+We preregistered a stronger claim: ten percent more
+LP net value. It failed.
 
 26
-00:03:18,450 --> 00:03:26,550
-It failed. The measured improvement was only
-0.000287% in that frozen environment.
+00:03:34,000 --> 00:03:43,000
+The measured improvement was only 0.000287 percent
+in that frozen environment.
 
 27
-00:03:26,550 --> 00:03:34,650
-We preserved the rejected economic result and
-all historical v0 benchmark evidence unchanged.
+00:03:43,000 --> 00:03:51,000
+Historical results remain immutable. What survived is
+an execution advantage in tested actionable workloads.
 
 28
-00:03:34,650 --> 00:03:42,750
-What survived is an execution-gas advantage
-in the tested actionable workloads.
+00:03:51,000 --> 00:03:59,000
+Steady-state telemetry gas is not claimed because it
+has not been measured across real transactions.
 
 29
-00:03:42,750 --> 00:03:50,400
-Steady-state telemetry gas is not claimed because
-it has not been measured across real transactions.
+00:03:59,000 --> 00:04:07,000
+ARBFOLD is research-grade, not production-audited and
+does not claim universal MEV protection.
 
 30
-00:03:50,400 --> 00:03:58,500
-ARBFOLD is a fixed three-CPMM research experiment,
-not a universal arbitrage detector.
-
-31
-00:03:58,500 --> 00:04:04,800
-It is not audited for production and does not
-claim material LP-net uplift.
-
-32
-00:04:04,800 --> 00:04:12,000
-Do not replay every leg.
+00:04:07,000 --> 00:04:15,000
+Don’t replay every leg.
 Settle the equivalent state.

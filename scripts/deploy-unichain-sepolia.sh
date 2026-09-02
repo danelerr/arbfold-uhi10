@@ -218,7 +218,8 @@ demo_broadcast="$contracts_root/broadcast/RunArbFoldDemo.s.sol/1301/run-latest.j
   "$deploy_broadcast" \
   "$demo_broadcast" \
   "$source_verification" \
-  "$demo_evidence"
+  "$demo_evidence" \
+  "$rpc_url"
 
 pool_manager_lower=$(printf '%s' "$pool_manager" | tr '[:upper:]' '[:lower:]')
 deployer_address_lower=$(printf '%s' "$deployer_address" | tr '[:upper:]' '[:lower:]')

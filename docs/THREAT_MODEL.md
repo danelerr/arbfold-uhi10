@@ -155,6 +155,12 @@ flowchart LR
    coordinator, PoolManager and all three hooks before changing state; tests
    require complete atomic rollback for each alias. Other contracts remain
    allowed so smart accounts and vaults are not rejected generically.
+10. **Donate ERC-6909 claims to a hook:** an arbitrary claim holder can increase
+    a hook's claim balance without changing its virtual reserve. This cannot
+    create undercollateralization and does not let the donor withdraw pool
+    reserves, but it breaks strict equality and may strand the donated surplus.
+    The research deployment verifier requires equality at its checked snapshot;
+    v0.1 does not include a generic surplus-recovery path.
 
 ## Threat model table
 
@@ -170,6 +176,7 @@ flowchart LR
 | TM-008 | Arbitrary callback caller | Attempts direct callback invocation | Calls router/hook callback outside PoolManager lock | Unauthorized state change | Reserves, settlement | `BaseHook.onlyPoolManager`; router `NotPoolManager` | Relies on immutable manager correctness | Retain immutable manager and callback unit tests | Track reverted unauthorized callbacks in testing | Low | High | low |
 | TM-009 | Malicious site/repository editor | Can replace the dashboard build or manifest | Redirects testnet approval/execution to a lookalike address | Misleading demo or testnet token approval | Wallet intent, evidence integrity | Chain/manifest schema gate, receipt and bytecode checks, explicit wallet confirmations, testnet-only assets | No content-signing or production wallet guarantee | Publish from protected branch, retain CI/build checks and commit-pinned addresses | Compare connected chain and wallet transaction destination to manifest | Low | Medium | medium |
 | TM-010 | Arbitrary router caller | Chooses zero, coordinator, manager or a registered hook as reward recipient | Attempts to make reward ownership alias an accounting boundary | Claim/reserve drift if accepted | Claims, virtual reserves, LP withdrawals | v0.1 `InvalidSolver` guard rejects all six forbidden aliases before writes; atomicity regressions cover each case | Immutable v0 deployment still lacks this guard; no production audit | Preserve v0 warning; require v0.1 or later plus audit for any new deployment | Alert on rejected alias calls and compare every hook claim to reserves | Low in v0.1; high in v0 | High | medium |
+| TM-011 | Arbitrary ERC-6909 claim holder | Owns a compatible PoolManager claim | Transfers claims directly to a registered hook | Strict reserve/claim equality breaks; donated surplus may be stranded | Claim accounting, recoverability | Donations only increase backing; tested configured paths start and finish at equality | No surplus ledger or recovery rule | Track `claimBalance - virtualReserve`; define surplus policy before production | Alert on unsolicited claim transfers to hooks | Low | Low | low |
 
 ## Criticality calibration
 

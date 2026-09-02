@@ -3,8 +3,9 @@ set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 summary_file="$(mktemp)"
+release_summary_file="$(mktemp)"
 canonical_file="$(mktemp)"
-trap 'rm -f "$summary_file" "$canonical_file"' EXIT
+trap 'rm -f "$summary_file" "$release_summary_file" "$canonical_file"' EXIT
 
 benchmark_file="${ARBFOLD_BENCHMARK_PATH:-$repo_dir/benchmark/optimized-release-candidate-results/raw.json}"
 evidence_only=false
@@ -44,15 +45,18 @@ jq -er '
 ' "$canonical_file"
 
 if [[ "$evidence_only" == true ]]; then
-  printf '\nPASS — full v4 evidence validated: release provenance, compiler matrix, workload identity, round topology, residual policy, dense sweep, six unique paths, exact pairs, gas arithmetic and consumer-recomputable gates.\n'
+  printf '\nPASS — full v5 evidence validated: release provenance, compiler matrix, workload identity, round topology, residual policy, dense sweep, six unique paths, exact pairs, gas arithmetic and lossless reserve-equivalence gates.\n'
   exit 0
 fi
 
 cd "$repo_dir/contracts"
 forge test --offline --summary > "$summary_file"
+FOUNDRY_PROFILE=release forge test --offline --summary > "$release_summary_file"
 
-printf '\nARBFOLD CORE TEST SUMMARY\n\n'
+printf '\nARBFOLD DEFAULT-PROFILE TEST SUMMARY\n\n'
 tail -n 20 "$summary_file"
+printf '\nARBFOLD RELEASE-PROFILE TEST SUMMARY\n\n'
+tail -n 20 "$release_summary_file"
 
 printf '\nPUBLIC ARBFOLD V0.1 UNICHAIN SEPOLIA EVIDENCE\n\n'
 jq -r '

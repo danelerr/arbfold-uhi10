@@ -154,7 +154,10 @@ npm run build:dashboard
 make video-proof
 ```
 
-The release source is frozen at tag [`uhi10-final`](https://github.com/danelerr/arbfold-uhi10/releases/tag/uhi10-final).
+The complete submission source is frozen at tag
+[`uhi10-submission`](https://github.com/danelerr/arbfold-uhi10/tree/uhi10-submission).
+The earlier `uhi10-final` tag remains available as historical pre-submission
+evidence; active judge links use the complete submission tag.
 The UHI10 project ID is `HK-UHI10-1057`.
 
 ## Evidence and documentation

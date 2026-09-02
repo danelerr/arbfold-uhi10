@@ -148,7 +148,7 @@ test("v5 loader accepts lossless evidence and rejects legacy or incomplete evide
   }), /residual_threshold/);
 });
 
-test("v4 provenance and compiler matrix are mandatory and source-bound", async () => {
+test("v5 provenance and compiler matrix are mandatory and source-bound", async () => {
   const payload = JSON.parse(await rawText());
   await assert.doesNotReject(() => validateBenchmarkEvidenceWithProvenance(payload));
 

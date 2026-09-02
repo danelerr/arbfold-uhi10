@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import {
   BENCHMARK_SCHEMA,
   deriveBenchmarkFacts,
+  validateBenchmarkPayload,
 } from "../app/benchmark-core.js";
 import { validateManifest } from "../app/live-core.js";
 import { validateBenchmarkEvidenceWithProvenance } from "./benchmark-provenance.mjs";
@@ -166,12 +167,14 @@ check("Manual submission fields remain explicit", finalSubmission.includes("## P
 if (publicMode) {
   try {
     const cacheKey = Date.now();
-    const [publicPage, publicManifest, publicReadme] = await Promise.all([
+    const [publicPage, publicManifest, publicReadme, publicBenchmark] = await Promise.all([
       fetchText(`https://danelerr.github.io/arbfold-uhi10/?preflight=${cacheKey}`),
       fetchText(`https://danelerr.github.io/arbfold-uhi10/deployments/unichain-sepolia-1301-v0.1.json?preflight=${cacheKey}`),
       fetchText(`https://raw.githubusercontent.com/danelerr/arbfold-uhi10/main/README.md?preflight=${cacheKey}`),
+      fetchText(`https://danelerr.github.io/arbfold-uhi10/data/release-results.json?preflight=${cacheKey}`),
     ]);
     const servedManifest = validateManifest(JSON.parse(publicManifest));
+    validateBenchmarkPayload(JSON.parse(publicBenchmark));
     const bundlePath = publicPage.match(/<script[^>]+src="(\.\/assets\/index-[^"]+\.js)"/)?.[1];
     const publicBundle = bundlePath
       ? await fetchText(new URL(bundlePath, "https://danelerr.github.io/arbfold-uhi10/").href)
@@ -185,6 +188,7 @@ if (publicMode) {
     check("Public manifest matches v0.1 coordinator", servedManifest.coordinator === manifest.coordinator);
     check("Public manifest exactly matches the reviewed local release", sha256(publicManifest) === sha256(manifestText));
     check("Public repository serves the reviewed README", sha256(publicReadme) === sha256(readme));
+    check("Public benchmark exactly matches the lossless reviewed evidence", sha256(publicBenchmark) === sha256(rawText));
   } catch (error) {
     failures.push(`Public artifact verification: ${error.message}`);
   }
