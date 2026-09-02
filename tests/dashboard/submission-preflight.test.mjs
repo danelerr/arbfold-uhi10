@@ -6,8 +6,11 @@ const preflightSource = await import("node:fs/promises")
   .then(({ readFile }) => readFile(new URL("../../scripts/submission-preflight.mjs", import.meta.url), "utf8"));
 
 test("public preflight binds the immutable submission tag to current main", () => {
-  assert.match(preflightSource, /commits\/uhi10-submission/);
-  assert.match(preflightSource, /tagCommit\.sha === mainCommit\.sha/);
+  assert.match(preflightSource, /git/);
+  assert.match(preflightSource, /ls-remote/);
+  assert.match(preflightSource, /refs\/tags\/uhi10-submission\^\{\}/);
+  assert.match(preflightSource, /refs\.submission === refs\.main/);
+  assert.doesNotMatch(preflightSource, /api\.github\.com\/repos\/danelerr\/arbfold-uhi10\/commits/);
 });
 
 test("submission preflight validates automated evidence and isolates manual fields", () => {

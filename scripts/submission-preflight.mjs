@@ -1,6 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
+import { execFile } from "node:child_process";
 import { resolve } from "node:path";
+import { promisify } from "node:util";
 import {
   BENCHMARK_SCHEMA,
   deriveBenchmarkFacts,
@@ -15,6 +17,7 @@ const benchmarkArgument = process.argv.find((argument) => argument.startsWith("-
 const benchmarkOverride = benchmarkArgument?.slice("--benchmark=".length);
 const failures = [];
 const checks = [];
+const execFileAsync = promisify(execFile);
 
 async function read(relativePath) {
   return readFile(new URL(relativePath, new URL("../", import.meta.url)), "utf8");
@@ -43,6 +46,25 @@ async function fetchText(url) {
   });
   if (!response.ok) throw new Error(`${url} returned HTTP ${response.status}`);
   return response.text();
+}
+
+async function resolvePublicReleaseRefs() {
+  const { stdout } = await execFileAsync("git", [
+    "ls-remote",
+    "https://github.com/danelerr/arbfold-uhi10.git",
+    "refs/heads/main",
+    "refs/tags/uhi10-submission",
+    "refs/tags/uhi10-submission^{}",
+  ], { timeout: 15_000, maxBuffer: 64 * 1024 });
+  const refs = new Map(stdout.trim().split("\n").filter(Boolean).map((line) => {
+    const [sha, ref] = line.split(/\s+/);
+    return [ref, sha];
+  }));
+  return {
+    main: refs.get("refs/heads/main"),
+    submission: refs.get("refs/tags/uhi10-submission^{}")
+      ?? refs.get("refs/tags/uhi10-submission"),
+  };
 }
 
 const [readme, page, packageText, reactApp, benchmarkDemo, swapResult, swapLabDialog, swapComposer, walletHook, finalSubmission, demoScript, videoRunbook, subtitles, checklist, rawText, manifestText] = await Promise.all([
@@ -194,14 +216,9 @@ if (publicMode) {
   }
 
   try {
-    const [tagCommitText, mainCommitText] = await Promise.all([
-      fetchText("https://api.github.com/repos/danelerr/arbfold-uhi10/commits/uhi10-submission"),
-      fetchText("https://api.github.com/repos/danelerr/arbfold-uhi10/commits/main"),
-    ]);
-    const tagCommit = JSON.parse(tagCommitText);
-    const mainCommit = JSON.parse(mainCommitText);
-    check("Public submission tag resolves to current main", /^[0-9a-f]{40}$/.test(tagCommit.sha)
-      && tagCommit.sha === mainCommit.sha);
+    const refs = await resolvePublicReleaseRefs();
+    check("Public submission tag resolves to current main", /^[0-9a-f]{40}$/.test(refs.submission ?? "")
+      && refs.submission === refs.main);
   } catch (error) {
     failures.push(`Public submission tag verification: ${error.message}`);
   }

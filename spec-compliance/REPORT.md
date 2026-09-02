@@ -30,41 +30,24 @@ public bundle/manifest/README alignment, manager and nine runtime identities,
 canonical receipt semantics and snapshots, both Forge profiles in
 `video-proof`, active submission-tag links and the 4:15 runbook/SRT timeline.
 
-Two deliberate sequencing items remain:
-
-1. `uhi10-submission` does not yet exist; it will be created after this report;
-2. the human-recorded video and public URL do not yet exist.
-
-The new public preflight correctly blocks on the missing tag, and strict mode
-blocks on the video placeholder. The package is technically coherent but is
-not submission-complete until both external artifacts exist.
+The frozen `uhi10-submission` tag is part of the final release gate: the public
+preflight resolves the remote tag directly, peels annotated tags and requires
+its commit to equal public `main`. The remaining external artifact is the
+human-recorded video and public URL; strict mode correctly blocks on that
+placeholder.
 
 ## Verdict summary
 
 | Verdict | Count | Requirements |
 |---|---:|---|
-| `implemented` | 11 | REQ-01–08, REQ-10, REQ-12–13 |
-| `absent` | 2 | REQ-09, REQ-11 |
+| `implemented` | 12 | REQ-01–10, REQ-12–13 |
+| `absent` | 1 | REQ-11 |
 | `partial` | 0 | — |
 | `contradicted` | 0 | — |
 | `stronger-than-spec` | 0 | — |
 | `undecidable` | 0 | — |
 
 ## Findings by severity
-
-### Medium — submission tag pending (`absent`)
-
-`README.md:L157-L160`, `docs/RELEASE_EVIDENCE.md:L16-L28` and
-`docs/submission/SUBMISSION_CHECKLIST.md:L15` identify `uhi10-submission` as the
-frozen release. Local/remote ref searches found no such tag and representative
-GitHub links returned HTTP 404. The public bundle correctly targets the intended
-ref (`app/src/App.tsx:L13-L15,L83-L87`).
-
-This is fail-closed: `scripts/submission-preflight.mjs:L196-L207` resolves
-`commits/uhi10-submission` and `commits/main` and requires equal SHAs. Before
-that check was added, the public-artifact subset passed 32/32; at `be54101` the
-new check blocks exactly because the tag is absent. Create/push the tag after
-incorporating this report, then rerun `make submission-preflight`.
 
 ### Medium — final human video pending (`absent`)
 
@@ -89,7 +72,7 @@ No Critical, High or additional Medium/Low divergence survived refutation.
 | Canonical snapshots absent | lossless block `N-1`/`N` comparisons at `scripts/check-live-demo.mjs:L153-L200` | corrected |
 | `video-proof` used one profile | default and release profiles at `scripts/video-proof.sh:L52-L59` | corrected |
 | Runbook/SRT timing drift | both use the 4:15 sequence | corrected |
-| Active dashboard used historical links | active links use `uhi10-submission`; target tag remains pending | corrected |
+| Active dashboard used historical links | active links use the frozen `uhi10-submission` release | corrected |
 
 ## Claims that survived attempted refutation
 
@@ -121,7 +104,7 @@ No Critical, High or additional Medium/Low divergence survived refutation.
 | Public README SHA-256 | local/public `30af6e9af479980de86891a09f067794e91c57281ca4701059427b8f9a6b3aa4` |
 | Pages | run `33626346825` success from `6a2cd28` |
 | GitHub verification | run [`33626982817`](https://github.com/danelerr/arbfold-uhi10/actions/runs/33626982817) completed successfully on `be54101` |
-| Public preflight at `be54101` | expected block: missing tag |
+| Public submission tag gate | resolves remote `main` and the peeled `uhi10-submission` ref with `git ls-remote`; requires exact commit equality without REST rate-limit dependence |
 | Local strict preflight | expected exit 2: missing video URL |
 
 The mutable current state observed during the live check was `foldCalls=6`,
