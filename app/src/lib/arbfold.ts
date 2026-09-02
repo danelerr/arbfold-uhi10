@@ -3,10 +3,17 @@ import {
   formatUnits,
   getAddress,
   http,
+  keccak256,
   parseAbi,
   type Address,
 } from "viem";
-import { normalizeNetwork, reductionPercent, validateManifest } from "../../live-core.js";
+import {
+  assertRuntimeBytecodeIdentity,
+  normalizeNetwork,
+  reductionPercent,
+  runtimeBytecodeTargets,
+  validateManifest,
+} from "../../live-core.js";
 import { validateBenchmarkPayload } from "../../benchmark-core.js";
 import { TOKEN_SYMBOLS } from "../../swap-lab-core.js";
 import type {
@@ -187,28 +194,28 @@ export async function readLiveState(
 }
 
 export async function verifyDeployment(manifest: DeploymentManifest): Promise<LiveState> {
-  const addresses = [
-    manifest.poolManager,
-    manifest.coordinator,
-    manifest.router,
-    manifest.hooks.ab,
-    manifest.hooks.bc,
-    manifest.hooks.ac,
-  ].map(canonicalAddress);
-  const [chainId, canonicalReceipt, interactiveReceipt, ...codes] = await Promise.all([
+  const targets = runtimeBytecodeTargets(manifest).map((target) => ({
+    ...target,
+    address: canonicalAddress(target.address),
+  }));
+  const [chainId, canonicalReceipt, interactiveReceipt, managerCode, ...codes] = await Promise.all([
     publicClient.getChainId(),
     publicClient.getTransactionReceipt({ hash: manifest.canonicalDemoTransaction }),
     manifest.interactiveDemo?.transaction
       ? publicClient.getTransactionReceipt({ hash: manifest.interactiveDemo.transaction })
       : Promise.resolve(null),
-    ...addresses.map((address) => publicClient.getCode({ address })),
+    publicClient.getCode({ address: canonicalAddress(manifest.poolManager) }),
+    ...targets.map(({ address }) => publicClient.getCode({ address })),
   ]);
   if (chainId !== CHAIN_ID) throw new Error(`RPC returned chain ${chainId}, expected ${CHAIN_ID}`);
   if (canonicalReceipt.status !== "success") throw new Error("Canonical transaction did not succeed");
   if (interactiveReceipt && interactiveReceipt.status !== "success") {
     throw new Error("Browser-signed validation transaction did not succeed");
   }
-  if (codes.some((code) => !code || code === "0x")) throw new Error("A deployed contract has no bytecode");
+  if (!managerCode || managerCode === "0x") throw new Error("The official PoolManager has no bytecode");
+  codes.forEach((code, index) => {
+    assertRuntimeBytecodeIdentity(targets[index], code, keccak256(code ?? "0x"));
+  });
   const coordinator = canonicalAddress(manifest.coordinator);
   const [tokenA, tokenB, tokenC, hookAB, hookBC, hookAC] = await Promise.all([
     publicClient.readContract({ address: coordinator, abi: coordinatorAbi, functionName: "tokenA" }),

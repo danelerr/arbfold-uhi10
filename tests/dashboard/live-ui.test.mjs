@@ -115,6 +115,8 @@ test("live application treats the signed receipt as final and refreshes state be
   assert.match(live, /functionName: "tokenA"/);
   assert.match(live, /functionName: "hookAB"/);
   assert.match(live, /token and hook roles do not match/);
+  assert.match(live, /assertRuntimeBytecodeIdentity/);
+  assert.match(live, /keccak256/);
   assert.match(hook, /Promise\.allSettled/);
   const resultIndex = hook.indexOf("setResult(nextResult)");
   assert.ok(resultIndex >= 0);

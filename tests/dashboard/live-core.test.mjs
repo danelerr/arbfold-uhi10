@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  assertRuntimeBytecodeIdentity,
   bufferedGasLimit,
   networkChanged,
   normalizeNetwork,
@@ -11,6 +12,7 @@ import {
 
 const address = "0x1111111111111111111111111111111111111111";
 const transaction = `0x${"ab".repeat(32)}`;
+const bytecodeHash = `0x${"cd".repeat(32)}`;
 
 function manifest() {
   return {
@@ -24,11 +26,34 @@ function manifest() {
     tokens: { a: address, b: address, c: address },
     hooks: { ab: address, bc: address, ac: address },
     canonicalDemoTransaction: transaction,
+    rpcSimulation: {
+      account: address,
+      allowanceBlock: 1,
+      allowanceTransaction: transaction,
+      maximumInput: "1",
+    },
+    runtimeBytecode: Object.fromEntries([
+      "coordinator", "hookAB", "hookBC", "hookAC", "router", "tokenA", "tokenB", "tokenC",
+    ].map((key) => [key, { bytes: 1, keccak256: bytecodeHash }])),
   };
 }
 
 test("validateManifest accepts the committed deployment shape", () => {
   assert.equal(validateManifest(manifest()).chainId, 1301);
+});
+
+test("runtime bytecode identity requires the published size and hash", () => {
+  const target = { key: "router", expected: { bytes: 1, keccak256: bytecodeHash } };
+  assert.doesNotThrow(() => assertRuntimeBytecodeIdentity(target, "0x00", bytecodeHash));
+  assert.throws(
+    () => assertRuntimeBytecodeIdentity(target, "0x0000", bytecodeHash),
+    /does not match/,
+  );
+  assert.throws(
+    () => assertRuntimeBytecodeIdentity(target, "0x00", `0x${"ef".repeat(32)}`),
+    /does not match/,
+  );
+  assert.throws(() => assertRuntimeBytecodeIdentity(target, "0x", bytecodeHash), /no deployed bytecode/);
 });
 
 test("validateManifest rejects the wrong chain and malformed addresses", () => {
@@ -43,6 +68,7 @@ test("validateManifest rejects the wrong chain and malformed addresses", () => {
   const invalidSimulation = manifest();
   invalidSimulation.rpcSimulation = {
     account: address,
+    allowanceBlock: 1,
     allowanceTransaction: "0x12",
     maximumInput: "1",
   };
@@ -60,6 +86,14 @@ test("validateManifest rejects the wrong chain and malformed addresses", () => {
     foldRounds: -1,
   };
   assert.throws(() => validateManifest(invalidInteractive), /invalid interactive-demo evidence/);
+
+  const missingBytecode = manifest();
+  delete missingBytecode.runtimeBytecode.router;
+  assert.throws(() => validateManifest(missingBytecode), /invalid runtime-bytecode evidence/);
+
+  const malformedBytecode = manifest();
+  malformedBytecode.runtimeBytecode.router.keccak256 = "0x12";
+  assert.throws(() => validateManifest(malformedBytecode), /invalid runtime-bytecode evidence/);
 });
 
 test("parseDemoAmount enforces the public-demo range", () => {

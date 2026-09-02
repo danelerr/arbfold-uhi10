@@ -56,6 +56,10 @@ export interface DeploymentManifest {
     allowanceTransaction: Hash;
     maximumInput: string;
   };
+  runtimeBytecode: Record<
+    "coordinator" | "hookAB" | "hookBC" | "hookAC" | "router" | "tokenA" | "tokenB" | "tokenC",
+    { bytes: number; keccak256: Hash }
+  >;
   sourceVerification: string;
   tokens: { a: Address; b: Address; c: Address };
   demo: DemoSnapshot;

@@ -1,6 +1,17 @@
 const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/;
+const BYTECODE_HASH_PATTERN = /^0x[a-fA-F0-9]{64}$/;
 const MAX_DEMO_AMOUNT = 25_000;
 const MIN_DEMO_AMOUNT = 1_000;
+export const RUNTIME_BYTECODE_KEYS = [
+  "coordinator",
+  "hookAB",
+  "hookBC",
+  "hookAC",
+  "router",
+  "tokenA",
+  "tokenB",
+  "tokenC",
+];
 
 export function validateManifest(manifest) {
   if (!manifest || manifest.researchOnly !== true || manifest.chainId !== 1301 || !manifest.demo) {
@@ -36,14 +47,48 @@ export function validateManifest(manifest) {
       throw new Error("manifest contains invalid interactive-demo evidence");
     }
   }
-  if (manifest.rpcSimulation) {
-    if (!ADDRESS_PATTERN.test(manifest.rpcSimulation.account ?? "")
+  if (!manifest.rpcSimulation
+    || !ADDRESS_PATTERN.test(manifest.rpcSimulation.account ?? "")
       || !/^0x[a-fA-F0-9]{64}$/.test(manifest.rpcSimulation.allowanceTransaction ?? "")
-      || !/^\d+$/.test(manifest.rpcSimulation.maximumInput ?? "")) {
-      throw new Error("manifest contains an invalid RPC simulation configuration");
-    }
+      || !/^\d+$/.test(manifest.rpcSimulation.maximumInput ?? "")
+      || BigInt(manifest.rpcSimulation.maximumInput ?? "0") <= 0n
+      || !Number.isSafeInteger(manifest.rpcSimulation.allowanceBlock)
+      || manifest.rpcSimulation.allowanceBlock <= 0) {
+    throw new Error("manifest contains an invalid RPC simulation configuration");
+  }
+  const bytecodeKeys = Object.keys(manifest.runtimeBytecode ?? {}).sort();
+  if (bytecodeKeys.join(",") !== [...RUNTIME_BYTECODE_KEYS].sort().join(",")
+    || RUNTIME_BYTECODE_KEYS.some((key) => {
+      const evidence = manifest.runtimeBytecode?.[key];
+      return !Number.isSafeInteger(evidence?.bytes)
+        || evidence.bytes <= 0
+        || !BYTECODE_HASH_PATTERN.test(evidence?.keccak256 ?? "");
+    })) {
+    throw new Error("manifest contains invalid runtime-bytecode evidence");
   }
   return manifest;
+}
+
+export function runtimeBytecodeTargets(manifest) {
+  return [
+    ["coordinator", manifest.coordinator],
+    ["hookAB", manifest.hooks.ab],
+    ["hookBC", manifest.hooks.bc],
+    ["hookAC", manifest.hooks.ac],
+    ["router", manifest.router],
+    ["tokenA", manifest.tokens.a],
+    ["tokenB", manifest.tokens.b],
+    ["tokenC", manifest.tokens.c],
+  ].map(([key, address]) => ({ key, address, expected: manifest.runtimeBytecode[key] }));
+}
+
+export function assertRuntimeBytecodeIdentity(target, code, observedHash) {
+  if (!code || code === "0x") throw new Error(`${target.key} has no deployed bytecode`);
+  const observedBytes = (code.length - 2) / 2;
+  if (observedBytes !== target.expected.bytes
+    || observedHash.toLowerCase() !== target.expected.keccak256.toLowerCase()) {
+    throw new Error(`${target.key} runtime bytecode does not match the published manifest`);
+  }
 }
 
 export function parseDemoAmount(value) {

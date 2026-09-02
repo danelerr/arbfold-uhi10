@@ -1,6 +1,12 @@
 import { readFile } from "node:fs/promises";
-import { createPublicClient, decodeEventLog, getAddress, http, parseAbi } from "viem";
-import { bufferedGasLimit, normalizeNetwork, validateManifest } from "../app/live-core.js";
+import { createPublicClient, decodeEventLog, getAddress, http, keccak256, parseAbi } from "viem";
+import {
+  assertRuntimeBytecodeIdentity,
+  bufferedGasLimit,
+  normalizeNetwork,
+  runtimeBytecodeTargets,
+  validateManifest,
+} from "../app/live-core.js";
 
 const rpcUrl = process.env.UNICHAIN_SEPOLIA_RPC_URL || "https://sepolia.unichain.org";
 const manifest = validateManifest(JSON.parse(await readFile(
@@ -46,16 +52,12 @@ function decodedEvents(receipt) {
   return events;
 }
 
-const addresses = [
-  manifest.poolManager,
-  manifest.coordinator,
-  manifest.router,
-  manifest.hooks.ab,
-  manifest.hooks.bc,
-  manifest.hooks.ac,
-].map((address) => getAddress(address.toLowerCase()));
+const bytecodeTargets = runtimeBytecodeTargets(manifest).map((target) => ({
+  ...target,
+  address: getAddress(target.address.toLowerCase()),
+}));
 
-const [chainId, receipt, interactiveReceipt, allowanceReceipt, ...codes] = await Promise.all([
+const [chainId, receipt, interactiveReceipt, allowanceReceipt, managerCode, ...codes] = await Promise.all([
   client.getChainId(),
   client.getTransactionReceipt({ hash: manifest.canonicalDemoTransaction }),
   manifest.interactiveDemo?.transaction
@@ -64,13 +66,17 @@ const [chainId, receipt, interactiveReceipt, allowanceReceipt, ...codes] = await
   manifest.rpcSimulation?.allowanceTransaction
     ? client.getTransactionReceipt({ hash: manifest.rpcSimulation.allowanceTransaction })
     : Promise.resolve(null),
-  ...addresses.map((address) => client.getCode({ address })),
+  client.getCode({ address: getAddress(manifest.poolManager.toLowerCase()) }),
+  ...bytecodeTargets.map(({ address }) => client.getCode({ address })),
 ]);
 if (chainId !== manifest.chainId) throw new Error(`chain mismatch: ${chainId}`);
 if (receipt.status !== "success") throw new Error("canonical transaction is not successful");
 if (interactiveReceipt && interactiveReceipt.status !== "success") throw new Error("interactive validation is not successful");
 if (allowanceReceipt && allowanceReceipt.status !== "success") throw new Error("public RPC allowance transaction is not successful");
-if (codes.some((code) => !code || code === "0x")) throw new Error("missing deployed bytecode");
+if (!managerCode || managerCode === "0x") throw new Error("official PoolManager has no deployed bytecode");
+codes.forEach((code, index) => {
+  assertRuntimeBytecodeIdentity(bytecodeTargets[index], code, keccak256(code ?? "0x"));
+});
 if (allowanceReceipt && (
   allowanceReceipt.from.toLowerCase() !== manifest.rpcSimulation.account.toLowerCase()
   || allowanceReceipt.to?.toLowerCase() !== manifest.tokens.b.toLowerCase()

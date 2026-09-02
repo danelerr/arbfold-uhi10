@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { resolve } from "node:path";
 import {
   BENCHMARK_SCHEMA,
@@ -28,6 +29,10 @@ function check(name, condition, detail = "") {
 
 function includesAll(source, values) {
   return values.every((value) => source.includes(value));
+}
+
+function sha256(source) {
+  return createHash("sha256").update(source).digest("hex");
 }
 
 async function fetchText(url) {
@@ -167,10 +172,19 @@ if (publicMode) {
       fetchText(`https://raw.githubusercontent.com/danelerr/arbfold-uhi10/main/README.md?preflight=${cacheKey}`),
     ]);
     const servedManifest = validateManifest(JSON.parse(publicManifest));
-    check("Public dashboard serves a Vite application bundle", /<script[^>]+src="\.\/assets\/index-[^"]+\.js"/.test(publicPage));
+    const bundlePath = publicPage.match(/<script[^>]+src="(\.\/assets\/index-[^"]+\.js)"/)?.[1];
+    const publicBundle = bundlePath
+      ? await fetchText(new URL(bundlePath, "https://danelerr.github.io/arbfold-uhi10/").href)
+      : "";
+    check("Public dashboard serves a Vite application bundle", Boolean(bundlePath) && publicBundle.length > 100_000);
+    check("Public dashboard serves the current verification bundle", includesAll(publicBundle, [
+      "Don’t replay every leg",
+      "runtime bytecode does not match the published manifest",
+    ]));
     check("Public manifest matches canonical transaction", servedManifest.canonicalDemoTransaction === manifest.canonicalDemoTransaction);
     check("Public manifest matches v0.1 coordinator", servedManifest.coordinator === manifest.coordinator);
-    check("Public repository serves current claim", includesAll(publicReadme, ["31.06% less gas", "1k–4k", "196 actionable"]));
+    check("Public manifest exactly matches the reviewed local release", sha256(publicManifest) === sha256(manifestText));
+    check("Public repository serves the reviewed README", sha256(publicReadme) === sha256(readme));
   } catch (error) {
     failures.push(`Public artifact verification: ${error.message}`);
   }
