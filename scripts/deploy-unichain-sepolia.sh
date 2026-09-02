@@ -102,7 +102,9 @@ cd "$repository_root"
 [[ "$(git branch --show-current)" == "main" ]] || fail "checkout main before public deployment"
 [[ -z "$(git status --porcelain)" ]] || fail "working tree must be clean before public deployment"
 [[ "$(git rev-parse HEAD)" == "$(git rev-parse origin/main)" ]] || fail "local main must equal origin/main"
-[[ ! -e "$manifest" ]] || fail "$manifest already exists; inspect it instead of overwriting public evidence"
+if [[ "$operation" == "deploy" ]]; then
+  [[ ! -e "$manifest" ]] || fail "$manifest already exists; inspect it instead of overwriting public evidence"
+fi
 
 pool_manager=$("$repository_root/scripts/resolve-unichain-pool-manager.sh")
 chain_id=$(cast chain-id --rpc-url "$rpc_url")

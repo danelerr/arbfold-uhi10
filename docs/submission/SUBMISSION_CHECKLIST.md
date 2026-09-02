@@ -21,7 +21,7 @@ This matrix separates completed repository work from manual publication tasks. I
 | Challenges | Complete | [`LIMITATIONS.md`](../LIMITATIONS.md) and [`THREAT_MODEL.md`](../THREAT_MODEL.md) |
 | Future plans | Complete | [`LIMITATIONS.md`](../LIMITATIONS.md) |
 | Partner integrations with exact locations | Complete | Unichain Sepolia deployment and official v4 `PoolManager` are documented in [`README.md`](../../README.md) and the public manifest; no unsupported partner claims. |
-| Final form copy | Ready for manual submission | [`FINAL_SUBMISSION.md`](FINAL_SUBMISSION.md) contains copy-ready answers and leaves personal fields to Daniel. |
+| Final form copy | Ready except video URL | [`FINAL_SUBMISSION.md`](FINAL_SUBMISSION.md) contains copy-ready answers, the cohort email and the public X handle; only the uploaded video URL remains. |
 | Progress Update 2 copy | Ready for manual submission | [`PROGRESS_UPDATE_2.md`](../../research/archive/submission/PROGRESS_UPDATE_2.md) is bound to the public v0.1 deployment, benchmark and canonical transaction. |
 | Originality and credits | Complete | Paper, Uniswap, OpenZeppelin and Homelander credited in README. |
 | Returning cohort declaration | Manual form step | Select **UHI7** in the final submission form. |
@@ -37,7 +37,7 @@ make submission-preflight
 
 It verifies the current public dashboard, manifest, RPC deployment, canonical
 benchmark values, Project ID, links and claim boundaries. It reports the final
-video URL, cohort email and X handle separately as manual pending fields. Run
+video URL separately as the remaining manual field. Run
 `node scripts/submission-preflight.mjs --public --strict` only after those
 placeholders have been replaced; strict mode fails while any remain.
 

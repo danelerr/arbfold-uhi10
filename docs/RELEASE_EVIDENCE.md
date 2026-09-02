@@ -97,7 +97,7 @@ prerequisites from the command line.
 
 `make submission-preflight` additionally binds the public dashboard, manifest,
 repository copy, Project ID, five-point benchmark and final-form claims into one
-fail-closed release check. Manual identity and video fields remain deliberately
+fail-closed release check. The final public video URL remains deliberately
 outside automation.
 
 On 2026-08-30, the resolver returned

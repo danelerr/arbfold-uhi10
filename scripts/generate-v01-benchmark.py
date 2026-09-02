@@ -739,6 +739,24 @@ def stable_generated_at(source_tree_sha256: str) -> str:
     return dt.datetime.now().astimezone().isoformat()
 
 
+def stable_commit_base(source_tree_sha256: str) -> str:
+    """Keep the commit that first bound an unchanged measurement source tree."""
+    previous = OUT / "environment.json"
+    if previous.is_file():
+        try:
+            value = json.loads(previous.read_text(encoding="utf-8"))
+            commit_base = value.get("commit_base")
+            if (
+                value.get("source_tree_sha256") == source_tree_sha256
+                and isinstance(commit_base, str)
+                and re.fullmatch(r"[0-9a-f]{40}", commit_base)
+            ):
+                return commit_base
+        except (json.JSONDecodeError, OSError):
+            pass
+    return git("rev-parse", "HEAD")
+
+
 def environment(source_tree_sha256: str, commands: list[str]) -> dict[str, Any]:
     forge_version = run(["forge", "--version"]).splitlines()[0]
     provenance_diff = git("diff", "--binary", "--", *RELEVANT_PROVENANCE_PATHS)
@@ -758,7 +776,7 @@ def environment(source_tree_sha256: str, commands: list[str]) -> dict[str, Any]:
             "Retains the already validated compilation pipeline and compares both paths under identical settings; "
             "alternative configurations are reported, not selected by relative percentage."
         ),
-        "commit_base": git("rev-parse", "HEAD"),
+        "commit_base": stable_commit_base(source_tree_sha256),
         "branch": git("branch", "--show-current"),
         "dirty_state_relevant_to_measurement": git(
             "status", "--short", "--", *RELEVANT_PROVENANCE_PATHS
@@ -773,6 +791,28 @@ def environment(source_tree_sha256: str, commands: list[str]) -> dict[str, Any]:
         "residual_threshold_wei_a": str(RESIDUAL_THRESHOLD_WEI_A),
         "commands": commands,
     }
+
+
+def persist_artifacts(artifacts: dict[pathlib.Path, str], *, check: bool) -> None:
+    """Write generated evidence, or compare it without mutating the release."""
+    if check:
+        mismatches = []
+        for path, rendered in artifacts.items():
+            if path.is_file() and path.read_text(encoding="utf-8") == rendered:
+                continue
+            try:
+                mismatches.append(path.relative_to(ROOT).as_posix())
+            except ValueError:
+                mismatches.append(path.as_posix())
+        if mismatches:
+            raise RuntimeError(
+                "generated evidence differs from committed artifacts: " + ", ".join(mismatches)
+            )
+        return
+
+    OUT.mkdir(parents=True, exist_ok=True)
+    for path, rendered in artifacts.items():
+        path.write_text(rendered, encoding="utf-8")
 
 
 def validate_generated_environment(
@@ -927,7 +967,11 @@ FOUNDRY_PROFILE=release forge test --offline
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--check", action="store_true", help="regenerate and fail if promotion gates do not hold")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="regenerate in memory, compare committed evidence and fail on drift or failed gates",
+    )
     args = parser.parse_args()
 
     matrix = compiler_matrix()
@@ -1002,17 +1046,23 @@ def main() -> int:
     validate_generated_environment(raw, env, source_tree_sha256)
     report = build_report(raw, historical)
 
-    OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / "raw.json").write_text(json.dumps(raw, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    (OUT / "environment.json").write_text(json.dumps(env, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    (OUT / "source-manifest.sha256").write_text(manifest_text, encoding="utf-8")
-    (OUT / "forge-output.log").write_text(reproducible_forge_log(output), encoding="utf-8")
-    (OUT / "REPORT.md").write_text(report, encoding="utf-8")
-
     gates = raw["mechanical_gates"]
     passed = all(gates.values()) and sweep_summary["cheaper_actionable_rows"] == sweep_summary["actionable_rows"]
+    if not passed:
+        raise RuntimeError("v0.1 promotion gates failed")
+
+    persist_artifacts(
+        {
+            OUT / "raw.json": json.dumps(raw, indent=2, sort_keys=True) + "\n",
+            OUT / "environment.json": json.dumps(env, indent=2, sort_keys=True) + "\n",
+            OUT / "source-manifest.sha256": manifest_text,
+            OUT / "forge-output.log": reproducible_forge_log(output),
+            OUT / "REPORT.md": report,
+        },
+        check=args.check,
+    )
     print(json.dumps({"output": str(OUT), "promotion_gate": passed, "gates": gates}, indent=2))
-    return int(args.check and not passed)
+    return 0
 
 
 if __name__ == "__main__":

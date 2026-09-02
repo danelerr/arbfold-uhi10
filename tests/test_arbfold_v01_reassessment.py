@@ -89,6 +89,35 @@ class ArbFoldV01ReassessmentTests(unittest.TestCase):
         with self.assertRaises((ValueError, RuntimeError)):
             validate_payload_semantics(payload)
 
+    def test_generator_check_mode_is_read_only_and_fail_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            artifact = output / "artifact.txt"
+            artifacts = {artifact: "canonical\n"}
+
+            GENERATOR.persist_artifacts(artifacts, check=False)
+            self.assertEqual(artifact.read_text(), "canonical\n")
+            GENERATOR.persist_artifacts(artifacts, check=True)
+            self.assertEqual(artifact.read_text(), "canonical\n")
+
+            artifact.write_text("drifted\n")
+            with self.assertRaisesRegex(RuntimeError, "generated evidence differs"):
+                GENERATOR.persist_artifacts(artifacts, check=True)
+            self.assertEqual(artifact.read_text(), "drifted\n")
+
+    def test_generator_preserves_commit_binding_for_unchanged_source_tree(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            previous = {
+                "source_tree_sha256": "a" * 64,
+                "commit_base": "b" * 40,
+            }
+            (output / "environment.json").write_text(json.dumps(previous))
+            with patch.object(GENERATOR, "OUT", output):
+                self.assertEqual(GENERATOR.stable_commit_base("a" * 64), "b" * 40)
+                with patch.object(GENERATOR, "git", return_value="c" * 40):
+                    self.assertEqual(GENERATOR.stable_commit_base("d" * 64), "c" * 40)
+
     def test_all_promotion_checks_and_expected_results_hold(self) -> None:
         semantics = validate_payload_semantics(self.raw)
         self.assertEqual(semantics["validated_paths"], [0, 1, 2, 3, 4, 5])

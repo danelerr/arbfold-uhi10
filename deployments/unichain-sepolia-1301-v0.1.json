@@ -84,8 +84,8 @@
   },
   "rpcSimulation": {
     "account": "0x75464f762bc50d0A0B127ab5a085504BF102Bb88",
-    "allowanceBlock": 61277822,
-    "allowanceTransaction": "0x2c00de48d7c8d70f0f9935ee91ace8023f5e2f6c816a07fc79bbcc41e5c5955c",
+    "allowanceBlock": 61478030,
+    "allowanceTransaction": "0xbc1f63834e45a6e18a98d8cb2d8217b742b81e9293c64e4913f90138f15d5ea2",
     "maximumInput": "25000000000000000000000"
   },
   "runtimeBytecode": {

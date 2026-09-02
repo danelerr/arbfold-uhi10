@@ -1,7 +1,7 @@
 # ARBFOLD — Final Submission Copy
 
-This is the copy-ready source of truth for the UHI10 final form. Personal
-identity fields and the final video URL remain for Daniel to enter manually.
+This is the copy-ready source of truth for the UHI10 final form. The final
+public video URL remains for Daniel to enter after recording and upload.
 Project ID `HK-UHI10-1057` was originally registered as MATURE; the
 evidence-driven pivot to ARBFOLD is documented in the repository.
 
@@ -21,8 +21,8 @@ evidence-driven pivot to ARBFOLD is documented in the repository.
 | Frontend | `https://danelerr.github.io/arbfold-uhi10/` |
 | Thumbnail | [`assets/arbfold-uhi10-thumbnail.png`](../../assets/arbfold-uhi10-thumbnail.png) |
 | Demo video | `[DANIEL: paste final public video URL]` |
-| Email | `[DANIEL: enter cohort email]` |
-| X handle | `[DANIEL: enter X handle]` |
+| Email | `danielcuetorrico@gmail.com` |
+| X handle | `@danelerr` |
 
 ## One-to-two sentence description
 
