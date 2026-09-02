@@ -1,4 +1,4 @@
-export const BENCHMARK_SCHEMA = "arbfold-v0.1-optimized-release-candidate-v4";
+export const BENCHMARK_SCHEMA = "arbfold-v0.1-optimized-release-candidate-v5";
 export const MAX_UINT256_DECIMAL =
   "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 export const RESIDUAL_THRESHOLD_WEI_A = "1000000000000";
@@ -220,14 +220,19 @@ function validateReserveShape(value, rowIndex, section, field) {
   }
   for (const reserve of RESERVE_FIELDS) {
     const observed = value[reserve];
-    // Reserve JSON remains numeric in schema v4. Shape and the published
-    // tolerance are enforced here; one-wei reserve deltas remain checked
-    // losslessly by Python and by the source-bound Forge assertions.
-    if (typeof observed !== "number" || !Number.isFinite(observed)
-      || !Number.isInteger(observed) || observed < 0) {
+    if (!isCanonicalUintDecimal(observed)) {
       invalid(`${section} row ${rowIndex} has invalid ${field}.${reserve}`);
     }
   }
+}
+
+function reserveDelta(row) {
+  return RESERVE_FIELDS.reduce((largest, reserve) => {
+    const reference = BigInt(row.reference_final_reserves[reserve]);
+    const direct = BigInt(row.direct_final_reserves[reserve]);
+    const delta = reference >= direct ? reference - direct : direct - reference;
+    return delta > largest ? delta : largest;
+  }, 0n);
 }
 
 function roundHalfEven(numerator, denominator) {
@@ -385,7 +390,11 @@ function validateFullRow(row, rowIndex, section, { kind, expectedPath }) {
 
   validateReserveShape(row.reference_final_reserves, rowIndex, section, "reference_final_reserves");
   validateReserveShape(row.direct_final_reserves, rowIndex, section, "direct_final_reserves");
-  if (row.equivalence_tolerance_wei > 1) {
+  const observedReserveDelta = reserveDelta(row);
+  if (BigInt(row.equivalence_tolerance_wei) !== observedReserveDelta) {
+    invalid(`${section} row ${rowIndex} equivalence_tolerance_wei contradicts final reserves`);
+  }
+  if (observedReserveDelta > 1n) {
     invalid(`${section} row ${rowIndex} exceeds the one-wei equivalence tolerance`);
   }
 }
@@ -496,10 +505,9 @@ function recomputeGates(rows) {
       (row) => row.reference_residual === row.direct_residual
         && BigInt(row.direct_residual) <= RESIDUAL_THRESHOLD,
     ),
-    // This recomputes the published tolerance claim only. Actual reserve-pair
-    // equivalence remains established by Forge and the source manifest.
     all_frozen_final_reserves_within_one_wei: rows.every(
-      (row) => row.equivalence_tolerance_wei <= 1,
+      (row) => reserveDelta(row) === BigInt(row.equivalence_tolerance_wei)
+        && reserveDelta(row) <= 1n,
     ),
     twenty_five_k_cheaper: rows.find(
       (row) => row.input_tokens === 25_000,

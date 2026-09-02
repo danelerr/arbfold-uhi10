@@ -77,7 +77,7 @@ export interface BenchmarkRow {
 }
 
 export interface BenchmarkPayload {
-  schema: "arbfold-v0.1-optimized-release-candidate-v4";
+  schema: "arbfold-v0.1-optimized-release-candidate-v5";
   source_tree_sha256: string;
   residual_threshold_wei_a: string;
   frozen_grid: Array<{
@@ -107,8 +107,8 @@ export interface BenchmarkPayload {
     reference_residual: number;
     direct_residual: number;
     equivalence_tolerance_wei: number;
-    reference_final_reserves: Record<string, number>;
-    direct_final_reserves: Record<string, number>;
+    reference_final_reserves: Record<string, string>;
+    direct_final_reserves: Record<string, string>;
   }>;
   mechanical_gates: {
     all_frozen_outputs_equal: boolean;

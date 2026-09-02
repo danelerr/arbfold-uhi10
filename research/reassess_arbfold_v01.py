@@ -17,9 +17,9 @@ ENVIRONMENT = EVIDENCE / "environment.json"
 SOURCE_MANIFEST = EVIDENCE / "source-manifest.sha256"
 V0_RELEASE_RAW = ROOT / "benchmark" / "release-candidate-results" / "raw.json"
 V0_FROZEN_RAW = ROOT / "benchmark" / "arbfold-results" / "raw_v0.json"
-RAW_SCHEMA = "arbfold-v0.1-optimized-release-candidate-v4"
-REASSESSMENT_SCHEMA = "arbfold-v0.1-thesis-reassessment-v4"
-ENVIRONMENT_SCHEMA = "arbfold-v0.1-environment-v4"
+RAW_SCHEMA = "arbfold-v0.1-optimized-release-candidate-v5"
+REASSESSMENT_SCHEMA = "arbfold-v0.1-thesis-reassessment-v5"
+ENVIRONMENT_SCHEMA = "arbfold-v0.1-environment-v5"
 TOP_LEVEL_FIELDS = {
     "schema",
     "source_tree_sha256",
@@ -313,12 +313,12 @@ def _validate_full_row(
     ):
         raise ValueError(f"{section} row {index} has incomplete reserve fields")
     for field in RESERVE_FIELDS:
-        if not _is_nonnegative_int(reference_reserves.get(field)) or not _is_nonnegative_int(
+        if not is_canonical_uint_decimal(reference_reserves.get(field)) or not is_canonical_uint_decimal(
             direct_reserves.get(field)
         ):
             raise ValueError(f"{section} row {index} has invalid reserve {field}")
     max_delta = max(
-        abs(reference_reserves[field] - direct_reserves[field]) for field in RESERVE_FIELDS
+        abs(int(reference_reserves[field]) - int(direct_reserves[field])) for field in RESERVE_FIELDS
     )
     if row["equivalence_tolerance_wei"] != max_delta:
         raise ValueError(f"{section} row {index} equivalence tolerance contradicts reserves")
@@ -553,7 +553,7 @@ def validate_payload_semantics(raw: dict[str, Any]) -> dict[str, Any]:
     if "rows" in raw or "storage_transition_matrix" in raw:
         raise ValueError("legacy rows or steady-state evidence is not accepted")
     if set(raw) != TOP_LEVEL_FIELDS:
-        raise ValueError("raw payload does not match the exact schema v4 top-level field set")
+        raise ValueError("raw payload does not match the exact schema v5 top-level field set")
     source_digest = raw.get("source_tree_sha256")
     if not isinstance(source_digest, str) or SHA256_HEX.fullmatch(source_digest) is None:
         raise ValueError("source_tree_sha256 must be a lowercase 64-character SHA-256 digest")
@@ -665,7 +665,7 @@ def build_result() -> dict[str, Any]:
     grid = raw["frozen_grid"]
     canonical = grid[3]
     checks = {
-        "raw_schema_is_v4": raw["schema"] == RAW_SCHEMA,
+        "raw_schema_is_v5": raw["schema"] == RAW_SCHEMA,
         "source_manifest_is_current": all(source["checks"].values()),
         "frozen_grid_is_unchanged": [row["input_tokens"] for row in grid] == FROZEN_INPUTS,
         "input_identity_is_lossless": all(

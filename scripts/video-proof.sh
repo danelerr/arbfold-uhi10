@@ -66,4 +66,4 @@ jq -r '
   "Research only:    \(.researchOnly)"
 ' "$repo_dir/deployments/unichain-sepolia-1301-v0.1.json"
 
-printf '\nPASS — v0.1 schema v4 evidence, release provenance, compiler matrix and consumer-recomputable claims validated; exact reserve equivalence remains Forge/source-manifest/Python-backed, and the public onchain evidence is the v0.1 deployment.\n'
+printf '\nPASS — v0.1 schema v5 evidence, release provenance, compiler matrix and consumer-recomputable claims validated, including lossless final-reserve equivalence; the public onchain evidence is the v0.1 deployment.\n'

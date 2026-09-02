@@ -12,7 +12,7 @@ import {
 } from "./evidence-sources.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
-const ENVIRONMENT_SCHEMA = "arbfold-v0.1-environment-v4";
+const ENVIRONMENT_SCHEMA = "arbfold-v0.1-environment-v5";
 const SHA256_HEX = /^[0-9a-f]{64}$/;
 
 function invalid(detail) {

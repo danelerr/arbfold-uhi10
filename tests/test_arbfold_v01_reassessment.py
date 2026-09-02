@@ -123,7 +123,7 @@ class ArbFoldV01ReassessmentTests(unittest.TestCase):
         self.assertEqual(semantics["validated_paths"], [0, 1, 2, 3, 4, 5])
         result = build_result()
         self.assertTrue(all(result["artifact_verification"]["checks"].values()))
-        self.assertEqual(result["schema"], "arbfold-v0.1-thesis-reassessment-v4")
+        self.assertEqual(result["schema"], "arbfold-v0.1-thesis-reassessment-v5")
         self.assertEqual(
             [
                 (row["reference_total_gas"], row["direct_total_gas"])

@@ -18,7 +18,7 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
         component = (ROOT / "app/src/components/BenchmarkDemo.tsx").read_text()
         build = (ROOT / "scripts/build-dashboard.mjs").read_text()
         expected_sizes = [int(row["input_tokens"]) for row in raw["frozen_grid"]]
-        self.assertEqual(raw["schema"], "arbfold-v0.1-optimized-release-candidate-v4")
+        self.assertEqual(raw["schema"], "arbfold-v0.1-optimized-release-candidate-v5")
         self.assertNotIn("storage_transition_matrix", raw)
         self.assertEqual(expected_sizes, [10_000, 25_000, 50_000, 100_000, 200_000])
         self.assertTrue(
@@ -46,6 +46,14 @@ class ArbFoldSubmissionIntegrityTests(unittest.TestCase):
                 isinstance(row["input_wei"], str)
                 for section in ("frozen_grid", "dense_sweep", "six_path_matrix")
                 for row in raw[section]
+            )
+        )
+        self.assertTrue(
+            all(
+                isinstance(reserve, str)
+                for row in raw["frozen_grid"]
+                for reserves in (row["reference_final_reserves"], row["direct_final_reserves"])
+                for reserve in reserves.values()
             )
         )
         self.assertIn('"data/release-results.json"', source)

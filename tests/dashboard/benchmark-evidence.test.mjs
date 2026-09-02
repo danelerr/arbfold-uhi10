@@ -115,7 +115,7 @@ function withMutation(payload, mutate) {
   return mutated;
 }
 
-test("v4 loader accepts the complete real payload and rejects legacy or incomplete evidence", async () => {
+test("v5 loader accepts lossless evidence and rejects legacy or incomplete evidence", async () => {
   const payload = JSON.parse(await rawText());
   assert.equal(validateBenchmarkPayload(payload), payload);
   assert.equal(payload.schema, BENCHMARK_SCHEMA);
@@ -126,6 +126,7 @@ test("v4 loader accepts the complete real payload and rejects legacy or incomple
     "arbfold-v0.1-optimized-release-candidate-v1",
     "arbfold-v0.1-optimized-release-candidate-v2",
     "arbfold-v0.1-optimized-release-candidate-v3",
+    "arbfold-v0.1-optimized-release-candidate-v4",
   ]) {
     expectInvalid(withMutation(payload, (value) => { value.schema = schema; }), /schema must be/);
   }
@@ -550,6 +551,14 @@ test("video proof and preflight reject every audited bypass without PASS or READ
     add("negative-residual", (value) => { value.frozen_grid[0].direct_residual = -1; });
     add("fractional-residual", (value) => { value.frozen_grid[0].direct_residual = 0.5; });
     add("missing-tolerance", (value) => { delete value.frozen_grid[0].equivalence_tolerance_wei; });
+    add("reserve-mismatch", (value) => {
+      value.frozen_grid[0].direct_final_reserves.ab_a = String(
+        BigInt(value.frozen_grid[0].direct_final_reserves.ab_a) + 1_000_000_000_000n,
+      );
+    });
+    add("reserve-number-not-lossless-string", (value) => {
+      value.frozen_grid[0].direct_final_reserves.ab_a = 330641290468338554407;
+    });
     add("missing-sweep", (value) => { delete value.dense_sweep; });
     add("empty-sweep", (value) => { value.dense_sweep = []; });
     add("short-sweep", (value) => { value.dense_sweep.pop(); });

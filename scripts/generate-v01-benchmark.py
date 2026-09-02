@@ -27,8 +27,8 @@ OUT = ROOT / "benchmark" / "optimized-release-candidate-results"
 HISTORICAL_RAW = ROOT / "benchmark" / "release-candidate-results" / "raw.json"
 INTRINSIC_GAS = 21_000
 WEI = 10**18
-RAW_SCHEMA = "arbfold-v0.1-optimized-release-candidate-v4"
-ENVIRONMENT_SCHEMA = "arbfold-v0.1-environment-v4"
+RAW_SCHEMA = "arbfold-v0.1-optimized-release-candidate-v5"
+ENVIRONMENT_SCHEMA = "arbfold-v0.1-environment-v5"
 RESIDUAL_THRESHOLD_WEI_A = 10**12
 TOP_LEVEL_FIELDS = {
     "schema",
@@ -281,20 +281,20 @@ def parse_sweep_rows(output: str) -> list[dict[str, int]]:
 
 def reserve_objects(row: dict[str, Any]) -> None:
     row["reference_final_reserves"] = {
-        "ab_a": row.pop("reference_ab_a"),
-        "ab_b": row.pop("reference_ab_b"),
-        "bc_b": row.pop("reference_bc_b"),
-        "bc_c": row.pop("reference_bc_c"),
-        "ac_a": row.pop("reference_ac_a"),
-        "ac_c": row.pop("reference_ac_c"),
+        "ab_a": canonical_uint_decimal(row.pop("reference_ab_a")),
+        "ab_b": canonical_uint_decimal(row.pop("reference_ab_b")),
+        "bc_b": canonical_uint_decimal(row.pop("reference_bc_b")),
+        "bc_c": canonical_uint_decimal(row.pop("reference_bc_c")),
+        "ac_a": canonical_uint_decimal(row.pop("reference_ac_a")),
+        "ac_c": canonical_uint_decimal(row.pop("reference_ac_c")),
     }
     row["direct_final_reserves"] = {
-        "ab_a": row.pop("direct_ab_a"),
-        "ab_b": row.pop("direct_ab_b"),
-        "bc_b": row.pop("direct_bc_b"),
-        "bc_c": row.pop("direct_bc_c"),
-        "ac_a": row.pop("direct_ac_a"),
-        "ac_c": row.pop("direct_ac_c"),
+        "ab_a": canonical_uint_decimal(row.pop("direct_ab_a")),
+        "ab_b": canonical_uint_decimal(row.pop("direct_ab_b")),
+        "bc_b": canonical_uint_decimal(row.pop("direct_bc_b")),
+        "bc_c": canonical_uint_decimal(row.pop("direct_bc_c")),
+        "ac_a": canonical_uint_decimal(row.pop("direct_ac_a")),
+        "ac_c": canonical_uint_decimal(row.pop("direct_ac_c")),
     }
 
 
@@ -470,8 +470,14 @@ def validate_generated_full_row(
     reserve_fields = ("ab_a", "ab_b", "bc_b", "bc_c", "ac_a", "ac_c")
     if set(reference_reserves) != set(reserve_fields) or set(direct_reserves) != set(reserve_fields):
         raise RuntimeError(f"{section} row {index} has incomplete reserves")
+    if any(
+        not is_canonical_uint_decimal(reserves.get(field))
+        for reserves in (reference_reserves, direct_reserves)
+        for field in reserve_fields
+    ):
+        raise RuntimeError(f"{section} row {index} has a non-canonical reserve")
     max_delta = max(
-        abs(reference_reserves[field] - direct_reserves[field]) for field in reserve_fields
+        abs(int(reference_reserves[field]) - int(direct_reserves[field])) for field in reserve_fields
     )
     if row.get("equivalence_tolerance_wei") != max_delta or max_delta > 1:
         raise RuntimeError(f"{section} row {index} has inconsistent reserve tolerance")
