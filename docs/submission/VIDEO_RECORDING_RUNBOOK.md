@@ -6,7 +6,7 @@ into a repeatable recording sequence; it does not add claims or features.
 
 An import-ready English subtitle template is available at
 [`assets/arbfold-demo-en.srt`](../../assets/arbfold-demo-en.srt). Its current
-timeline runs to 4:12 and matches the planned sequence. After recording, retime
+timeline runs to 4:15 and matches the planned sequence. After recording, retime
 it to the actual human narration rather than speeding up or cutting the
 required disclosures.
 
@@ -52,11 +52,11 @@ output.
 | 0:00–0:45 | Interactive benchmark | The page opens on the experiment. Click `Replay demo` and let both lanes complete. | The canonical reference executes two rounds—six swaps and two reinjections. One `fold()` call applies two runtime-checked direct settlement rounds. |
 | 0:45–1:20 | Swap Lab | Click `Open Swap Lab`, identify the three valueless tokens and pools, trace the default cycle, then show the single contextual action. | The public quote needs no signature. Wallet preparation mints only the deficit, approves only the selected amount, and the final action submits one real swap + fold. |
 | 1:20–1:50 | Workload controls | Close the panel, scroll to `Full benchmark`, then click 10k, 25k, 50k, 100k and 200k slowly. Stop at 25k, then return to 100k. | v0.1 is cheaper at all five frozen actionable workloads; the report discloses the 1k–4k zero-round regressions. |
-| 1:50–2:20 | Public proof | Use `Verify everything` to open the canonical transaction and benchmark report. | Both artifacts are v0.1. The transaction proves live execution; the controlled benchmark alone compares identical starting states. |
-| 2:20–3:00 | Commit-pinned code tabs | Show the highlighted hook, coordinator and router functions. Do not scroll through whole files. | BaseCustomCurve computes the user output; the fixed coordinator transfers backed claims under conservation/invariant guards; the router settles every delta in one unlock. |
+| 1:50–2:40 | Public proof | Use `Verify everything` to open the canonical transaction and benchmark report. | Both artifacts are v0.1. The transaction proves live execution; the controlled benchmark alone compares identical starting states. |
+| 2:40–3:00 | Commit-pinned code tabs | Show the highlighted hook, coordinator and router functions. Do not scroll through whole files. | BaseCustomCurve computes the user output; the fixed coordinator transfers backed claims under conservation/invariant guards; the router settles every delta in one unlock. |
 | 3:00–3:25 | Terminal | Show the already completed proof output and its final PASS line. | 82 Solidity tests in both profiles, all-six-path stateful invariants, exact backing, negative paths and the frozen five-size benchmark. |
-| 3:25–3:55 | Report | Show the rejected economic gate and both versioned result directories. | The 10% LP-value thesis failed. Historical v0 evidence remains immutable; v0.1 is a separate optimization result. |
-| 3:55–4:15 | Interactive benchmark | Return to the first-screen result. | Don’t replay every leg. Settle the equivalent state. Canonical v0.1 total gas is 31.06% lower in the controlled benchmark. |
+| 3:25–3:51 | Report | Show the rejected economic gate and both versioned result directories. | The 10% LP-value thesis failed. Historical v0 evidence remains immutable; v0.1 is a separate optimization result. |
+| 3:51–4:15 | Interactive benchmark | Return to the first-screen result. | Don’t replay every leg. Settle the equivalent state. Canonical v0.1 total gas is 31.06% lower in the controlled benchmark. |
 
 Use the exact narration in [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md). The shorter
 phrases above are visual cues, not replacement claims.

@@ -192,6 +192,19 @@ if (publicMode) {
   } catch (error) {
     failures.push(`Public artifact verification: ${error.message}`);
   }
+
+  try {
+    const [tagCommitText, mainCommitText] = await Promise.all([
+      fetchText("https://api.github.com/repos/danelerr/arbfold-uhi10/commits/uhi10-submission"),
+      fetchText("https://api.github.com/repos/danelerr/arbfold-uhi10/commits/main"),
+    ]);
+    const tagCommit = JSON.parse(tagCommitText);
+    const mainCommit = JSON.parse(mainCommitText);
+    check("Public submission tag resolves to current main", /^[0-9a-f]{40}$/.test(tagCommit.sha)
+      && tagCommit.sha === mainCommit.sha);
+  } catch (error) {
+    failures.push(`Public submission tag verification: ${error.message}`);
+  }
 }
 
 const manualFields = [...new Set(finalSubmission.match(/\[DANIEL:[^\]]+\]/g) || [])];

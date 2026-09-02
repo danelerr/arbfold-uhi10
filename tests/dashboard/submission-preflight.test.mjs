@@ -2,6 +2,14 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 
+const preflightSource = await import("node:fs/promises")
+  .then(({ readFile }) => readFile(new URL("../../scripts/submission-preflight.mjs", import.meta.url), "utf8"));
+
+test("public preflight binds the immutable submission tag to current main", () => {
+  assert.match(preflightSource, /commits\/uhi10-submission/);
+  assert.match(preflightSource, /tagCommit\.sha === mainCommit\.sha/);
+});
+
 test("submission preflight validates automated evidence and isolates manual fields", () => {
   const result = spawnSync(process.execPath, ["scripts/submission-preflight.mjs"], {
     cwd: new URL("../..", import.meta.url),
