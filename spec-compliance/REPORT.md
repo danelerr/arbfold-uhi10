@@ -1,9 +1,9 @@
 # ARBFOLD — final spec-to-code compliance
 
-**Implementation snapshot:** `be541013da69ea666dd30f24de1a5984ed1b37a9`  
-**Public app snapshot:** Pages run `33626346825`, source
-`6a2cd287f2fc56620a64092784e046a711cc4df7` (successful). From that source to
-`be54101`, the app, README, manifest and served benchmark did not change.  
+**Technical release before the source-verification addendum:** `8f323fcbc2c4e50642a0b61503f5565614e51ffa`
+**Publication binding:** `scripts/submission-preflight.mjs` requires the public
+Pages bundle, manifest, README and benchmark to match the reviewed local
+release, and requires the peeled `uhi10-submission` tag to equal public `main`.
 **Specifications:** `README.md`, `docs/JUDGE_GUIDE.md`,
 `docs/RELEASE_EVIDENCE.md`, `docs/LIVE_DEMO_GUIDE.md`, `docs/submission/*`.
 
@@ -23,6 +23,11 @@ official PoolManager binding, coordinator/router/token/hook bindings, decoded
 canonical events, historical pre/post reserve snapshots, current state and a
 fresh end-to-end dry-run. Uniswap's primary deployment feed independently lists
 the same active manager.
+
+Source provenance is now independently public: `npm run check:sources`
+requires Sourcify creation and runtime matches for the coordinator, three
+hooks, router and three tokens. The manifest binds each role to its address,
+contract identifier, creation transaction and Sourcify repository URL.
 
 All previously reproduced technical gaps are closed: lossless reserve
 strings/`BigInt`, reserve-side mutation rejection, served benchmark hashing,
@@ -85,6 +90,7 @@ No Critical, High or additional Medium/Low divergence survived refutation.
 | No steady-state telemetry claim | `implemented` | explicit unmeasured disclosure; legacy matrix rejected |
 | 82 tests in both profiles | `implemented` | `make video-proof`: 82/82 default and 82/82 release |
 | Public deployment and canonical semantics | `implemented` | `check:live` PASS and immutable receipt reconstruction |
+| Published project source | `implemented` | Sourcify creation/runtime match for 8/8 active ARBFOLD contracts |
 | Official PoolManager | `implemented` | frozen binding plus current Uniswap primary feed |
 | Technical Unichain integration | `implemented` | chain-1301 deployment/dry-run; no endorsement claim |
 | Rejected economic thesis remains rejected | `implemented` | README research-integrity section and reassessment |
@@ -94,16 +100,16 @@ No Critical, High or additional Medium/Low divergence survived refutation.
 | Check | Result |
 |---|---|
 | Benchmark generator `--check` | PASS; six gates true |
-| `npm run test:dashboard` | PASS, 31/31; 100 mutation fixtures |
+| `npm run test:dashboard` | PASS, 34/34; 100 mutation fixtures |
 | Prior reserve-tampering fixture | rejected by all three publication consumers |
 | `make video-proof` | PASS; 82/82 in both profiles |
 | Research checksums | all OK |
 | `npm run check:live` | PASS; nine runtimes, bindings, receipt, snapshots and dry-run |
-| Public manifest SHA-256 | local/public `93924f98e66e7e92899755c64ca3ce0c13623bbc50190db5581847ce0ed589a5` |
+| `npm run check:sources` | PASS; 8/8 active project contracts match creation and runtime source on Sourcify |
+| Public manifest SHA-256 | exact local/public equality enforced by public preflight |
 | Public benchmark SHA-256 | local/public `47cc0aa7edf2f662204af262344e51c6122d6ffaea398cbf2309ed1e6feaf3c1` |
-| Public README SHA-256 | local/public `30af6e9af479980de86891a09f067794e91c57281ca4701059427b8f9a6b3aa4` |
-| Pages | run `33626346825` success from `6a2cd28` |
-| GitHub verification | run [`33626982817`](https://github.com/danelerr/arbfold-uhi10/actions/runs/33626982817) completed successfully on `be54101` |
+| Public README SHA-256 | exact local/public equality enforced by public preflight |
+| Pages and GitHub verification | required to pass on the complete submission commit before final form submission |
 | Public submission tag gate | resolves remote `main` and the peeled `uhi10-submission` ref with `git ls-remote`; requires exact commit equality without REST rate-limit dependence |
 | Local strict preflight | expected exit 2: missing video URL |
 
@@ -119,7 +125,9 @@ immutable canonical snapshot and controlled benchmark.
   snapshot.
 - The official manager is frozen to the deployment-time address; this audit
   separately confirmed Uniswap still lists it active.
-- Explorer source verification is `not-available`; no such claim is made.
+- Sourcify source verification covers all eight active ARBFOLD contracts; the
+  official third-party PoolManager is still established by its frozen official
+  address/runtime rather than claimed as project-owned verified source.
 - The SRT is a template that must be retimed to the final human narration.
 - The project is research-only, unaudited and not production-authorized.
 
@@ -127,5 +135,5 @@ immutable canonical snapshot and controlled benchmark.
 
 This was spec-to-code/evidence verification, not a fresh general vulnerability
 audit, an economic proof outside the published domain, or validation of the
-video/tag that do not yet exist. UHI eligibility and novelty were not
+human video that does not yet exist. UHI eligibility and novelty were not
 independently adjudicated. No scoped specification was unreadable.

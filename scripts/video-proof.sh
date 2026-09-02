@@ -67,6 +67,7 @@ jq -r '
   "Canonical rounds: \(.demo.foldRounds)",
   "Fold rounds:      \(.demo.foldRounds)",
   "Residual profit:  \(.demo.residualProfit)",
+  "Source matches:   \(.sourceVerificationEvidence.targets | length)/8 active ARBFOLD contracts (Sourcify)",
   "Research only:    \(.researchOnly)"
 ' "$repo_dir/deployments/unichain-sepolia-1301-v0.1.json"
 

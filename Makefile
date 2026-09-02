@@ -1,4 +1,4 @@
-.PHONY: test test-core test-benchmark test-research test-dashboard test-deployment test-release-fuzz arithmetic coverage slither benchmark-v01 source-manifest source-manifest-check source-manifest-v0-check fmt lint snapshot verify-release video-proof build-dashboard check-live submission-preflight serve
+.PHONY: test test-core test-benchmark test-research test-dashboard test-deployment test-release-fuzz arithmetic coverage slither benchmark-v01 source-manifest source-manifest-check source-manifest-v0-check fmt lint snapshot verify-release video-proof build-dashboard check-sources check-live submission-preflight serve
 
 test: test-core test-benchmark test-research test-dashboard
 
@@ -20,8 +20,12 @@ build-dashboard:
 check-live:
 	npm run check:live
 
+check-sources:
+	npm run check:sources
+
 submission-preflight:
 	npm run preflight:submission
+	npm run check:sources
 	npm run check:live
 
 test-deployment:
@@ -77,6 +81,7 @@ verify-release: fmt
 	$(MAKE) slither
 	$(MAKE) coverage
 	$(MAKE) source-manifest-check
+	$(MAKE) check-sources
 	python3 research/reassess_arbfold_v01.py --check research/results/arbfold-v0.1-reassessment-2026-08-30.json
 
 video-proof:

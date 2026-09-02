@@ -89,3 +89,6 @@ PoolManager and all eight ARBFOLD contracts, manager/token/hook bindings, the
 canonical receipt's decoded swap/fold semantics, its historical pre/post
 reserve snapshots, current reserves, public simulation funding/allowance and a
 fresh end-to-end RPC dry-run.
+
+Run `npm run check:sources` to query Sourcify and require matching creation and
+runtime source for the coordinator, three hooks, router and three demo tokens.

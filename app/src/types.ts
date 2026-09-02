@@ -32,11 +32,32 @@ export interface DemoSnapshot {
   postReserves: Record<keyof ReserveState, string>;
 }
 
+export type SourceVerificationKey =
+  | "coordinator"
+  | "hookAB"
+  | "hookBC"
+  | "hookAC"
+  | "router"
+  | "tokenA"
+  | "tokenB"
+  | "tokenC";
+
+export interface SourceVerificationTarget {
+  address: Address;
+  contract: string;
+  creationTransaction: Hash;
+  verifiedAt: string;
+  creationMatch: "match";
+  runtimeMatch: "match";
+  repositoryUrl: string;
+}
+
 export interface DeploymentManifest {
   blockNumber: number;
   canonicalDemoTransaction: Hash;
   chainId: number;
   coordinator: Address;
+  deploymentTransactions: Hash[];
   explorerBaseUrl: string;
   gitCommit: string;
   hooks: { ab: Address; bc: Address; ac: Address };
@@ -65,7 +86,16 @@ export interface DeploymentManifest {
     "poolManager" | "coordinator" | "hookAB" | "hookBC" | "hookAC" | "router" | "tokenA" | "tokenB" | "tokenC",
     { bytes: number; keccak256: Hash }
   >;
-  sourceVerification: string;
+  sourceVerification: "verified";
+  sourceVerificationEvidence: {
+    schema: "sourcify-v2-match-v1";
+    provider: "Sourcify";
+    chainId: 1301;
+    apiBaseUrl: "https://sourcify.dev/server/v2/contract";
+    repositoryBaseUrl: "https://repo.sourcify.dev";
+    checkedAt: string;
+    targets: Record<SourceVerificationKey, SourceVerificationTarget>;
+  };
   tokens: { a: Address; b: Address; c: Address };
   demo: DemoSnapshot;
 }

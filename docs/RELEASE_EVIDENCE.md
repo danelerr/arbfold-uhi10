@@ -66,6 +66,7 @@ first-call grid above.
 | v0.1 coverage | 98.61% lines; 91.07% branches; 100% functions | [Coverage report](evidence/COVERAGE.md) |
 | Slither 0.11.3 | 0 unreviewed High/Medium findings | [Static-analysis review](evidence/STATIC_ANALYSIS.md) |
 | Deployment path | Local deploy, canonical swap and read-only verifier pass | `make test-deployment` |
+| Published source | 8/8 active ARBFOLD contracts have matching creation and runtime source | `npm run check:sources`; [Sourcify coordinator record](https://repo.sourcify.dev/1301/0x59e52300560ceDb4FC452e6D629c852a9C6fae30) |
 | Complete gate | Fail-closed verification command | `make verify-release` |
 
 The historical `uhi10-final` source passed the public verification workflow,
@@ -84,7 +85,7 @@ including the generated `lcov.info` and complete Slither JSON artifact:
 | Canonical transaction | [`0x3429…2022`](https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022) — 100,000 ARFY→ARFX; two rounds; zero residual |
 | Runtime bytecode | Sizes and onchain `keccak256` values for the official PoolManager, coordinator, three hooks, router and three test tokens are recorded in the v0.1 manifest |
 | Explorer links | Manager, coordinator, router, three hooks and canonical transaction are encoded in the manifest |
-| Source verification | `not-available`; no explorer-verification claim is made |
+| Source verification | `verified`; Sourcify reports creation and runtime matches for coordinator, three hooks, router and three test tokens |
 | Video | Pending recording |
 | Final submission timestamp | Pending; Daniel submits manually |
 
@@ -95,7 +96,11 @@ canonical receipt semantics, historical pre/post snapshots, current counters
 and reserves. It does not substitute local values for public evidence.
 It also exposes a wallet-free end-to-end `eth_call` and an optional signed
 testnet execution path. `npm run check:live` verifies the same public dry-run
-prerequisites from the command line.
+prerequisites from the command line. `npm run check:sources` independently
+queries Sourcify for all eight active project contracts and requires complete
+creation and runtime matches. The transient
+[`HookDeployer`](https://repo.sourcify.dev/1301/0xdc7798B015FAA585bef6462828b374079C4e8a22)
+also source-matches; it is not one of the eight active runtime roles.
 
 `make submission-preflight` additionally binds the public dashboard bundle,
 manifest, served lossless benchmark, repository copy, Project ID, five-point

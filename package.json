@@ -8,6 +8,7 @@
     "typecheck": "tsc --noEmit",
     "build:dashboard": "node scripts/build-dashboard.mjs",
     "test:dashboard": "npm run typecheck && node --test tests/dashboard/*.test.mjs",
+    "check:sources": "node scripts/check-source-verification.mjs",
     "check:live": "node scripts/check-live-demo.mjs",
     "preflight:submission": "node scripts/submission-preflight.mjs --public"
   },

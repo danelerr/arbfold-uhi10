@@ -90,6 +90,10 @@ jobs:
           make test-dashboard
           make build-dashboard
 
+      - name: Verify public source matches
+        if: ${{ !cancelled() }}
+        run: make check-sources
+
       - name: Run high-severity lints
         if: ${{ !cancelled() }}
         run: make lint

@@ -98,6 +98,7 @@ used as an apples-to-apples gas benchmark.
 - **Router:** [`0xe817DFB3d1F7cd07f165cb5FDa83CD63179996aE`](https://sepolia.uniscan.xyz/address/0xe817DFB3d1F7cd07f165cb5FDa83CD63179996aE).
 - **Canonical transaction:** [`0x3429…2022`](https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022), one `fold()` call, two direct rounds, final residual zero.
 - **Deployment manifest:** [`deployments/unichain-sepolia-1301-v0.1.json`](deployments/unichain-sepolia-1301-v0.1.json).
+- **Verified source:** all eight active ARBFOLD contracts have matching creation and runtime source on Sourcify; start with the [coordinator](https://repo.sourcify.dev/1301/0x59e52300560ceDb4FC452e6D629c852a9C6fae30).
 
 The original v0 deployment remains historical evidence. The dashboard,
 README, video and submission use v0.1.
@@ -143,6 +144,7 @@ The release evidence covers:
 - exact PoolManager backing and zero persistent currency deltas;
 - 98.61% project line coverage and 91.07% branch coverage;
 - Slither with no unreviewed High or Medium findings;
+- live Sourcify creation/runtime matches for all eight active ARBFOLD contracts;
 - fail-closed benchmark, provenance, video-proof and submission preflight checks.
 
 Focused commands:
@@ -151,6 +153,7 @@ Focused commands:
 npm ci
 npm run test:dashboard
 npm run build:dashboard
+npm run check:sources
 make video-proof
 ```
 

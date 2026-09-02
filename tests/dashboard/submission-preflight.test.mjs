@@ -13,6 +13,13 @@ test("public preflight binds the immutable submission tag to current main", () =
   assert.doesNotMatch(preflightSource, /api\.github\.com\/repos\/danelerr\/arbfold-uhi10\/commits/);
 });
 
+test("public preflight verifies all published Sourcify creation and runtime matches", () => {
+  assert.match(preflightSource, /sourceVerificationTargets/);
+  assert.match(preflightSource, /creationMatch === "match"/);
+  assert.match(preflightSource, /runtimeMatch === "match"/);
+  assert.match(preflightSource, /Public source verification matches all eight active ARBFOLD contracts/);
+});
+
 test("submission preflight validates automated evidence and isolates manual fields", () => {
   const result = spawnSync(process.execPath, ["scripts/submission-preflight.mjs"], {
     cwd: new URL("../..", import.meta.url),

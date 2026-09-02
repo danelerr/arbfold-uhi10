@@ -141,6 +141,9 @@ test("active release copy cannot regress to stale counts, rewards, or v0 headlin
     assert.doesNotMatch(activeCopy, new RegExp(stale, "i"));
   }
   assert.match(app, /82 Solidity tests/);
+  assert.match(app, /8\/8 active contracts source-matched/);
+  assert.match(app, /Verified source/);
+  assert.match(app, /sourceVerificationEvidence\.targets\.coordinator\.repositoryUrl/);
   assert.match(app, /blob\/uhi10-submission/);
   assert.match(app, /tree\/uhi10-submission\/contracts\/test/);
   assert.doesNotMatch(app, /(?:blob|tree)\/uhi10-final/);

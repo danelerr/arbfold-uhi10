@@ -47,7 +47,89 @@
   "poolManager": "0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95",
   "researchOnly": true,
   "router": "0xe817DFB3d1F7cd07f165cb5FDa83CD63179996aE",
-  "sourceVerification": "not-available",
+  "sourceVerification": "verified",
+  "sourceVerificationEvidence": {
+    "schema": "sourcify-v2-match-v1",
+    "provider": "Sourcify",
+    "chainId": 1301,
+    "apiBaseUrl": "https://sourcify.dev/server/v2/contract",
+    "repositoryBaseUrl": "https://repo.sourcify.dev",
+    "checkedAt": "2026-09-02",
+    "targets": {
+      "coordinator": {
+        "address": "0x59e52300560ceDb4FC452e6D629c852a9C6fae30",
+        "contract": "src/ArbFoldCoordinator.sol:ArbFoldCoordinator",
+        "creationTransaction": "0xe236957df1dbf17db13060cdd20721d4e7bb556f7406fac40b9a74a58528b214",
+        "verifiedAt": "2026-09-02T12:50:34Z",
+        "creationMatch": "match",
+        "runtimeMatch": "match",
+        "repositoryUrl": "https://repo.sourcify.dev/1301/0x59e52300560ceDb4FC452e6D629c852a9C6fae30"
+      },
+      "hookAB": {
+        "address": "0x6FED95b6c021f55796f79Ba9574b4f116A9dEA88",
+        "contract": "src/ArbFoldHook.sol:ArbFoldHook",
+        "creationTransaction": "0x784d2f5322bf55c7724bbeccbc6d28c748a5f3b24d2ce39272d7086ce2b6ea98",
+        "verifiedAt": "2026-09-02T12:51:45Z",
+        "creationMatch": "match",
+        "runtimeMatch": "match",
+        "repositoryUrl": "https://repo.sourcify.dev/1301/0x6FED95b6c021f55796f79Ba9574b4f116A9dEA88"
+      },
+      "hookBC": {
+        "address": "0x5d02c25278b324E97e9fbaDE04eB81679990eA88",
+        "contract": "src/ArbFoldHook.sol:ArbFoldHook",
+        "creationTransaction": "0xadbb2276a5fec324afce7d6cf88122165c266db23231ea3accbf5a8aab9725b1",
+        "verifiedAt": "2026-09-02T12:51:45Z",
+        "creationMatch": "match",
+        "runtimeMatch": "match",
+        "repositoryUrl": "https://repo.sourcify.dev/1301/0x5d02c25278b324E97e9fbaDE04eB81679990eA88"
+      },
+      "hookAC": {
+        "address": "0x852c2480537DaE76a62Aa6f09f7cBC510b3CAa88",
+        "contract": "src/ArbFoldHook.sol:ArbFoldHook",
+        "creationTransaction": "0x9e40c608e32bb0c14f8d4ab61a9c3bf1c2faaa89a7f2a614366485f94d298556",
+        "verifiedAt": "2026-09-02T12:51:40Z",
+        "creationMatch": "match",
+        "runtimeMatch": "match",
+        "repositoryUrl": "https://repo.sourcify.dev/1301/0x852c2480537DaE76a62Aa6f09f7cBC510b3CAa88"
+      },
+      "router": {
+        "address": "0xe817DFB3d1F7cd07f165cb5FDa83CD63179996aE",
+        "contract": "src/ArbFoldRouter.sol:ArbFoldRouter",
+        "creationTransaction": "0x5de9d8e5ace705849a43900399c474ba4b086d541f0925bd053cf7788ed79de6",
+        "verifiedAt": "2026-09-02T12:50:36Z",
+        "creationMatch": "match",
+        "runtimeMatch": "match",
+        "repositoryUrl": "https://repo.sourcify.dev/1301/0xe817DFB3d1F7cd07f165cb5FDa83CD63179996aE"
+      },
+      "tokenA": {
+        "address": "0x1b4EF3F3Ff9F37e40Eb933039115902fE299Aa83",
+        "contract": "src/DemoToken.sol:DemoToken",
+        "creationTransaction": "0xcd70d6f51b7ce3f7c0f8221e4a5586f806c109bfb6b781399e35a03a12e22b01",
+        "verifiedAt": "2026-09-02T12:49:14Z",
+        "creationMatch": "match",
+        "runtimeMatch": "match",
+        "repositoryUrl": "https://repo.sourcify.dev/1301/0x1b4EF3F3Ff9F37e40Eb933039115902fE299Aa83"
+      },
+      "tokenB": {
+        "address": "0x4442c33f831673C91341361DAC7D97d9FD8b01D4",
+        "contract": "src/DemoToken.sol:DemoToken",
+        "creationTransaction": "0x29ba8f99e995f1b4d730faef5cdbde4436098333cfff909420498932624d932b",
+        "verifiedAt": "2026-09-02T12:50:30Z",
+        "creationMatch": "match",
+        "runtimeMatch": "match",
+        "repositoryUrl": "https://repo.sourcify.dev/1301/0x4442c33f831673C91341361DAC7D97d9FD8b01D4"
+      },
+      "tokenC": {
+        "address": "0xcf2a07787b6438Ff4742D91f3fBB0748B04aB542",
+        "contract": "src/DemoToken.sol:DemoToken",
+        "creationTransaction": "0x19d22dc1ee1b357a65fad41504d8a89ae10d9ec2ea67dce162522fb5436bef6d",
+        "verifiedAt": "2026-09-02T12:50:31Z",
+        "creationMatch": "match",
+        "runtimeMatch": "match",
+        "repositoryUrl": "https://repo.sourcify.dev/1301/0xcf2a07787b6438Ff4742D91f3fBB0748B04aB542"
+      }
+    }
+  },
   "tokens": {
     "b": "0x4442c33f831673C91341361DAC7D97d9FD8b01D4",
     "a": "0x1b4EF3F3Ff9F37e40Eb933039115902fE299Aa83",

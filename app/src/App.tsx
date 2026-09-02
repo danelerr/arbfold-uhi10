@@ -60,6 +60,7 @@ export default function App() {
   const transactionUrl = manifest
     ? `${EXPLORER_URL}/tx/${manifest.canonicalDemoTransaction}`
     : EXPLORER_URL;
+  const sourceUrl = manifest?.sourceVerificationEvidence.targets.coordinator.repositoryUrl;
 
   return (
     <>
@@ -85,8 +86,9 @@ export default function App() {
             <a href={`${RELEASE_REF}/benchmark/optimized-release-candidate-results/REPORT.md`}>v0.1 benchmark</a>
             <a href={`${REPOSITORY}/tree/uhi10-submission/contracts/test`}>Tests and invariants</a>
             <a href={`${RELEASE_REF}/docs/ARCHITECTURE.md`}>Architecture</a>
+            {sourceUrl && <a href={sourceUrl} target="_blank" rel="noreferrer">Verified source</a>}
           </nav>
-          <p className="evidence-summary">82 Solidity tests · release fuzzing · stateful invariants · versioned raw evidence</p>
+          <p className="evidence-summary">8/8 active contracts source-matched · 82 Solidity tests · release fuzzing · stateful invariants · versioned raw evidence</p>
         </section>
       </main>
 

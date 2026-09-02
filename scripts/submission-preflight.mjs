@@ -8,7 +8,7 @@ import {
   deriveBenchmarkFacts,
   validateBenchmarkPayload,
 } from "../app/benchmark-core.js";
-import { validateManifest } from "../app/live-core.js";
+import { sourceVerificationTargets, validateManifest } from "../app/live-core.js";
 import { validateBenchmarkEvidenceWithProvenance } from "./benchmark-provenance.mjs";
 
 const publicMode = process.argv.includes("--public");
@@ -65,6 +65,19 @@ async function resolvePublicReleaseRefs() {
     submission: refs.get("refs/tags/uhi10-submission^{}")
       ?? refs.get("refs/tags/uhi10-submission"),
   };
+}
+
+async function verifyPublishedSources(manifest) {
+  const targets = sourceVerificationTargets(manifest);
+  const observed = await Promise.all(targets.map(async (target) => {
+    const url = `${manifest.sourceVerificationEvidence.apiBaseUrl}/${manifest.chainId}/${target.address.toLowerCase()}`;
+    return JSON.parse(await fetchText(url));
+  }));
+  return observed.every((contract, index) => String(contract.chainId) === String(manifest.chainId)
+    && contract.address?.toLowerCase() === targets[index].address.toLowerCase()
+    && contract.match === "match"
+    && contract.creationMatch === "match"
+    && contract.runtimeMatch === "match");
 }
 
 const [readme, page, packageText, reactApp, benchmarkDemo, swapResult, swapLabDialog, swapComposer, walletHook, finalSubmission, demoScript, videoRunbook, subtitles, checklist, rawText, manifestText] = await Promise.all([
@@ -196,6 +209,7 @@ if (publicMode) {
       fetchText(`https://danelerr.github.io/arbfold-uhi10/data/release-results.json?preflight=${cacheKey}`),
     ]);
     const servedManifest = validateManifest(JSON.parse(publicManifest));
+    const publishedSourcesMatch = await verifyPublishedSources(servedManifest);
     validateBenchmarkPayload(JSON.parse(publicBenchmark));
     const bundlePath = publicPage.match(/<script[^>]+src="(\.\/assets\/index-[^"]+\.js)"/)?.[1];
     const publicBundle = bundlePath
@@ -205,7 +219,9 @@ if (publicMode) {
     check("Public dashboard serves the current verification bundle", includesAll(publicBundle, [
       "Don’t replay every leg",
       "runtime bytecode does not match the published manifest",
+      "8/8 active contracts source-matched",
     ]));
+    check("Public source verification matches all eight active ARBFOLD contracts", publishedSourcesMatch);
     check("Public manifest matches canonical transaction", servedManifest.canonicalDemoTransaction === manifest.canonicalDemoTransaction);
     check("Public manifest matches v0.1 coordinator", servedManifest.coordinator === manifest.coordinator);
     check("Public manifest exactly matches the reviewed local release", sha256(publicManifest) === sha256(manifestText));

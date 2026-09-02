@@ -172,8 +172,11 @@ scripts/finalize-manifest.sh \
   "$ARBFOLD_UNICHAIN_RPC"
 ```
 
-Replace `not-available` with `partial` or `verified` only after explorer source
-verification actually succeeds. Remove the intermediate `*-demo.json` after
+Replace `not-available` with `partial` or `verified` only after public source
+verification actually succeeds. A publishable `verified` manifest must also
+record the provider, exact role/address/contract mappings, creation
+transactions and creation/runtime match status; changing only this string is
+not evidence. Remove the intermediate `*-demo.json` after
 the finalized manifest contains its `demo` object. The finalizer reads all
 nine runtime bytecodes through that RPC, records exact sizes and `keccak256`
 hashes, and fails if any target has no code.
@@ -184,6 +187,8 @@ hashes, and fails if any target has no code.
 - Confirm `researchOnly: true`, chain `1301`, current official manager, source
   commit, canonical transaction and demo evidence.
 - Confirm the dashboard changes from pending to verified without a wallet.
+- Run `npm run check:sources` and require all eight active ARBFOLD contracts to
+  retain complete Sourcify creation/runtime matches.
 - Never commit broadcast files, RPC credentials or a private key.
 - Commit only the finalized public manifest.
 

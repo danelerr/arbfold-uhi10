@@ -60,4 +60,4 @@ require chain/network/official manager/deployer/source commit/tx/demo and canoni
 
 ---
 
-**Open Questions:** `sourceVerification=not-available` is explicitly permitted (`L96-L99`), so successful orchestration need not include explorer source verification. Generated runtime hashes identify observed code but do not themselves prove a compiler/source mapping.
+**Open Questions:** `sourceVerification=not-available` is explicitly permitted (`L96-L99`), so successful deployment orchestration alone need not include public source verification. The submission release adds a separate Sourcify evidence object and `npm run check:sources` gate; generated runtime hashes alone still do not prove a compiler/source mapping.

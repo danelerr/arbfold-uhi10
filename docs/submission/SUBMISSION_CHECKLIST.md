@@ -10,6 +10,7 @@ This matrix separates completed repository work from manual publication tasks. I
 | Public GitHub repository | Complete | [github.com/danelerr/arbfold-uhi10](https://github.com/danelerr/arbfold-uhi10) |
 | Public dashboard | Complete and public | Live RPC reads, no-wallet deployed-contract dry-run, signed testnet flow and interactive benchmark at [danelerr.github.io/arbfold-uhi10](https://danelerr.github.io/arbfold-uhi10/). |
 | Public v0.1 deployment | Complete | [`unichain-sepolia-1301-v0.1.json`](../../deployments/unichain-sepolia-1301-v0.1.json) records the official PoolManager, coordinator, router, three hooks and 28 deployment receipts. |
+| Published contract source | Complete | `npm run check:sources` requires Sourcify creation/runtime matches for all eight active ARBFOLD contracts. |
 | Canonical v0.1 transaction | Complete | [`0x3429…2022`](https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022): one `fold()` call, two direct rounds and zero residual. |
 | Swap Lab uses v0.1 | Complete | The app, Vite development server, Pages build and live checker all consume the v0.1 manifest. |
 | Frozen source and release | Complete | [`uhi10-submission`](https://github.com/danelerr/arbfold-uhi10/tree/uhi10-submission) pins contracts, benchmark, UI and verification tooling to one revision; the earlier `uhi10-final` tag remains historical. |
@@ -25,7 +26,7 @@ This matrix separates completed repository work from manual publication tasks. I
 | Progress Update 2 copy | Ready for manual submission | [`PROGRESS_UPDATE_2.md`](../../research/archive/submission/PROGRESS_UPDATE_2.md) is bound to the public v0.1 deployment, benchmark and canonical transaction. |
 | Originality and credits | Complete | Paper, Uniswap, OpenZeppelin and Homelander credited in README. |
 | Returning cohort declaration | Manual form step | Select **UHI7** in the final submission form. |
-| Submission deadline | Manual form step | Submit before **2026-09-03 23:59 PDT**. |
+| Submission deadline | Manual form step | Organizer wording is **2026-09-03 23:59 PST**; treat **23:59 Pacific local time** as the conservative external deadline and submit earlier. |
 
 ## Final manual gate
 
@@ -35,8 +36,8 @@ Run the automated preflight first:
 make submission-preflight
 ```
 
-It verifies the current public dashboard, manifest, RPC deployment, canonical
-benchmark values, Project ID, links and claim boundaries. It reports the final
+It verifies the current public dashboard, manifest, Sourcify matches, RPC deployment,
+canonical benchmark values, Project ID, links and claim boundaries. It reports the final
 video URL separately as the remaining manual field. Run
 `node scripts/submission-preflight.mjs --public --strict` only after those
 placeholders have been replaced; strict mode fails while any remain.

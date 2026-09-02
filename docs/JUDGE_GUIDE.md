@@ -48,6 +48,8 @@ links and inspect the [canonical Unichain Sepolia transaction](https://sepolia.u
 The committed [v0.1 deployment manifest](../deployments/unichain-sepolia-1301-v0.1.json)
 records the official PoolManager, 28 deployment transactions, the three hooks,
 the demo state transition and its zero residual profit.
+The manifest also binds complete Sourcify creation/runtime matches for all
+eight active ARBFOLD contracts; the [coordinator source is public here](https://repo.sourcify.dev/1301/0x59e52300560ceDb4FC452e6D629c852a9C6fae30).
 
 The canonical transaction moved 100,000 ARFY through the deployed router,
 returned `30.220363129338304386` ARFX, executed two fold rounds in one

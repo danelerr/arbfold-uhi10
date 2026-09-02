@@ -132,6 +132,7 @@ independent audit and a separate authorization decision.
 - Repository: https://github.com/danelerr/arbfold-uhi10
 - Canonical v0.1 transaction: https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022
 - Deployment manifest: https://danelerr.github.io/arbfold-uhi10/deployments/unichain-sepolia-1301-v0.1.json
+- Verified coordinator source: https://repo.sourcify.dev/1301/0x59e52300560ceDb4FC452e6D629c852a9C6fae30
 - v0.1 benchmark: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/benchmark/optimized-release-candidate-results/REPORT.md
 - Historical v0 release benchmark: https://github.com/danelerr/arbfold-uhi10/blob/main/benchmark/release-candidate-results/REPORT.md
 - Hook: https://github.com/danelerr/arbfold-uhi10/blob/uhi10-submission/contracts/src/ArbFoldHook.sol#L72

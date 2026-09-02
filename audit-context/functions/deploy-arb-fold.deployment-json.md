@@ -30,4 +30,4 @@ read metadata; serialize addresses/commits; set empty txs, pending canonical, bl
 
 ---
 
-**Open Questions:** Runtime identities are intentionally absent from this initial serializer; `scripts/finalize-manifest.sh:L75-L104` now derives all nine from the deployment RPC. Source/artifact correspondence remains outside both steps.
+**Open Questions:** Runtime identities are intentionally absent from this initial serializer; `scripts/finalize-manifest.sh:L75-L104` now derives all nine from the deployment RPC. Source/artifact correspondence remains outside both deployment steps and is added by the release's Sourcify evidence plus `npm run check:sources`.

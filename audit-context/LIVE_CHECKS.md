@@ -53,7 +53,22 @@ Se recompilaron/leyeron los artefactos Foundry con `contracts/foundry.toml`. Par
 
 Los valores inmutables y de storage relevantes se comprobaron mediante getters/bindings en el verificador Solidity. `git diff 6670e626a836db82a2810497812009c1394b0b20..17c4e5cc01a6951c5ae272e28c6c76615bd64fa9 -- contracts/src contracts/script` no produjo diferencias. El `dependencyCommit` del manifiesto coincide con el HEAD del submódulo: `12048bb17b93ad9ed683aff9c34b89596280c77d`.
 
-Esta comparación de artefactos cubre los ocho targets propios, no el PoolManager oficial. Para éste se verificaron dirección oficial congelada, runtime publicado y comportamiento/bindings, pero `sourceVerification` sigue siendo `not-available` (`deployments/unichain-sepolia-1301-v0.1.json:L50`).
+Esta comparación de artefactos cubre los ocho targets propios, no el PoolManager oficial. Para éste se verificaron dirección oficial congelada, runtime publicado y comportamiento/bindings. La fuente propia se verificó separadamente como se documenta a continuación.
+
+## Fuente publicada en Sourcify
+
+El 2026-09-02 se enviaron los metadatos de compilación con el verificador
+Sourcify de Foundry. Sourcify devolvió `match` para creación y runtime del
+coordinator, tres hooks, router y tres tokens activos. El manifiesto v0.1 fija
+las ocho direcciones, identificadores de contrato, transacciones de creación,
+timestamps y URLs de repositorio. `npm run check:sources` relee los ocho
+registros mediante la API v2 y falla si cualquiera deja de ser coincidencia
+completa. El `HookDeployer` transitorio también obtuvo coincidencia completa,
+pero no forma parte de los ocho roles runtime activos.
+
+El PoolManager no se cuenta dentro de “8/8”: es la dependencia oficial de
+Uniswap ya fijada por dirección y runtime, no código propio desplegado por
+ARBFOLD.
 
 ## Transacción canónica y snapshots
 
@@ -125,4 +140,4 @@ dryRunInput=1000000000000000000000 dryRunOutput=64094559340580528384
 signedPathMinOut=63774086543877625742 signedPathGas=201150 bufferedGas=241380
 ```
 
-El PASS establece identidad exacta contra el manifiesto, semántica canónica, snapshots, bindings básicos y operatividad read-only para 1.000 B. No establece verificación de fuente, historial completo, pool keys/operator/claims/backing actuales ni que una simulación de 25.000 B se ejecute; el máximo sólo se usa como requisito de balance/allowance.
+El PASS establece identidad exacta contra el manifiesto, semántica canónica, snapshots, bindings básicos y operatividad read-only para 1.000 B. No establece por sí solo historial completo, pool keys/operator/claims/backing actuales ni que una simulación de 25.000 B se ejecute; el máximo sólo se usa como requisito de balance/allowance. La verificación de fuente es el gate separado `npm run check:sources`.
