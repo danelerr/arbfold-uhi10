@@ -6,7 +6,7 @@
     "forge test --offline",
     "FOUNDRY_PROFILE=release forge test --offline"
   ],
-  "commit_base": "2abc236665ee8a3de314de70e700497760a841bc",
+  "commit_base": "93d9c1c4b11f94d116473ea3189bb848d3bdd6dc",
   "dense_sweep": {
     "end_tokens": 200000,
     "start_tokens": 1000,
@@ -23,7 +23,7 @@
     200000
   ],
   "gas_accounting": "intrinsic + calldata + measured EVM execution",
-  "generated_at": "2026-08-30T18:59:53.188878-04:00",
+  "generated_at": "2026-09-02T02:41:54.840164-04:00",
   "openzeppelin_uniswap_hooks_commit": "12048bb17b93ad9ed683aff9c34b89596280c77d",
   "optimizer_enabled": true,
   "optimizer_runs": 200,
@@ -33,7 +33,7 @@
   "selected_compiler_configuration": "no-ir-runs-200",
   "selection_rationale": "Retains the already validated compilation pipeline and compares both paths under identical settings; alternative configurations are reported, not selected by relative percentage.",
   "solidity_version": "0.8.26",
-  "source_tree_sha256": "9e643942e0cb19716875297847e6c3d73be810f882cac59abb04b0c57bf6c772",
+  "source_tree_sha256": "3162250f6da961cfa23536b74227fd2baa3fcfb31cd536f7ab48da60a0105678",
   "state_tolerance_wei": 1,
   "timezone": "America/La_Paz",
   "tracked_measurement_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",

@@ -58,8 +58,8 @@
     "digests": {
       "historical_v0_frozen_raw_sha256": "81e9ee474809b9a9e2852e4573383dea9ccc8d40092ceab81cb91d3f550cb00e",
       "historical_v0_release_raw_sha256": "222a5adaeefa510b489708883488bc232c7f5d3b40d328e05fa39b4a1e9c420d",
-      "optimized_environment_sha256": "73aa7aa11f7c14e8ad145c150e4d075d5c441c41481f0890d837b06d3df0d24f",
-      "optimized_raw_sha256": "8487473e15436fc7670ac6a5e54adbee4780b9c31704e357a01d3fbe68017c5a"
+      "optimized_environment_sha256": "23bd1ed0f9d64713689112ac7f8c4febf27c141a06bf1769ebbddb0a751e4082",
+      "optimized_raw_sha256": "0451d891d1830000e04c2d2b6c09698204ee4bbd3ad9462550c8e0de0b3271b9"
     },
     "recomputed_publication_gates": {
       "all_five_cheaper": true,
@@ -78,9 +78,9 @@
         "raw_tree_digest_matches_manifest": true
       },
       "entries": 19,
-      "manifest_sha256": "9e643942e0cb19716875297847e6c3d73be810f882cac59abb04b0c57bf6c772",
+      "manifest_sha256": "3162250f6da961cfa23536b74227fd2baa3fcfb31cd536f7ab48da60a0105678",
       "mismatches": [],
-      "source_tree_sha256": "9e643942e0cb19716875297847e6c3d73be810f882cac59abb04b0c57bf6c772"
+      "source_tree_sha256": "3162250f6da961cfa23536b74227fd2baa3fcfb31cd536f7ab48da60a0105678"
     },
     "validated_compiler_configurations": [
       "no-ir-runs-200",
@@ -124,7 +124,7 @@
     "steady_state_telemetry_gas": "not_measured_without_cross_transaction_harness",
     "ten_percent_lp_net_uplift": "remains_falsified_by_v0_experiment",
     "v0_1_promotion_gate": "pass",
-    "v0_1_public_deployment": "not_performed"
+    "v0_1_public_deployment": "performed_on_unichain_sepolia"
   },
   "dense_sweep": {
     "actionable_rows": 196,
