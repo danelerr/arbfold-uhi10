@@ -139,6 +139,10 @@ class ArbFoldV01ReassessmentTests(unittest.TestCase):
         )
         self.assertEqual(self.raw["frozen_grid"][1]["gas_reduction_percent"], "19.449099")
         self.assertEqual(self.raw["frozen_grid"][3]["gas_reduction_percent"], "31.062495")
+        self.assertEqual(
+            result["decision_ledger"]["v0_1_public_deployment"],
+            "performed_on_unichain_sepolia",
+        )
 
     def test_provenance_and_compiler_matrix_are_mandatory_and_source_bound(self) -> None:
         semantics = validate_payload_semantics(self.raw)

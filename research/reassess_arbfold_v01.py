@@ -748,7 +748,7 @@ def build_result() -> dict[str, Any]:
             "steady_state_telemetry_gas": "not_measured_without_cross_transaction_harness",
             "ten_percent_lp_net_uplift": "remains_falsified_by_v0_experiment",
             "production_readiness": "not_established",
-            "v0_1_public_deployment": "not_performed",
+            "v0_1_public_deployment": "performed_on_unichain_sepolia",
         },
         "canonical": {
             "input_tokens": canonical["input_tokens"],
