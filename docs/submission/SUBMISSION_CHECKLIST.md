@@ -12,7 +12,7 @@ This matrix separates completed repository work from manual publication tasks. I
 | Public v0.1 deployment | Complete | [`unichain-sepolia-1301-v0.1.json`](../../deployments/unichain-sepolia-1301-v0.1.json) records the official PoolManager, coordinator, router, three hooks and 28 deployment receipts. |
 | Canonical v0.1 transaction | Complete | [`0x3429…2022`](https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022): one `fold()` call, two direct rounds and zero residual. |
 | Swap Lab uses v0.1 | Complete | The app, Vite development server, Pages build and live checker all consume the v0.1 manifest. |
-| Frozen source and release | Complete after final tag push | [`uhi10-submission`](https://github.com/danelerr/arbfold-uhi10/tree/uhi10-submission) pins contracts, benchmark, UI and verification tooling to one revision; the earlier `uhi10-final` tag remains historical. |
+| Frozen source and release | Complete | [`uhi10-submission`](https://github.com/danelerr/arbfold-uhi10/tree/uhi10-submission) pins contracts, benchmark, UI and verification tooling to one revision; the earlier `uhi10-final` tag remains historical. |
 | Release evidence | Complete except human artifacts | [`RELEASE_EVIDENCE.md`](../RELEASE_EVIDENCE.md) binds source, benchmark, deployment, transaction, CI and known limits. |
 | Project thumbnail | Complete | [`assets/arbfold-uhi10-thumbnail.png`](../../assets/arbfold-uhi10-thumbnail.png) |
 | Demo/explainer video ≤5 minutes | Pending recording | Use [`VIDEO_RECORDING_RUNBOOK.md`](VIDEO_RECORDING_RUNBOOK.md) and [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md); human voice only. |
