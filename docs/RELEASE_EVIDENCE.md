@@ -86,7 +86,7 @@ including the generated `lcov.info` and complete Slither JSON artifact:
 | Runtime bytecode | Sizes and onchain `keccak256` values for the official PoolManager, coordinator, three hooks, router and three test tokens are recorded in the v0.1 manifest |
 | Explorer links | Manager, coordinator, router, three hooks and canonical transaction are encoded in the manifest |
 | Source verification | `verified`; Sourcify reports creation and runtime matches for coordinator, three hooks, router and three test tokens |
-| Video | Pending recording |
+| Video | [Public 4:45 explainer](https://www.youtube.com/watch?v=8nYDFoqaQ7I) — Daniel's human narration |
 | Final submission timestamp | Pending; Daniel submits manually |
 
 The current public deployment is v0.1. The dashboard fails closed unless the
@@ -105,8 +105,8 @@ also source-matches; it is not one of the eight active runtime roles.
 `make submission-preflight` additionally binds the public dashboard bundle,
 manifest, served lossless benchmark, repository copy, Project ID, five-point
 benchmark and final-form claims into one
-fail-closed release check. The final public video URL remains deliberately
-outside automation.
+fail-closed release check. The public video is linked from the final submission;
+its duration, accessibility and human narration remain human-reviewed evidence.
 
 On 2026-08-30, the resolver returned
 `0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95`; bytecode and chain ID 1301 were

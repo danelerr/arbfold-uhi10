@@ -505,7 +505,7 @@ test("video proof and preflight reject every audited bypass without PASS or READ
     assert.match(validVideo.stdout, /PASS/);
     const validPreflight = runPreflight(validPath);
     assert.equal(validPreflight.status, 0, `${validPreflight.stdout}\n${validPreflight.stderr}`);
-    assert.match(validPreflight.stdout, /STATUS READY_FOR_MANUAL_FINISH/);
+    assert.match(validPreflight.stdout, /STATUS READY_TO_SUBMIT/);
 
     const mutations = [];
     const add = (name, mutate, { portableInvalid = true } = {}) => {

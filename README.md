@@ -13,6 +13,7 @@ rounds without replaying every arbitrage swap and profit reinjection.
 > **Same user output. Same fixed external-recipient reward. Equivalent final reserves within measured tolerance. 31.06% less gas at the canonical 100k v0.1 benchmark.**
 
 [Open the demo](https://danelerr.github.io/arbfold-uhi10/) ·
+[Watch the 4:45 explainer](https://www.youtube.com/watch?v=8nYDFoqaQ7I) ·
 [View the canonical transaction](https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022) ·
 [Read the judge guide](docs/JUDGE_GUIDE.md)
 

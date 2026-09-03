@@ -14,15 +14,15 @@ This matrix separates completed repository work from manual publication tasks. I
 | Canonical v0.1 transaction | Complete | [`0x3429…2022`](https://sepolia.uniscan.xyz/tx/0x3429f2c09fa7a60283116593a1e0b19f9732c7c88f79fdf0b49e631aabed2022): one `fold()` call, two direct rounds and zero residual. |
 | Swap Lab uses v0.1 | Complete | The app, Vite development server, Pages build and live checker all consume the v0.1 manifest. |
 | Frozen source and release | Complete | [`uhi10-submission`](https://github.com/danelerr/arbfold-uhi10/tree/uhi10-submission) pins contracts, benchmark, UI and verification tooling to one revision; the earlier `uhi10-final` tag remains historical. |
-| Release evidence | Complete except human artifacts | [`RELEASE_EVIDENCE.md`](../RELEASE_EVIDENCE.md) binds source, benchmark, deployment, transaction, CI and known limits. |
+| Release evidence | Complete | [`RELEASE_EVIDENCE.md`](../RELEASE_EVIDENCE.md) binds source, benchmark, deployment, transaction, video, CI and known limits. |
 | Project thumbnail | Complete | [`assets/arbfold-uhi10-thumbnail.png`](../../assets/arbfold-uhi10-thumbnail.png) |
-| Demo/explainer video ≤5 minutes | Pending recording | Use [`VIDEO_RECORDING_RUNBOOK.md`](VIDEO_RECORDING_RUNBOOK.md) and [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md); human voice only. |
+| Demo/explainer video ≤5 minutes | Complete | [Public 4:45 YouTube video](https://www.youtube.com/watch?v=8nYDFoqaQ7I), narrated by Daniel. |
 | Problem/background | Complete | Root [`README.md`](../../README.md) and [`JUDGE_GUIDE.md`](../JUDGE_GUIDE.md) |
 | Impact and uniqueness | Complete | v0.1 execution comparison in README and dashboard; optimized 31.06%, historical release 19.12%, earlier clean-core 18.86% and frozen v0 39.58% remain separated. |
 | Challenges | Complete | [`LIMITATIONS.md`](../LIMITATIONS.md) and [`THREAT_MODEL.md`](../THREAT_MODEL.md) |
 | Future plans | Complete | [`LIMITATIONS.md`](../LIMITATIONS.md) |
 | Partner integrations with exact locations | Complete | Unichain Sepolia deployment and official v4 `PoolManager` are documented in [`README.md`](../../README.md) and the public manifest; no unsupported partner claims. |
-| Final form copy | Ready except video URL | [`FINAL_SUBMISSION.md`](FINAL_SUBMISSION.md) contains copy-ready answers, the cohort email and the public X handle; only the uploaded video URL remains. |
+| Final form copy | Ready | [`FINAL_SUBMISSION.md`](FINAL_SUBMISSION.md) contains the copy-ready answers, public video, cohort email and X handle. |
 | Progress Update 2 copy | Ready for manual submission | [`PROGRESS_UPDATE_2.md`](../../research/archive/submission/PROGRESS_UPDATE_2.md) is bound to the public v0.1 deployment, benchmark and canonical transaction. |
 | Originality and credits | Complete | Paper, Uniswap, OpenZeppelin and Homelander credited in README. |
 | Returning cohort declaration | Manual form step | Select **UHI7** in the final submission form. |
@@ -37,10 +37,10 @@ make submission-preflight
 ```
 
 It verifies the current public dashboard, manifest, Sourcify matches, RPC deployment,
-canonical benchmark values, Project ID, links and claim boundaries. It reports the final
-video URL separately as the remaining manual field. Run
-`node scripts/submission-preflight.mjs --public --strict` only after those
-placeholders have been replaced; strict mode fails while any remain.
+canonical benchmark values, Project ID, links and claim boundaries. It also
+fails if any `[DANIEL: ...]` placeholder remains. Run
+`node scripts/submission-preflight.mjs --public --strict` before manually
+submitting the form; it must report `STATUS READY_TO_SUBMIT`.
 
 Do not submit until all are true:
 
